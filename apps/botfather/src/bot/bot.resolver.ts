@@ -1,6 +1,6 @@
 import { Resolver, Query, Mutation, Args, Int } from "@nestjs/graphql";
 import { BotService } from "./bot.service";
-import { BotEntity } from "./entities/bot.entity";
+import { BotEntity, BotStateEntity } from "./entities/bot.entity";
 import { CreateBotInput } from "./dto/create-bot.input";
 import { UpdateBotInput } from "./dto/update-bot.input";
 
@@ -31,5 +31,25 @@ export class BotResolver {
   @Mutation(() => BotEntity)
   removeBot(@Args("id", { type: () => Int }) id: number) {
     return this.botService.remove(id);
+  }
+
+  @Query(() => [BotEntity], { name: "startBots" })
+  startBots() {
+    return this.botService.startBots();
+  }
+
+  @Query(() => [BotEntity], { name: "stopBots" })
+  stopBots() {
+    return this.botService.stopBots();
+  }
+
+  @Query(() => BotStateEntity, { name: "getBotState" })
+  getBotState(@Args("id", { type: () => String }) id: string) {
+    return this.botService.getBotState(id);
+  }
+
+  @Query(() => Int, { name: "getProcessesCount" })
+  getProcessesCount() {
+    return this.botService.getProcessesCount();
   }
 }

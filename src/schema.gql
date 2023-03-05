@@ -9,6 +9,20 @@ type BotEntity {
   sessionString: String
 }
 
+type BotStateEntity {
+  bot: BotEntity
+  error: String
+  id: String
+  isErrored: Boolean
+  isRunning: Boolean
+  isStarted: Boolean
+  isStopped: Boolean
+  lastMessage: String
+  lastUpdate: Float
+  startedDate: Float
+  stoppedDate: Float
+}
+
 input CreateBotInput {
   api_hash: String
   api_id: Int
@@ -24,6 +38,10 @@ type Mutation {
 type Query {
   bot(id: String!): BotEntity!
   bots: [BotEntity!]!
+  getBotState(id: String!): BotStateEntity!
+  getProcessesCount: Int!
+  startBots: [BotEntity!]!
+  stopBots: [BotEntity!]!
 }
 
 input UpdateBotInput {
