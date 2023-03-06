@@ -22,7 +22,9 @@ When i want to add a new bot, i want to be able to add it by providing the follo
 
 
 
-### TODO: setup coverage testing
+### TODO:
+- []: setup coverage testing
+- []: remove id from the bot entity
 
 ### FEAT:
 

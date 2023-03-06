@@ -1,6 +1,45 @@
 import { ObjectType, Field } from "@nestjs/graphql";
+// import { ChildProcess } from "child_process";
 import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
-import { IBotState } from "../types/botState";
+// import { IBotState } from "../types/botState";
+
+@Entity()
+  @ObjectType()
+export class ChildProcess {
+  @Field(() => String, { nullable: true })
+  @PrimaryGeneratedColumn("uuid")
+  id: string;
+
+  @Field({ nullable: true })
+  @Column()
+  pid: number;
+
+  @Field({ nullable: true })
+  @Column()
+  connected: boolean;
+
+  @Field({ nullable: true })
+  @Column()
+  killed: boolean;
+
+  @Field({ nullable: true })
+  @Column()
+  exitCode: number;
+
+  @Field({ nullable: true })
+  @Column()
+  exitSignal: string;
+
+  @Field({ nullable: true })
+  @Column()
+  signalCode: number;
+
+  @Field({ nullable: true })
+  @Column()
+  spawnfile: string;
+
+
+  }
 
 @Entity()
 @ObjectType()
@@ -72,4 +111,8 @@ export class BotStateEntity {
   @Field({ nullable: true })
   @Column()
   lastMessage: string;
+
+  @Field({ nullable: true })
+  @Column()
+  childProcess: ChildProcess;
 }

@@ -52,4 +52,14 @@ export class BotResolver {
   getProcessesCount() {
     return this.botService.getProcessesCount();
   }
+
+  @Query(() => [BotStateEntity], { name: "getBotStates" })
+  getBotStates() {
+    return this.botService.getBotStates();
+  }
+
+  @Query(() => BotStateEntity, { name: "stopBot" })
+  stopBot(@Args("id", { type: () => String }) id: string) {
+    return this.botService.stopBot(id);
+  }
 }

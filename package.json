@@ -4,6 +4,7 @@
   "license": "MIT",
   "scripts": {
     "botfather:serve": "nx serve botfather",
+    "botfather:test:watch": "nx test botfather --watch --verbose",
     "botfather:e2e": "nx e2e botfather-e2e",
     "botfather:e2e:watch": "nx e2e botfather-e2e --watch",
     "botfather:e2e:coverage": "nx e2e botfather-e2e --coverage"

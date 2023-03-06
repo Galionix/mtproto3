@@ -1,3 +1,5 @@
+import { ChildProcess } from "child_process";
+
 export interface IBotState {
   id: string;
   api_id: number;
@@ -13,6 +15,7 @@ export interface IBotState {
   error: Error;
   lastUpdate: number;
   lastMessage: string;
+  childProcess: ChildProcess;
 }
 
 export const defaultBotState: IBotState = {
@@ -29,4 +32,5 @@ export const defaultBotState: IBotState = {
   error: null,
   lastUpdate: 0,
   lastMessage: "",
+  childProcess: null,
 };

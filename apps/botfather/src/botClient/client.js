@@ -57,7 +57,7 @@ const [apiId, apiHash, stringSession, databaseId] = process.argv.slice(2);
   });
   console.log("You should now be connected.");
   console.log(client.session.save()); // Save this string to avoid logging in again
-  await client.sendMessage("me", { message: "Hello!" });
+  //   await client.sendMessage("me", { message: "Hello!" });
   process.send({ type: "STARTED", identity });
 
   //   const usernameAvailable: boolean = await checkUsername(client, test_username);
