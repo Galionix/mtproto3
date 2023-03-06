@@ -81,4 +81,9 @@ export class BotResolver {
   ) {
     return await this.messagingSettingsService.setUsername(api_id, username);
   }
+
+  @Query(() => [BotStateEntity], { name: "reloadStates" })
+  async reloadStates() {
+    return await this.botStateService.reload();
+  }
 }

@@ -12,10 +12,6 @@ export class BotStateService {
         this.botStates.push({
           ...defaultBotState,
           bot,
-          // id: bot.id,
-          //   api_id: bot.api_id,
-          //   api_hash: bot.api_hash,
-          //   sessionString: bot.sessionString,
         });
       });
     });
@@ -33,20 +29,6 @@ export class BotStateService {
 
   getBotStates(): ReadonlyArray<BotStateEntity> {
     return this.botStates;
-    // const botStates = await this.botRepositoryService.findAll();
-    // return this.botStates.map((botState) => {
-
-    //     return {
-    //         ...botState,
-    //         bot: botStates.find((bot) => bot.api_id === botState.bot.api_id),
-    //     };
-    // });
-    // return this.botStates.map(async (botState) => {
-    //   return {
-    //     ...botState,
-    //     bot: await this.botRepositoryService.findOne(botState.bot.api_id),
-    //   };
-    // });
   }
 
   updateBotState(api_id: number, botState: Partial<BotStateEntity>) {
@@ -56,5 +38,16 @@ export class BotStateService {
     const currentState = this.botStates[index];
 
     this.botStates[index] = { ...currentState, ...botState };
+  }
+
+  async reload() {
+    await this.botRepositoryService.findAll().then((bots) => {
+      this.botStates = bots.map((bot) => ({
+        ...defaultBotState,
+        bot,
+      }));
+    });
+
+    return this.botStates;
   }
 }

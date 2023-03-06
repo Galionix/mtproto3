@@ -20,6 +20,12 @@ import { SettingsService } from "../bot-events-messaging-service/settings-servic
     BotEventsService,
     SettingsService,
   ],
-  exports: [BotService, BotProcessService, SettingsService],
+  exports: [
+    BotService,
+    BotProcessService,
+    SettingsService,
+    BotStateService,
+    BotRepositoryService,
+  ],
 })
 export class BotModule {}
