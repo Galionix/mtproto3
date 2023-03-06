@@ -1,0 +1,11 @@
+// ToServerMessage is common type for all messages from bot to server. It includes type definition with type field and
+
+import { ESettingsMessageType, TSettingsMessage } from "./settings";
+
+// various payloads
+export type ServerEvents = TSettingsMessage;
+
+// ToServerMessagesTypes is a const enum with all possible types of messages from bot to server
+export const ServerEventTypes = {
+  ...ESettingsMessageType,
+} as const;

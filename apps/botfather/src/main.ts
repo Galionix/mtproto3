@@ -7,6 +7,7 @@ import { Logger } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 
 import { AppModule } from './app/app.module';
+import { BotProcessService } from "./bot-process-service/bot-process.service";
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -17,6 +18,12 @@ async function bootstrap() {
   Logger.log(
     `🚀 Application is running on: http://${process.env.API_HOST}:${port}/${globalPrefix}`
   );
+
+  if (process.env.AUTOSTART === "true") {
+    Logger.log(`🚀 Autostart enabled`);
+    const botProcessService = app.get(BotProcessService);
+    botProcessService.startBots();
+  }
 }
 
 bootstrap();

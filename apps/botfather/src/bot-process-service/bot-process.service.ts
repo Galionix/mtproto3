@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { ChildProcess, fork } from "child_process";
-import { BotMessageService } from "../bot-message-service/bot-message.service";
+import { BotEventsService } from "../bot-events-messaging-service/bot-events.service";
 import { BotRepositoryService } from "../bot-repository-service/bot-repository.service";
 import { BotStateService } from "../bot-state-service/bot-state.service";
 
@@ -11,7 +11,7 @@ export class BotProcessService {
   constructor(
     private readonly botRepositoryService: BotRepositoryService,
     private readonly botStateService: BotStateService,
-    private readonly botMessageService: BotMessageService
+    private readonly botMessageService: BotEventsService
   ) {}
 
   stopBots() {
@@ -41,7 +41,7 @@ export class BotProcessService {
     return this.botRepositoryService.findOne(api_id);
   }
   getProcessesCount() {
-    console.log("this.botProcesses: ", this.botProcesses);
+    // console.log("this.botProcesses: ", this.botProcesses);
     return this.botProcesses.length;
   }
 

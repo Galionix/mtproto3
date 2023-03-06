@@ -1,46 +1,16 @@
-// const { TelegramClient } = require("telegram");
-// const { StringSession } = require("telegram/sessions");
-
 import { TelegramClient, Api } from "telegram";
+import { NewMessageEvent, NewMessage } from "telegram/events";
 import { StringSession } from "telegram/sessions";
-import { TPhoneCode, TPhoneNumber } from "../bot/types/inProcessMessages";
-
-// const input = require("input"); // npm i input
-
-// const apiId = 21502850;
-// const apiHash = "4e234e4dc6bd589d20dabd4e0ab4ce87";
-// // const test_username = "serious_sam_xt360";
-// const stringSession = new StringSession(
-//   "1BQANOTEuMTA4LjU2LjE3NAG7law4OXa/pIRVIGx/oeDLkwwQEYDBFPeuybN9JOoz8XEgBwCj6BI4pV93wcAnx1iyc873+RAq76l0klI2KxPNd/gEY33346WazpaH3jcTHKeyuN3cPd+lJgj5gYr00I0qMhq11HoAUi/nNV/wRyYI/DrrlnFRnKtZJJGqcdLJ76xjrjMqkMHvVeug31Lb8xsz2vlQgJHRadR7elUbVIAYSuv08uJvD8Y13IU+mXjjiyN+wspjrexs/TbZxdyxzIxW80td4VWAzcmABMiw2styY0Ewdhrq7LFMBjktQBMbcnmCPOhsdjaXYLYt599ZvtRXIxUP3LLzzcuTvvlRgRGW0g=="
-// ); // fill this later with the value from session.save()
+import {
+  TPhoneCode,
+  TPhoneNumber,
+} from "../messagesTypes/bot-events/registration";
+import { ServerEvents, ServerEventTypes } from "../messagesTypes/server-events";
+import { setUsername } from "./lib/account/username";
 
 const [apiId, apiHash, stringSession] = process.argv.slice(2);
-
 (async () => {
-  //   const identity = {
-  //     id: databaseId,
-  //     api_id: apiId,
-  //   };
-  //   async function checkUsername(client, username: string) {
-  //     const result: boolean = await client.invoke(
-  //       new Api.account.CheckUsername({
-  //         username,
-  //       })
-  //     );
-  //     return result;
-  //     // console.log(result); // prints the result
-  //   }
-
-  //   async function setUsername(client, username: string) {
-  //     const result: boolean = await client.invoke(
-  //       new Api.account.UpdateUsername({
-  //         username,
-  //       })
-  //     );
-  //     return result;
-  //   }
-
-  console.log("Loading interactive example...");
+  // console.log("Loading interactive example...");
   const client = new TelegramClient(
     new StringSession(stringSession),
     parseInt(apiId),
@@ -51,20 +21,20 @@ const [apiId, apiHash, stringSession] = process.argv.slice(2);
   );
   await client.start({
     phoneCode: async () => {
-      process.send({ type: "PHONE_CODE_REQUIRED" });
+      process.send({ event_type: "PHONE_CODE_REQUIRED" });
       return new Promise((resolve) => {
         process.on("message", (message: TPhoneCode) => {
-          if (message.type === "PHONE_CODE") {
+          if (message.event_type === "PHONE_CODE") {
             resolve(message.code);
           }
         });
       });
     },
     phoneNumber: async () => {
-      process.send({ type: "PHONE_NUMBER_REQUIRED" });
+      process.send({ event_type: "PHONE_NUMBER_REQUIRED" });
       return new Promise((resolve) => {
         process.on("message", (message: TPhoneNumber) => {
-          if (message.type === "PHONE_NUMBER") {
+          if (message.event_type === "PHONE_NUMBER") {
             resolve(message.number);
           }
         });
@@ -74,32 +44,73 @@ const [apiId, apiHash, stringSession] = process.argv.slice(2);
     // phoneCode: async () =>
     //   await input.text("Please enter the code you received: "),
     onError: (err) => {
-      process.send({ type: "ERROR", error: err });
+      process.send({ event_type: "ERROR", error: err });
       console.log(err);
     },
   });
   console.log(apiId, " connected.");
 
   process.send({
-    type: "SET_SESSION_STRING",
+    event_type: "SET_SESSION_STRING",
     sessionString: client.session.save(),
   });
 
-  // console.log(client.session.save()); // Save this string to avoid logging in again
-  //   await client.sendMessage("me", { message: "Hello!" });
-  process.send({ type: "STARTED" });
-
-  //   const usernameAvailable: boolean = await checkUsername(client, test_username);
-
-  //   console.log("available", usernameAvailable); // prints the result
-
-  //   if (usernameAvailable) {
-  //     const usernameSetResult = await setUsername(client, test_username);
-  //     console.log("usernameSetResult: ", usernameSetResult);
-  //   }
+  process.send({ event_type: "STARTED" });
 
   client.addEventHandler((update) => {
     console.log("Received new Update");
     console.log(update);
   });
+
+  async function eventPrint(event: NewMessageEvent) {
+    const message = event.message;
+
+    // Checks if it's a private message (from user or bot)
+    if (event.isPrivate) {
+      // prints sender id
+      console.log(message.senderId);
+      // read message
+      if (message.text == "hello") {
+        const sender = await message.getSender();
+        console.log("sender is", sender);
+        await client.sendMessage(sender, {
+          message: `hi your id is ${message.senderId}`,
+        });
+      }
+    }
+  }
+
+  client.addEventHandler(eventPrint, new NewMessage({}));
+
+  process.on("message", async (message: ServerEvents) => {
+    let res;
+    switch (message.event_type) {
+      case ServerEventTypes.SET_USERNAME:
+        res = setUsername(client, message.username);
+        break;
+    }
+    return res;
+    // if (res) {
+  });
+
+  // add event handler to respond in private chats with "Hello!"
+  // client.addEventHandler(
+  //   (update) => {
+  //     if (update === "updateNewMessage") {
+  //       const { message } = update;
+  //       if (message._ === "message") {
+  //         const { peerId, out } = message;
+  //         if (peerId._ === "peerUser" && !out) {
+  //           client.sendMessage(peerId, {
+  //             message: "Hello!",
+  //           });
+  //         }
+  //       }
+  //     }
+  //   }
+  //   // new Api.TypeUpdateFilter({
+  //   //   _: "updateNewMessage",
+  //   //   incoming: true,
+  //   // })
+  // );
 })();

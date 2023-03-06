@@ -47,6 +47,7 @@ type ErrorEntity {
 type Mutation {
   createBot(createBotInput: CreateBotInput!): BotEntity!
   removeBot(id: Int!): BotEntity!
+  setUsername(api_id: Int!, username: String!): String!
 }
 
 type Query {

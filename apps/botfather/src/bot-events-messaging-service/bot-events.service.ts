@@ -1,10 +1,13 @@
 import { Injectable } from "@nestjs/common";
 import { BotRepositoryService } from "../bot-repository-service/bot-repository.service";
 import { BotStateService } from "../bot-state-service/bot-state.service";
-import { processMessagesTypes, TProcessMessages } from "./processMessages";
+import {
+  processMessagesTypes,
+  TProcessMessages,
+} from "../messagesTypes/bot-events/processMessages";
 
 @Injectable()
-export class BotMessageService {
+export class BotEventsService {
   constructor(
     private readonly botStateService: BotStateService,
     private readonly botRepositoryService: BotRepositoryService
@@ -18,7 +21,7 @@ export class BotMessageService {
       .getBotStates()
       .find((botState) => botState.bot.api_id === api_id);
     if (botState) {
-      switch (message.type) {
+      switch (message.event_type) {
         case processMessagesTypes.STARTED:
           console.log("Bot started: ", api_id);
           this.botStateService.updateBotState(api_id, {
@@ -27,7 +30,7 @@ export class BotMessageService {
           });
           break;
         case processMessagesTypes.STOPPED:
-          console.log("Bot stopped: ", message.identity.id);
+          console.log("Bot stopped: ", api_id);
 
           this.botStateService.updateBotState(api_id, {
             isStopped: true,
@@ -35,7 +38,7 @@ export class BotMessageService {
           });
           break;
         case processMessagesTypes.ERROR:
-          console.log("Bot errored: ", message.identity.id);
+          console.log("Bot errored: ", api_id);
           this.botStateService.updateBotState(api_id, {
             isErrored: true,
             error: message.error,
