@@ -4,8 +4,7 @@
 
 type BotEntity {
   api_hash: String
-  api_id: Float
-  id: String
+  api_id: String
   sessionString: String
 }
 
@@ -47,12 +46,12 @@ type Mutation {
 }
 
 type Query {
-  bot(id: String!): BotEntity!
+  bot(id: Int!): BotEntity!
   bots: [BotEntity!]!
-  getBotState(id: String!): BotStateEntity!
+  getBotState(id: Int!): BotStateEntity!
   getBotStates: [BotStateEntity!]!
   getProcessesCount: Int!
   startBots: [BotEntity!]!
-  stopBot(id: String!): BotStateEntity!
+  stopBot(api_id: Int!): BotStateEntity!
   stopBots: [BotEntity!]!
 }

@@ -1,7 +1,7 @@
 import { ChildProcess } from "child_process";
 
 export interface IBotState {
-  id: string;
+  //   id: string;
   api_id: number;
   api_hash: string;
   sessionString: string;
@@ -19,7 +19,7 @@ export interface IBotState {
 }
 
 export const defaultBotState: IBotState = {
-  id: "",
+  //   id: "",
   api_id: 0,
   api_hash: "",
   sessionString: "",

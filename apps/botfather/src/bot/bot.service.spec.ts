@@ -2,6 +2,7 @@ import { Test, TestingModule } from "@nestjs/testing";
 import { BotService } from "./bot.service";
 import { getRepositoryToken } from "@nestjs/typeorm";
 import { BotEntity } from "./entities/bot.entity";
+import { CreateBotInput } from "./dto/create-bot.input";
 // import { defaultBotState } from "./types/botState";
 // import child_process from "child_process";
 // import { Repository } from "typeorm";
@@ -65,12 +66,12 @@ describe("BotService", () => {
 
   describe("create", () => {
     it("should create a new bot if it does not exist", async () => {
-      const createBotInput = {
+      const createBotInput: CreateBotInput = {
         api_id: 123,
         api_hash: "456",
         sessionString: "session",
       };
-      const botEntity = { id: 1, ...createBotInput };
+      const botEntity = createBotInput;
       jest.spyOn(botRepository, "findOne").mockResolvedValueOnce(undefined);
       jest.spyOn(botRepository, "save").mockResolvedValueOnce(botEntity);
       const result = await service.create(createBotInput);
@@ -78,7 +79,7 @@ describe("BotService", () => {
         where: { api_id: 123 },
       });
       expect(botRepository.save).toHaveBeenCalledWith({
-        id: expect.any(String),
+        // api_id: expect.any(String),
         ...createBotInput,
       });
       expect(result).toEqual(botEntity);
@@ -118,17 +119,17 @@ describe("BotService", () => {
 
   describe("findOne", () => {
     it("should return a bot with its state", async () => {
-      const mockBot = { id: "1", api_id: "123", sessionString: "session1" };
+      const mockBot = { api_id: 123, sessionString: "session1" };
       // const mockBotState = { id: "1", isStarted: true };
 
       botRepository.findOne.mockResolvedValue(mockBot);
       // service.getBotState = jest.fn().mockReturnValue(mockBotState);
 
-      const result = await service.findOne(mockBot.id);
+      const result = await service.findOne(mockBot.api_id);
 
       expect(result).toEqual(mockBot);
       expect(botRepository.findOne).toHaveBeenCalledWith({
-        where: { id: mockBot.id },
+        where: { api_id: mockBot.api_id },
       });
     });
   });

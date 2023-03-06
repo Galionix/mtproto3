@@ -33,7 +33,7 @@ describe("BotResolver", () => {
         api_hash: "456",
         sessionString: "session",
       };
-      const botEntity: BotEntity = { id: "1", ...createBotInput };
+      const botEntity: BotEntity = createBotInput;
       jest.spyOn(service, "create").mockResolvedValueOnce(botEntity);
       const result = await resolver.createBot(createBotInput);
       expect(service.create).toHaveBeenCalledWith(createBotInput);
@@ -47,7 +47,7 @@ describe("BotResolver", () => {
         sessionString: "session",
       };
 
-      const botEntity: BotEntity = { id: "1", ...createBotInput };
+      const botEntity: BotEntity = createBotInput;
       jest.spyOn(service, "create").mockResolvedValueOnce(botEntity);
       const result = await resolver.createBot(createBotInput);
       expect(service.create).toHaveBeenCalledWith(createBotInput);

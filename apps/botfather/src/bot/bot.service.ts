@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { CreateBotInput } from "./dto/create-bot.input";
 // import { UpdateBotInput } from "./dto/update-bot.input";
-import { uuid } from "uuidv4";
+// import { uuid } from "uuidv4";
 import { BotEntity } from "./entities/bot.entity";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
@@ -25,7 +25,7 @@ export class BotService {
       bots.forEach((bot) => {
         this.botStates.push({
           ...defaultBotState,
-          id: bot.id,
+          // id: bot.id,
           api_id: bot.api_id,
           api_hash: bot.api_hash,
           sessionString: bot.sessionString,
@@ -47,7 +47,7 @@ export class BotService {
       api_id: createBotInput.api_id,
       api_hash: createBotInput.api_hash,
       sessionString: createBotInput.sessionString,
-      id: uuid(),
+      // id: uuid(),
     });
 
     return newBot;
@@ -59,8 +59,8 @@ export class BotService {
     return bots;
   }
 
-  async findOne(id: string): Promise<BotEntity> {
-    const res = await this.botRepository.findOne({ where: { id } });
+  async findOne(api_id: number): Promise<BotEntity> {
+    const res = await this.botRepository.findOne({ where: { api_id } });
     return res;
   }
 
@@ -129,27 +129,30 @@ export class BotService {
     return this.findAll();
   }
 
-  stopBot(id: string) {
-    const botState = this.botStates.find((botState) => botState.id === id);
+  stopBot(api_id: number) {
+    const botState = this.botStates.find(
+      (botState) => botState.api_id === api_id
+    );
     if (botState) {
       botState.childProcess.kill();
     }
-    return this.findOne(id);
+    return this.findOne(api_id);
   }
-  botsErrorsReducer(error: Error, id: string) {
-    console.log("id: " + id + ", error: ", error);
+  botsErrorsReducer(error: Error, api_id: number) {
+    console.log("api_id: " + api_id + ", error: ", error);
   }
 
-  botsMessagesReducer(message: TProcessMessages) {
+  botsMessagesReducer(message: TProcessMessages, api_id: number) {
+    console.log("api_id: ", api_id);
     console.log("message: ", message);
     // update botStates
     const botState = this.botStates.find(
-      (botState) => botState.id === message.identity.id
+      (botState) => botState.api_id === api_id
     );
     if (botState) {
       switch (message.type) {
         case processMessagesTypes.STARTED:
-          console.log("Bot started: ", message.identity.id);
+          console.log("Bot started: ", api_id);
           botState.isStarted = true;
           botState.startedDate = Date.now();
           break;
@@ -167,15 +170,17 @@ export class BotService {
     }
   }
 
-  getBotState(id: string) {
-    const botState = this.botStates.find((botState) => botState.id === id);
+  getBotState(api_id: number) {
+    const botState = this.botStates.find(
+      (botState) => botState.api_id === api_id
+    );
 
-    return { ...botState, bot: this.findOne(id) };
+    return { ...botState, bot: this.findOne(api_id) };
   }
 
   getBotStates() {
     return this.botStates.map((botState) => {
-      return { ...botState, bot: this.findOne(botState.id) };
+      return { ...botState, bot: this.findOne(botState.api_id) };
     });
   }
 
@@ -183,22 +188,28 @@ export class BotService {
     return this.botProcesses.length;
   }
 
-  async startBot(id: string) {
-    const bot = await this.findOne(id);
+  async startBot(api_id: number) {
+    const bot = await this.findOne(api_id);
+
+    // check if bot is already started
+    const botState = this.getBotState(bot.api_id);
+    // console.log("botState: ", botState);
+    if (botState.isStarted) {
+      return bot;
+    }
+
     const childProcess = fork("apps\\botfather\\src\\botClient\\client.js", [
       bot.api_id.toString(),
       bot.api_hash,
       bot.sessionString,
-      bot.id,
+      // bot.id,
     ]);
     /* A variable that is not used. */
     // childProcess.
     this.botProcesses.push(childProcess);
     childProcess.on("exit", (code: number) => {
       // find botState and set childProcess to null
-      const botState = this.botStates.find(
-        (botState) => botState.id === bot.id
-      );
+      const botState = this.getBotState(bot.api_id);
       botState.childProcess = null;
       botState.isStarted = false;
       botState.isRunning = false;
@@ -207,34 +218,42 @@ export class BotService {
 
       console.log("childProcess exited with code: ", code);
     });
-    childProcess.on("message", this.botsMessagesReducer.bind(this));
-    childProcess.on("error", (error: Error) =>
-      this.botsErrorsReducer.bind(this, error, bot.id)
+    childProcess.on("message", (message) =>
+      this.botsMessagesReducer.bind(this)(message, bot.api_id)
     );
-    this.botStates.find((botState) => botState.id === bot.id).childProcess =
-      childProcess;
+    childProcess.on("error", (error: Error) =>
+      this.botsErrorsReducer.bind(this, error, bot.api_id)
+    );
+    this.botStates.find(
+      (botState) => botState.api_id === bot.api_id
+    ).childProcess = childProcess;
     // this.
-    return this.findOne(id);
+    return this.findOne(api_id);
   }
 
   async startBots() {
     const loginDetailsList = await this.findAll();
     loginDetailsList.forEach(async (loginDetails, index) => {
+      // check if bot is already running
+
+      // if (this.getBotState(loginDetails.api_id).isRunning) {
+      //   return;
+      // }
+
       setTimeout(() => {
-        this.startBot(loginDetails.id);
+        this.startBot(loginDetails.api_id);
       }, 3000 * (index + 1));
     });
 
     return loginDetailsList;
   }
 
-  async restartBot(id: string) {
-    // const bot = await this.findOne(id);
-    const botState = this.botStates.find((botState) => botState.id === id);
+  async restartBot(api_id: number) {
+    const botState = this.getBotState(api_id);
     if (botState) {
       botState.childProcess.kill();
     }
-    return this.startBot(id);
+    return this.startBot(api_id);
   }
 
   async restartBots() {
@@ -242,7 +261,7 @@ export class BotService {
       botState.childProcess.kill();
     });
     return this.botStates.map((botState) => {
-      return this.startBot(botState.id);
+      return this.startBot(botState.api_id);
     });
   }
 }

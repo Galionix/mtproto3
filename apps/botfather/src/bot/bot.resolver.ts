@@ -19,8 +19,8 @@ export class BotResolver {
   }
 
   @Query(() => BotEntity, { name: "bot" })
-  findOne(@Args("id", { type: () => String }) id: string) {
-    return this.botService.findOne(id);
+  findOne(@Args("id", { type: () => Int }) api_id: number) {
+    return this.botService.findOne(api_id);
   }
 
   // @Mutation(() => BotEntity)
@@ -44,8 +44,8 @@ export class BotResolver {
   }
 
   @Query(() => BotStateEntity, { name: "getBotState" })
-  getBotState(@Args("id", { type: () => String }) id: string) {
-    return this.botService.getBotState(id);
+  getBotState(@Args("id", { type: () => Int }) api_id: number) {
+    return this.botService.getBotState(api_id);
   }
 
   @Query(() => Int, { name: "getProcessesCount" })
@@ -59,7 +59,7 @@ export class BotResolver {
   }
 
   @Query(() => BotStateEntity, { name: "stopBot" })
-  stopBot(@Args("id", { type: () => String }) id: string) {
-    return this.botService.stopBot(id);
+  stopBot(@Args("api_id", { type: () => Int }) api_id: number) {
+    return this.botService.stopBot(api_id);
   }
 }
