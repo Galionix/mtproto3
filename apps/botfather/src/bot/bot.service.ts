@@ -1,11 +1,11 @@
 import { Injectable } from "@nestjs/common";
 import { CreateBotInput } from "./dto/create-bot.input";
-import { UpdateBotInput } from "./dto/update-bot.input";
+// import { UpdateBotInput } from "./dto/update-bot.input";
 import { uuid } from "uuidv4";
-import { BotEntity, BotStateEntity } from "./entities/bot.entity";
+import { BotEntity } from "./entities/bot.entity";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
-import { fork } from "child_process";
+import { ChildProcess, fork } from "child_process";
 import {
   processMessagesTypes,
   TProcessMessages,
@@ -14,7 +14,7 @@ import { defaultBotState, IBotState } from "./types/botState";
 
 @Injectable()
 export class BotService {
-  private botProcesses: any[] = [];
+  private botProcesses: ChildProcess[] = [];
   private botStates: IBotState[] = [];
   constructor(
     @InjectRepository(BotEntity)
@@ -64,9 +64,9 @@ export class BotService {
     return res;
   }
 
-  update(id: number, updateBotInput: UpdateBotInput) {
-    return `This action updates a #${id} bot`;
-  }
+  // update(id: number, updateBotInput: UpdateBotInput) {
+  //   return `This action updates a #${id} bot`;
+  // }
 
   remove(id: number) {
     return `This action removes a #${id} bot`;
@@ -229,7 +229,7 @@ export class BotService {
   }
 
   async restartBot(id: string) {
-    const bot = await this.findOne(id);
+    // const bot = await this.findOne(id);
     const botState = this.botStates.find((botState) => botState.id === id);
     if (botState) {
       botState.childProcess.kill();

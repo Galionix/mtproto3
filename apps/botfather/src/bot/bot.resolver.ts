@@ -2,7 +2,7 @@ import { Resolver, Query, Mutation, Args, Int } from "@nestjs/graphql";
 import { BotService } from "./bot.service";
 import { BotEntity, BotStateEntity } from "./entities/bot.entity";
 import { CreateBotInput } from "./dto/create-bot.input";
-import { UpdateBotInput } from "./dto/update-bot.input";
+// import { UpdateBotInput } from "./dto/update-bot.input";
 
 @Resolver(() => BotEntity)
 export class BotResolver {
@@ -23,10 +23,10 @@ export class BotResolver {
     return this.botService.findOne(id);
   }
 
-  @Mutation(() => BotEntity)
-  updateBot(@Args("updateBotInput") updateBotInput: UpdateBotInput) {
-    return this.botService.update(updateBotInput.id, updateBotInput);
-  }
+  // @Mutation(() => BotEntity)
+  // updateBot(@Args("updateBotInput") updateBotInput: UpdateBotInput) {
+  //   return this.botService.update(updateBotInput.id, updateBotInput);
+  // }
 
   @Mutation(() => BotEntity)
   removeBot(@Args("id", { type: () => Int }) id: number) {

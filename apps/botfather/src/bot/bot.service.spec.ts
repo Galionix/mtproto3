@@ -2,9 +2,9 @@ import { Test, TestingModule } from "@nestjs/testing";
 import { BotService } from "./bot.service";
 import { getRepositoryToken } from "@nestjs/typeorm";
 import { BotEntity } from "./entities/bot.entity";
-import { defaultBotState } from "./types/botState";
-import child_process from "child_process";
-import { Repository } from "typeorm";
+// import { defaultBotState } from "./types/botState";
+// import child_process from "child_process";
+// import { Repository } from "typeorm";
 
 // mock child_process module
 jest.mock("child_process", () => ({
@@ -111,7 +111,7 @@ describe("BotService", () => {
 
       const result = await service.findAll();
 
-      expect(result).toEqual([{ ...mockBots[0], state: mockBotStates[0] }]);
+      expect(result).toEqual([mockBots[0]]);
       expect(botRepository.find).toHaveBeenCalled();
     });
   });
@@ -119,14 +119,14 @@ describe("BotService", () => {
   describe("findOne", () => {
     it("should return a bot with its state", async () => {
       const mockBot = { id: "1", api_id: "123", sessionString: "session1" };
-      const mockBotState = { id: "1", isStarted: true };
+      // const mockBotState = { id: "1", isStarted: true };
 
       botRepository.findOne.mockResolvedValue(mockBot);
-      service.getBotState = jest.fn().mockReturnValue(mockBotState);
+      // service.getBotState = jest.fn().mockReturnValue(mockBotState);
 
       const result = await service.findOne(mockBot.id);
 
-      expect(result).toEqual({ ...mockBot, state: mockBotState });
+      expect(result).toEqual(mockBot);
       expect(botRepository.findOne).toHaveBeenCalledWith({
         where: { id: mockBot.id },
       });

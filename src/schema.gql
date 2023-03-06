@@ -44,7 +44,6 @@ input CreateBotInput {
 type Mutation {
   createBot(createBotInput: CreateBotInput!): BotEntity!
   removeBot(id: Int!): BotEntity!
-  updateBot(updateBotInput: UpdateBotInput!): BotEntity!
 }
 
 type Query {
@@ -56,11 +55,4 @@ type Query {
   startBots: [BotEntity!]!
   stopBot(id: String!): BotStateEntity!
   stopBots: [BotEntity!]!
-}
-
-input UpdateBotInput {
-  api_hash: String
-  api_id: Int
-  id: Int!
-  sessionString: String
 }
