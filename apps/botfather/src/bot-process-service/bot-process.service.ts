@@ -108,19 +108,27 @@ export class BotProcessService {
 
   async startBots() {
     const loginDetailsList = await this.botRepositoryService.findAll();
-    loginDetailsList.forEach(async (loginDetails, index) => {
-      // check if bot is already running
 
-      // if (this.getBotState(loginDetails.api_id).isRunning) {
-      //   return;
-      // }
+    // create array of promises with custom delay multiplied by index, each promise will start bot. Then wait for all promises to be resolved and return array of bots
 
-      setTimeout(() => {
-        this.startBot(loginDetails.api_id);
-      }, 3000 * (index + 1));
-    });
+    return Promise.all(
+      loginDetailsList.map(
+        (loginDetails, index) =>
+          new Promise((resolve) => {
+            setTimeout(() => {
+              resolve(this.startBot(loginDetails.api_id));
+            }, 5000 * (index + 1));
+          })
+      )
+    );
 
-    return loginDetailsList;
+    // loginDetailsList.forEach(async (loginDetails, index) => {
+    //   setTimeout(() => {
+    //     this.startBot(loginDetails.api_id);
+    //   }, 3000 * (index + 1));
+    // });
+
+    // return loginDetailsList;
   }
 
   async restartBot(api_id: number) {

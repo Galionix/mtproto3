@@ -7,6 +7,9 @@ import {
 } from "../messagesTypes/bot-events/registration";
 import { ServerEvents, ServerEventTypes } from "../messagesTypes/server-events";
 import { setUsername } from "./lib/account/username";
+import { getCombinedListeners } from "./lib/processApi/combineListeners";
+import { generalReducer } from "./lib/processApi/composeReducer";
+import { listeners } from "./lib/processApi/listeners";
 
 const [apiId, apiHash, stringSession] = process.argv.slice(2);
 (async () => {
@@ -82,35 +85,10 @@ const [apiId, apiHash, stringSession] = process.argv.slice(2);
 
   client.addEventHandler(eventPrint, new NewMessage({}));
 
-  process.on("message", async (message: ServerEvents) => {
-    let res;
-    switch (message.event_type) {
-      case ServerEventTypes.SET_USERNAME:
-        res = setUsername(client, message.username);
-        break;
-    }
-    return res;
-    // if (res) {
-  });
+  const combinedListeners = getCombinedListeners(listeners);
 
-  // add event handler to respond in private chats with "Hello!"
-  // client.addEventHandler(
-  //   (update) => {
-  //     if (update === "updateNewMessage") {
-  //       const { message } = update;
-  //       if (message._ === "message") {
-  //         const { peerId, out } = message;
-  //         if (peerId._ === "peerUser" && !out) {
-  //           client.sendMessage(peerId, {
-  //             message: "Hello!",
-  //           });
-  //         }
-  //       }
-  //     }
-  //   }
-  //   // new Api.TypeUpdateFilter({
-  //   //   _: "updateNewMessage",
-  //   //   incoming: true,
-  //   // })
-  // );
+  const reducer = generalReducer({ client }, combinedListeners);
+  process.on("message", async (message: ServerEvents) => {
+    reducer(message);
+  });
 })();
