@@ -66,6 +66,7 @@ export class BotResolver {
 
   @Query(() => [BotStateEntity], { name: "getBotStates" })
   getBotStates() {
+    console.log("getBotStates");
     return this.botStateService.getBotStates();
   }
 
