@@ -1,18 +1,18 @@
-import { ObjectType, Field } from "@nestjs/graphql";
+import { ObjectType, Field, Int } from "@nestjs/graphql";
 // import { ChildProcess } from "child_process";
 import { Column, Entity, PrimaryColumn, PrimaryGeneratedColumn } from "typeorm";
 // import { IBotState } from "../types/botState";
 
 @Entity()
 @ObjectType()
-export class ChildProcess {
-  @Field(() => String, { nullable: true })
-  @PrimaryGeneratedColumn("uuid")
-  id: string;
+export class ChildProcessEntity {
+  @Field(() => Int, { nullable: true })
+  @Column()
+  id?: number;
 
   @Field({ nullable: true })
-  @Column()
-  pid: number;
+  @PrimaryColumn()
+  pid?: number;
 
   @Field({ nullable: true })
   @Column()
@@ -26,17 +26,20 @@ export class ChildProcess {
   @Column()
   exitCode: number;
 
-  @Field({ nullable: true })
-  @Column()
-  exitSignal: string;
+  // @Field({ nullable: true })
+  // @Column()
+  // exitSignal: string;
 
   @Field({ nullable: true })
   @Column()
-  signalCode: number;
+  signalCode: string;
 
   @Field({ nullable: true })
   @Column()
   spawnfile: string;
+
+  kill: () => void;
+  disconnect: () => void;
 }
 
 @Entity()
@@ -61,13 +64,29 @@ export class BotEntity {
 
 @Entity()
 @ObjectType()
-export class BotStateEntity {
+export class ErrorEntity {
   @Field(() => String, { nullable: true })
-  @PrimaryGeneratedColumn("uuid")
-  id: string;
+  @PrimaryColumn()
+  name: string;
+
+  @Field(() => String, { nullable: true })
+  @Column()
+  message: string;
+
+  @Field(() => String, { nullable: true })
+  @Column()
+  stack?: string;
+}
+
+@Entity()
+@ObjectType()
+export class BotStateEntity {
+  // @Field(() => String, { nullable: true })
+  // @PrimaryGeneratedColumn("uuid")
+  // id: string;
 
   @Field(() => BotEntity, { nullable: true })
-  @Column()
+  @PrimaryColumn()
   bot: BotEntity;
 
   @Field({ nullable: true })
@@ -96,7 +115,7 @@ export class BotStateEntity {
 
   @Field({ nullable: true })
   @Column()
-  error: string;
+  error: ErrorEntity;
 
   @Field({ nullable: true })
   @Column()
@@ -108,5 +127,5 @@ export class BotStateEntity {
 
   @Field({ nullable: true })
   @Column()
-  childProcess: ChildProcess;
+  childProcess: ChildProcessEntity;
 }

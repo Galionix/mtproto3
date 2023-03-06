@@ -1,9 +1,9 @@
 // const { TelegramClient } = require("telegram");
 // const { StringSession } = require("telegram/sessions");
 
-import { TelegramClient } from 'telegram';
-import { StringSession } from 'telegram/sessions';
-import { TPhoneCode, TPhoneNumber } from '../bot/types/inProcessMessages';
+import { TelegramClient, Api } from "telegram";
+import { StringSession } from "telegram/sessions";
+import { TPhoneCode, TPhoneNumber } from "../bot/types/inProcessMessages";
 
 // const input = require("input"); // npm i input
 
@@ -17,10 +17,10 @@ import { TPhoneCode, TPhoneNumber } from '../bot/types/inProcessMessages';
 const [apiId, apiHash, stringSession] = process.argv.slice(2);
 
 (async () => {
-//   const identity = {
-//     id: databaseId,
-//     api_id: apiId,
-//   };
+  //   const identity = {
+  //     id: databaseId,
+  //     api_id: apiId,
+  //   };
   //   async function checkUsername(client, username: string) {
   //     const result: boolean = await client.invoke(
   //       new Api.account.CheckUsername({
@@ -49,27 +49,27 @@ const [apiId, apiHash, stringSession] = process.argv.slice(2);
       connectionRetries: 5,
     }
   );
-    await client.start({
-        phoneCode: async () => {
-            process.send({ type: "PHONE_CODE_REQUIRED" });
-            return new Promise((resolve) => {
-                process.on("message", (message:TPhoneCode) => {
-                    if (message.type === "PHONE_CODE") {
-                        resolve(message.code);
-                    }
-                });
-            });
-        },
-        phoneNumber: async () => {
-            process.send({ type: "PHONE_NUMBER_REQUIRED" });
-            return new Promise((resolve) => {
-                process.on("message", (message:TPhoneNumber) => {
-                    if (message.type === "PHONE_NUMBER") {
-                        resolve(message.number);
-                    }
-                });
-            });
-        },
+  await client.start({
+    phoneCode: async () => {
+      process.send({ type: "PHONE_CODE_REQUIRED" });
+      return new Promise((resolve) => {
+        process.on("message", (message: TPhoneCode) => {
+          if (message.type === "PHONE_CODE") {
+            resolve(message.code);
+          }
+        });
+      });
+    },
+    phoneNumber: async () => {
+      process.send({ type: "PHONE_NUMBER_REQUIRED" });
+      return new Promise((resolve) => {
+        process.on("message", (message: TPhoneNumber) => {
+          if (message.type === "PHONE_NUMBER") {
+            resolve(message.number);
+          }
+        });
+      });
+    },
     // password: async () => await input.text("Please enter your password: "),
     // phoneCode: async () =>
     //   await input.text("Please enter the code you received: "),
@@ -78,8 +78,14 @@ const [apiId, apiHash, stringSession] = process.argv.slice(2);
       console.log(err);
     },
   });
-  console.log("You should now be connected.");
-  console.log(client.session.save()); // Save this string to avoid logging in again
+  console.log(apiId, " connected.");
+
+  process.send({
+    type: "SET_SESSION_STRING",
+    sessionString: client.session.save(),
+  });
+
+  // console.log(client.session.save()); // Save this string to avoid logging in again
   //   await client.sendMessage("me", { message: "Hello!" });
   process.send({ type: "STARTED" });
 

@@ -2,25 +2,35 @@ import { Resolver, Query, Mutation, Args, Int } from "@nestjs/graphql";
 import { BotService } from "./bot.service";
 import { BotEntity, BotStateEntity } from "./entities/bot.entity";
 import { CreateBotInput } from "./dto/create-bot.input";
+import { BotMessageService } from "../bot-message-service/bot-message.service";
+import { BotProcessService } from "../bot-process-service/bot-process.service";
+import { BotRepositoryService } from "../bot-repository-service/bot-repository.service";
+import { BotStateService } from "../bot-state-service/bot-state.service";
 // import { UpdateBotInput } from "./dto/update-bot.input";
 
 @Resolver(() => BotEntity)
 export class BotResolver {
-  constructor(private readonly botService: BotService) {}
+  constructor(
+    private readonly botService: BotService,
+    private readonly botRepositoryService: BotRepositoryService,
+    private readonly botProcessService: BotProcessService,
+    private readonly botStateService: BotStateService,
+    private readonly botMessageService: BotMessageService
+  ) {}
 
   @Mutation(() => BotEntity)
   createBot(@Args("createBotInput") createBotInput: CreateBotInput) {
-    return this.botService.create(createBotInput);
+    return this.botRepositoryService.create(createBotInput);
   }
 
   @Query(() => [BotEntity], { name: "bots" })
   findAll() {
-    return this.botService.findAll();
+    return this.botRepositoryService.findAll();
   }
 
   @Query(() => BotEntity, { name: "bot" })
   findOne(@Args("id", { type: () => Int }) api_id: number) {
-    return this.botService.findOne(api_id);
+    return this.botRepositoryService.findOne(api_id);
   }
 
   // @Mutation(() => BotEntity)
@@ -30,36 +40,36 @@ export class BotResolver {
 
   @Mutation(() => BotEntity)
   removeBot(@Args("id", { type: () => Int }) id: number) {
-    return this.botService.remove(id);
+    return this.botRepositoryService.remove(id);
   }
 
   @Query(() => [BotEntity], { name: "startBots" })
   startBots() {
-    return this.botService.startBots();
+    return this.botProcessService.startBots();
   }
 
   @Query(() => [BotEntity], { name: "stopBots" })
   stopBots() {
-    return this.botService.stopBots();
+    return this.botProcessService.stopBots();
   }
 
   @Query(() => BotStateEntity, { name: "getBotState" })
   getBotState(@Args("id", { type: () => Int }) api_id: number) {
-    return this.botService.getBotState(api_id);
+    return this.botStateService.getBotState(api_id);
   }
 
   @Query(() => Int, { name: "getProcessesCount" })
   getProcessesCount() {
-    return this.botService.getProcessesCount();
+    return this.botProcessService.getProcessesCount();
   }
 
   @Query(() => [BotStateEntity], { name: "getBotStates" })
   getBotStates() {
-    return this.botService.getBotStates();
+    return this.botStateService.getBotStates();
   }
 
   @Query(() => BotStateEntity, { name: "stopBot" })
   stopBot(@Args("api_id", { type: () => Int }) api_id: number) {
-    return this.botService.stopBot(api_id);
+    return this.botProcessService.stopBot(api_id);
   }
 }
