@@ -20,6 +20,8 @@ type BotStateEntity {
   joining_groups_chat_ids: [String!]
   lastMessage: String
   lastUpdate: Float
+  leaving_groups: Boolean
+  leaving_groups_chat_ids: [String!]
   startedDate: Float
   stoppedDate: Float
 }
@@ -58,6 +60,7 @@ input JoinGroupsInput {
 type Mutation {
   createBot(createBotInput: CreateBotInput!): BotEntity!
   joinGroups(JoinGroupsInput: JoinGroupsInput!): [BotStateEntity!]!
+  leaveGroups(api_ids: [Int!]!, group_ids: [String!]!, leave_delay: Int): [BotStateEntity!]!
   removeBot(id: Int!): BotEntity!
   setUsername(api_id: Int!, username: String!): String!
 }

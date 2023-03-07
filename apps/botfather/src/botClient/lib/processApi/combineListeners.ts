@@ -10,7 +10,9 @@ type EventType = keyof typeof ServerEventTypes;
 
 export type TListener = {
   event_type: keyof typeof ServerEventTypes;
-  listener: (args: IDefaultListenerArgs) => (...args: any) => Promise<void>;
+  listener: (
+    args: IDefaultListenerArgs
+  ) => (...args: any) => Promise<void> | void;
 };
 
 export type TCombinedListeners = Record<EventType, TListener["listener"]>;

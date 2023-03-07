@@ -38,4 +38,6 @@ export const defaultBotState: BotStateEntity = {
   bot: new BotEntity(),
   joining_groups: false,
   joining_groups_chat_ids: [],
+  leaving_groups: false,
+  leaving_groups_chat_ids: [],
 };

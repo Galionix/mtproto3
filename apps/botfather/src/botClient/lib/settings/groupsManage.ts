@@ -3,17 +3,8 @@ import { JoinGroupsInput } from "../../../bot/dto/join-group.input";
 import { BotEventTypes } from "../../../messagesTypes/bot-events";
 import { ServerEventTypes } from "../../../messagesTypes/server-events";
 import { IDefaultListenerArgs } from "../processApi/combineListeners";
-// import { getChatById } from "../utils/getEntity";
 
-// async function joinChannel(client: TelegramClient, channelUsername: string) {
-//   try {
-//     const result = await client.invoke(new Api.channels.JoinChannel(), {});
-//     console.log(`Successfully joined channel ${channelUsername}`);
-//   } catch (error) {
-//     console.error(`Failed to join channel ${channelUsername}:`, error);
-//   }
-// }
-
+// TODO: Finish wiring: add api_ids, behaviour_model, processing_enabled, spam_frequency
 export const joinGroups =
   ({ client }: IDefaultListenerArgs) =>
   ({
@@ -39,7 +30,35 @@ export const joinGroups =
     });
   };
 
-export const joinGroupsListener = {
-  event_type: ServerEventTypes.JOIN_GROUPS,
-  listener: joinGroups,
-};
+export const leaveGroups =
+  ({ client }: IDefaultListenerArgs) =>
+  ({ group_ids }: { group_ids: string[] }) => {
+    group_ids.forEach(async (chat_id, index) => {
+      setTimeout(async () => {
+        console.log("chat_id: ", chat_id);
+
+        try {
+          const result = await client.invoke(
+            new Api.channels.LeaveChannel({
+              channel: chat_id,
+            })
+          );
+        } catch (error) {
+          process.send({ event_type: BotEventTypes.CHAT_LEFT, chat_id });
+        }
+        // console.log(result); // prints the result
+        process.send({ event_type: BotEventTypes.CHAT_LEFT, chat_id });
+      }, 5000 * (index + 1));
+    });
+  };
+
+export const groupManageListeners = [
+  {
+    event_type: ServerEventTypes.JOIN_GROUPS,
+    listener: joinGroups,
+  },
+  {
+    event_type: ServerEventTypes.LEAVE_GROUPS,
+    listener: leaveGroups,
+  },
+];

@@ -4,6 +4,7 @@ import { usernameMessagesTypes } from "../bot-events/usernameChange";
 export enum ESettingsMessageType {
   SET_USERNAME = "SET_USERNAME",
   JOIN_GROUPS = "JOIN_GROUPS",
+  LEAVE_GROUPS = "LEAVE_GROUPS",
 }
 
 export type TSetUsernameMessage = TGenericMessage<
@@ -23,4 +24,13 @@ export type TJoinGroupsMessage =
     join_delay: number;
   };
 
-export type TSettingsMessage = TSetUsernameMessage | TJoinGroupsMessage;
+export type TLeaveGroupsMessage =
+  TGenericMessage<ESettingsMessageType.LEAVE_GROUPS> & {
+    group_ids: string[];
+    leave_delay: number;
+  };
+
+export type TSettingsMessage =
+  | TSetUsernameMessage
+  | TJoinGroupsMessage
+  | TLeaveGroupsMessage;

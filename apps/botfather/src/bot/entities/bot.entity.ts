@@ -1,6 +1,6 @@
 import { ObjectType, Field, Int } from "@nestjs/graphql";
 // import { ChildProcess } from "child_process";
-import { Column, Entity, PrimaryColumn, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, PrimaryColumn } from "typeorm";
 // import { IBotState } from "../types/botState";
 
 @Entity()
@@ -136,4 +136,12 @@ export class BotStateEntity {
   @Field(() => [String], { nullable: true })
   @Column()
   joining_groups_chat_ids: string[];
+
+  @Field({ nullable: true })
+  @Column()
+  leaving_groups: boolean;
+
+  @Field(() => [String], { nullable: true })
+  @Column()
+  leaving_groups_chat_ids: string[];
 }

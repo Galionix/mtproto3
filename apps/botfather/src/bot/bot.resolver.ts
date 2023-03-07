@@ -58,7 +58,6 @@ export class BotResolver {
 
   @Query(() => [BotStateEntity], { name: "getBotStates" })
   getBotStates() {
-    console.log("getBotStates");
     return this.botStateService.getBotStates();
   }
 
@@ -79,12 +78,7 @@ export class BotResolver {
   async reloadStates() {
     return await this.botStateService.reload();
   }
-  /*
-  @Mutation(() => BotEntity)
-  createBot(@Args("createBotInput") createBotInput: CreateBotInput) {
-    return this.botRepositoryService.create(createBotInput);
-  }
-*/
+
   @Mutation(() => [BotStateEntity], { name: "joinGroups" })
   async joinGroups(@Args("JoinGroupsInput") joinGroupsInput: JoinGroupsInput) {
     // flow is the following:
@@ -93,5 +87,18 @@ export class BotResolver {
     // 3. set approximate time of completion in state
 
     return await this.messagingSettingsService.joinGroups(joinGroupsInput);
+  }
+
+  @Mutation(() => [BotStateEntity], { name: "leaveGroups" })
+  async leaveGroups(
+    @Args("group_ids", { type: () => [String] }) group_ids: string[],
+    @Args("api_ids", { type: () => [Int] }) api_ids: number[],
+    @Args("leave_delay", { type: () => Int, nullable: true }) leave_delay = 5000
+  ) {
+    return await this.messagingSettingsService.leaveGroups({
+      api_ids,
+      group_ids,
+      leave_delay,
+    });
   }
 }

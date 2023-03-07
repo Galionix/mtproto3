@@ -64,4 +64,40 @@ export class SettingsService {
 
     return botStateService.getBotStates();
   }
+
+  async leaveGroups({
+    api_ids,
+    group_ids,
+    leave_delay,
+  }: {
+    api_ids: number[];
+    group_ids: string[];
+    leave_delay: number;
+  }) {
+    const botStateService = this.botStateService;
+
+    // const botStates = botStateService.getBotStates();
+
+    api_ids.forEach(async (api_id) => {
+      const botState = botStateService.getBotState(api_id);
+      if (botState) {
+        sendToBot(
+          botState.childProcess as ChildProcess,
+          {
+            event_type: ServerEventTypes.LEAVE_GROUPS,
+            group_ids,
+            leave_delay,
+          },
+          false
+        );
+
+        botStateService.updateBotState(api_id, {
+          leaving_groups: true,
+          leaving_groups_chat_ids: group_ids,
+        });
+      }
+    });
+
+    return botStateService.getBotStates();
+  }
 }

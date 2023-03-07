@@ -23,9 +23,33 @@ function listenChatJoin({
   });
 }
 
+function listenChatLeave({
+  services,
+  message,
+  api_id,
+}: TListenerArgs<TChatJoined>) {
+  const { botStateService } = services;
+  const { chat_id } = message;
+
+  const { leaving_groups_chat_ids } = botStateService.getBotState(api_id);
+
+  const newLeavingGroupsChatIds = leaving_groups_chat_ids.filter(
+    (id) => id !== chat_id
+  );
+
+  botStateService.updateBotState(api_id, {
+    leaving_groups_chat_ids: newLeavingGroupsChatIds,
+    leaving_groups: newLeavingGroupsChatIds.length > 0,
+  });
+}
+
 export const chatManageListeners: TListener[] = [
   {
     event_type: BotEventTypes.CHAT_JOINED,
     listener: listenChatJoin,
+  },
+  {
+    event_type: BotEventTypes.CHAT_LEFT,
+    listener: listenChatLeave,
   },
 ];

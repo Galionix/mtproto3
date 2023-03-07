@@ -64,7 +64,7 @@ const [apiId, apiHash, stringSession] = process.argv.slice(2);
 
   client.addEventHandler((update) => {
     console.log("Received new Update");
-    console.log(update);
+    console.log(update.message);
   });
 
   async function eventPrint(event: NewMessageEvent) {
