@@ -16,6 +16,8 @@ type BotStateEntity {
   isRunning: Boolean
   isStarted: Boolean
   isStopped: Boolean
+  joining_groups: Boolean
+  joining_groups_chat_ids: [String!]
   lastMessage: String
   lastUpdate: Float
   startedDate: Float
@@ -44,8 +46,18 @@ type ErrorEntity {
   stack: String
 }
 
+input JoinGroupsInput {
+  api_ids: [Int!]!
+  behaviour_model: String = "default"
+  chat_ids: [String!]!
+  join_delay: Int = 5000
+  processing_enabled: Boolean = false
+  spam_frequency: Int = 1000
+}
+
 type Mutation {
   createBot(createBotInput: CreateBotInput!): BotEntity!
+  joinGroups(JoinGroupsInput: JoinGroupsInput!): [BotStateEntity!]!
   removeBot(id: Int!): BotEntity!
   setUsername(api_id: Int!, username: String!): String!
 }

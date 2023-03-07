@@ -51,6 +51,8 @@ const [apiId, apiHash, stringSession] = process.argv.slice(2);
       console.log(err);
     },
   });
+
+  await client.connect();
   console.log(apiId, " connected.");
 
   process.send({

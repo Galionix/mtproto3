@@ -5,6 +5,7 @@ import { BotProcessService } from "../bot-process-service/bot-process.service";
 import { BotRepositoryService } from "../bot-repository-service/bot-repository.service";
 import { BotStateService } from "../bot-state-service/bot-state.service";
 import { SettingsService } from "../bot-events-messaging-service/settings-service/settings.service";
+import { JoinGroupsInput } from "./dto/join-group.input";
 
 @Resolver(() => BotEntity)
 export class BotResolver {
@@ -77,5 +78,20 @@ export class BotResolver {
   @Query(() => [BotStateEntity], { name: "reloadStates" })
   async reloadStates() {
     return await this.botStateService.reload();
+  }
+  /*
+  @Mutation(() => BotEntity)
+  createBot(@Args("createBotInput") createBotInput: CreateBotInput) {
+    return this.botRepositoryService.create(createBotInput);
+  }
+*/
+  @Mutation(() => [BotStateEntity], { name: "joinGroups" })
+  async joinGroups(@Args("JoinGroupsInput") joinGroupsInput: JoinGroupsInput) {
+    // flow is the following:
+    // 1. give all bots task to join groups
+    // 2. update their states and return them
+    // 3. set approximate time of completion in state
+
+    return await this.messagingSettingsService.joinGroups(joinGroupsInput);
   }
 }

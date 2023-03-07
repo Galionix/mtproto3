@@ -19,20 +19,29 @@ When i want to add a new bot, i want to be able to add it by providing the follo
 - api_hash
 - stringSession
 
-
-
-
 ### TODO:
 - []: setup coverage testing
-- []: remove id from the bot entity
 
 ### FEAT:
+- []: register new bot trough graphql
 
 ### FIX:
 
 ## Telegram bots (BotClient)
 Telegram bots will be written in Mtproto. They will be able to send messages to the users, and receive messages from them. They will also be able to send messages to the main server, and receive messages from it.
+
+Requirements:
+
+bot should be able join groups and channels, and send messages to them.
+joining will be initiated by the main server, so we need api endpoint for that.
+for each join request, we need to track history of results of this action. actually we need
+to track all actions, so we need to create a new table for that. when i say we, i mean me, copilot, and chatgpt.
+
+
+
+
 ### TODO:
+
 
 ### FEAT:
 

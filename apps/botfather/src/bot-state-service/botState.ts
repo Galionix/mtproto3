@@ -36,4 +36,6 @@ export const defaultBotState: BotStateEntity = {
   childProcess: null,
   // id: "",
   bot: new BotEntity(),
+  joining_groups: false,
+  joining_groups_chat_ids: [],
 };

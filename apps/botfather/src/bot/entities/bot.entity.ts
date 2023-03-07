@@ -128,4 +128,12 @@ export class BotStateEntity {
   @Field({ nullable: true })
   @Column()
   childProcess: ChildProcessEntity;
+
+  @Field({ nullable: true })
+  @Column()
+  joining_groups: boolean;
+
+  @Field(() => [String], { nullable: true })
+  @Column()
+  joining_groups_chat_ids: string[];
 }

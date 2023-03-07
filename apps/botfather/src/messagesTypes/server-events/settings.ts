@@ -3,6 +3,7 @@ import { usernameMessagesTypes } from "../bot-events/usernameChange";
 
 export enum ESettingsMessageType {
   SET_USERNAME = "SET_USERNAME",
+  JOIN_GROUPS = "JOIN_GROUPS",
 }
 
 export type TSetUsernameMessage = TGenericMessage<
@@ -12,4 +13,14 @@ export type TSetUsernameMessage = TGenericMessage<
   username: string;
 };
 
-export type TSettingsMessage = TSetUsernameMessage;
+export type TJoinGroupsMessage =
+  TGenericMessage<ESettingsMessageType.JOIN_GROUPS> & {
+    chat_ids: string[];
+    api_ids: number[];
+    behaviour_model: string;
+    processing_enabled: boolean;
+    spam_frequency: number;
+    join_delay: number;
+  };
+
+export type TSettingsMessage = TSetUsernameMessage | TJoinGroupsMessage;

@@ -1,3 +1,4 @@
+import { EChatManageTypes, TChatManage } from "./chatManage";
 import { processMessagesTypes, TProcessMessages } from "./processMessages";
 import {
   registrationMessagesTypes,
@@ -10,11 +11,13 @@ import { TUsernameMessages, usernameMessagesTypes } from "./usernameChange";
 export type BotEvents =
   | TRegistrationMessages
   | TUsernameMessages
-  | TProcessMessages;
+  | TProcessMessages
+  | TChatManage;
 
 // ToServerMessagesTypes is a const enum with all possible types of messages from bot to server
 export const BotEventTypes = {
   ...registrationMessagesTypes,
   ...usernameMessagesTypes,
   ...processMessagesTypes,
+  ...EChatManageTypes,
 } as const;

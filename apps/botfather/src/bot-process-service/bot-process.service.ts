@@ -120,7 +120,7 @@ export class BotProcessService {
           new Promise((resolve) => {
             setTimeout(() => {
               resolve(this.startBot(loginDetails.api_id));
-            }, 5000 * (index + 1));
+            }, 2000 * (index + 1));
           })
       )
     );

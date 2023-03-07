@@ -18,14 +18,18 @@ export const WAIT_FOR_MESSAGE_TIMEOUT = 5000;
  * @returns {Promise<any>} - A promise that resolves to the response from the child process
  */
 
-export function sendToBotAndWait(
+export function sendToBot(
   childProcess: ChildProcess,
-  message: ServerEvents
+  message: ServerEvents,
+  wait = true,
+  waitTimeout = WAIT_FOR_MESSAGE_TIMEOUT
 ): Promise<BotEvents> {
   return new Promise((resolve, reject) => {
-    const timeout = setTimeout(() => {
-      reject(new Error("Timeout waiting for child process response"));
-    }, WAIT_FOR_MESSAGE_TIMEOUT); // Change the timeout as needed
+    const timeout = wait
+      ? setTimeout(() => {
+          reject(new Error("Timeout waiting for child process response"));
+        }, waitTimeout)
+      : null;
 
     const listener = (response: BotEvents) => {
       // check if the response is one of the expected types

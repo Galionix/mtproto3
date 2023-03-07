@@ -5,10 +5,7 @@ import {
   IDefaultListenerArgs,
   TListener,
 } from "../processApi/combineListeners";
-// import {
-//   ServerEvents,
-//   ServerEventTypes,
-// } from "../../../messagesTypes/server-events";
+
 export async function isUsernameAvailable(
   client: TelegramClient,
   username: string
