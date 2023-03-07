@@ -9,12 +9,16 @@ export enum processMessagesTypes {
 
 type TStarted = TGenericMessage<processMessagesTypes.STARTED>;
 type TStopped = TGenericMessage<processMessagesTypes.STOPPED>;
-type TError = TGenericMessage<processMessagesTypes.ERROR> & {
+export type TBotErrorMessage = TGenericMessage<processMessagesTypes.ERROR> & {
   error: Error;
 };
-type TSetSessionString =
+export type TSetSessionString =
   TGenericMessage<processMessagesTypes.SET_SESSION_STRING> & {
     sessionString: string;
   };
 
-export type TProcessMessages = TStarted | TStopped | TError | TSetSessionString;
+export type TProcessMessages =
+  | TStarted
+  | TStopped
+  | TBotErrorMessage
+  | TSetSessionString;

@@ -6,14 +6,16 @@ import { Repository } from "typeorm";
 import { BotStateService } from "../bot-state-service/bot-state.service";
 import { CreateBotInput } from "../bot/dto/create-bot.input";
 import { BotEntity } from "../bot/entities/bot.entity";
+import { Logger } from "@nestjs/common";
+
+const l = new Logger("BotRepositoryService");
 
 @Injectable()
 export class BotRepositoryService {
   constructor(
     @InjectRepository(BotEntity)
-    private readonly botRepository: Repository<BotEntity>
-  ) // private readonly botStateService: BotStateService
-  {}
+    private readonly botRepository: Repository<BotEntity> // private readonly botStateService: BotStateService
+  ) {}
 
   async create(createBotInput: CreateBotInput) {
     const existingBot = await this.botRepository.findOne({
@@ -58,6 +60,6 @@ export class BotRepositoryService {
 
     this.botRepository.save(bot);
 
-    console.log("sessionString updated: ", sessionString);
+    l.log("sessionString updated: ", sessionString);
   }
 }

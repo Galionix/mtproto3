@@ -4,11 +4,6 @@ import { BotStateService } from "../../bot-state-service/bot-state.service";
 import { BotEventTypes } from "../../messagesTypes/bot-events";
 import { ServerEventTypes } from "../../messagesTypes/server-events";
 import { sendToBotAndWait } from "../../messagesTypes/server-events/sendAndWait";
-// import { BotEvents } from "../../messagesTypes/bot-events";
-// import { ServerEventTypes } from "../../messagesTypes/server-events";
-// import { sendAndWait } from "../../messagesTypes/server-events/sendAndWait";
-// import { sendAndWait } from '../../utils/sendAndWait';
-// import { BotProcessService } from '../../bot-process-service/bot-process.service';
 
 @Injectable()
 export class SettingsService {

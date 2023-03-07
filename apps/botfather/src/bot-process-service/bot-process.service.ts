@@ -86,7 +86,10 @@ export class BotProcessService {
       console.log("childProcess exited with code: ", code);
     });
     childProcess.on("message", (message) =>
-      this.botMessageService.botsMessagesReducer.bind(this)(message, bot.api_id)
+      this.botMessageService.botsMessagesReducer.bind(this.botMessageService)(
+        message,
+        bot.api_id
+      )
     );
     childProcess.on("error", (error: Error) =>
       this.botsErrorsReducer.bind(this)(error, bot.api_id)
