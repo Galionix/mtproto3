@@ -3,7 +3,7 @@ import { Injectable } from "@nestjs/common";
 // import { BotEntity } from "./entities/bot.entity";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
-import { BotStateService } from "../bot-state-service/bot-state.service";
+import { BotStateService } from "../services/bot-state-service/bot-state.service";
 import { CreateBotInput } from "../bot/dto/create-bot.input";
 import { BotEntity } from "../bot/entities/bot.entity";
 import { Logger } from "@nestjs/common";

@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { ChildProcess } from "child_process";
-import { BotStateService } from "../../bot-state-service/bot-state.service";
+import { BotStateService } from "../../services/bot-state-service/bot-state.service";
 import { JoinGroupsInput } from "../../bot/dto/join-group.input";
 import { BotEventTypes } from "../../messagesTypes/bot-events";
 import { ServerEventTypes } from "../../messagesTypes/server-events";
