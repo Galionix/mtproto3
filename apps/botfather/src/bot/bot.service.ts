@@ -1,5 +1,5 @@
 import { Injectable } from "@nestjs/common";
-import { BotEntity } from "./entities/bot.entity";
+import { BotEntity } from "@core/types/server/entities";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 

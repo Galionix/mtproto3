@@ -1,7 +1,4 @@
-import {
-  processMessagesTypes,
-  TSetSessionString,
-} from "../../messagesTypes/bot-events/processMessages";
+import { TSetSessionString, processMessagesTypes } from "@core/types/client";
 import { TListenerArgs } from "../bot-events.service";
 import { TListener } from "../listeners";
 

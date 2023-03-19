@@ -1,10 +1,8 @@
+import { BotEventTypes } from "@core/types/client";
+import { ServerEventTypes, JoinGroupsInput } from "@core/types/server";
 import { Injectable } from "@nestjs/common";
 import { ChildProcess } from "child_process";
 import { BotStateService } from "../../services/bot-state-service/bot-state.service";
-import { JoinGroupsInput } from "../../bot/dto/join-group.input";
-import { BotEventTypes } from "../../messagesTypes/bot-events";
-import { ServerEventTypes } from "../../messagesTypes/server-events";
-import { sendToBot } from "../../messagesTypes/server-events/sendAndWait";
 
 @Injectable()
 export class SettingsService {

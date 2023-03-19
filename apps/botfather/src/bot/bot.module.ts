@@ -2,7 +2,7 @@ import { Module } from "@nestjs/common";
 import { BotService } from "./bot.service";
 import { BotResolver } from "./bot.resolver";
 import { TypeOrmModule } from "@nestjs/typeorm";
-import { BotEntity } from "./entities/bot.entity";
+import { BotEntity } from "@core/types/server/entities";
 import { BotRepositoryService } from "../bot-repository-service/bot-repository.service";
 import { BotProcessService } from "../services/bot-process-service/bot-process.service";
 import { BotStateService } from "../services/bot-state-service/bot-state.service";

@@ -15,7 +15,11 @@
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
-    "paths": {}
+    "paths": {
+      "@client/*": ["apps/bot-client/src/*"],
+      "@father/*": ["apps/botfather/src/*"],
+      "@core/types/*": ["libs/core/src/types/*"],
+    }
   },
   "exclude": ["node_modules", "tmp"]
 }

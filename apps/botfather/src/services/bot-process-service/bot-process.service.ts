@@ -55,15 +55,12 @@ export class BotProcessService {
       return bot;
     }
 
-    const childProcess = fork(
-      "apps\\botfather\\src\\botClient\\dist\\botClient\\index.js",
-      [
-        bot.api_id.toString(),
-        bot.api_hash,
-        bot.sessionString,
-        // bot.id,
-      ]
-    );
+    const childProcess = fork("dist\\apps\\bot-client\\index.js", [
+      bot.api_id.toString(),
+      bot.api_hash,
+      bot.sessionString,
+      // bot.id,
+    ]);
     /* A variable that is not used. */
     // childProcess.
     this.botProcesses.push(childProcess);

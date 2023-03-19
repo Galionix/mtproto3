@@ -1,5 +1,4 @@
-import { BotEventTypes } from "../../messagesTypes/bot-events";
-import { TChatJoined } from "../../messagesTypes/bot-events/chatManage";
+import { TChatJoined, BotEventTypes } from "@core/types/client";
 import { TListenerArgs } from "../bot-events.service";
 import { TListener } from "../listeners";
 

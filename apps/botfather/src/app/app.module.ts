@@ -4,13 +4,13 @@ import { AppController } from "./app.controller";
 import { AppService } from "./app.service";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { TypeOrmModule } from "@nestjs/typeorm";
-import { BotEntity } from "../bot/entities/bot.entity";
 import { ApolloDriver, ApolloDriverConfig } from "@nestjs/apollo";
 import { GraphQLModule } from "@nestjs/graphql";
 import { join } from "path";
 import { ApolloServerPluginCacheControl } from "apollo-server-core/dist/plugin/cacheControl";
 import responseCachePlugin from "apollo-server-plugin-response-cache";
 import { BotModule } from "../bot/bot.module";
+import { BotEntity } from "@core/types/server";
 
 @Module({
   imports: [

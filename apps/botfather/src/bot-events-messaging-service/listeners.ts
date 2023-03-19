@@ -1,4 +1,4 @@
-import { BotEventTypes } from "../messagesTypes/bot-events";
+import { BotEventTypes } from "@core/types/client";
 import { accountListeners } from "./listeners/account.listeners";
 import { chatManageListeners } from "./listeners/chat_manage.listeners";
 import { infoListeners } from "./listeners/info.listeners";
