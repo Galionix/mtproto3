@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
-import { BotRepositoryService } from "../../bot-repository-service/bot-repository.service";
 import { BotStateEntity } from "@core/types/server/entities";
 import { defaultBotState } from "./botState";
+import { BotRepositoryService } from "../bot-repository-service/bot-repository.service";
 
 @Injectable()
 export class BotStateService {

@@ -1,8 +1,8 @@
 import { Injectable } from "@nestjs/common";
 import { ChildProcess, fork } from "child_process";
-import { BotEventsService } from "../../bot-events-messaging-service/bot-events.service";
-import { BotRepositoryService } from "../../bot-repository-service/bot-repository.service";
+import { BotEventsService } from "../bot-events-messaging-service/bot-events.service";
 import { BotStateService } from "../bot-state-service/bot-state.service";
+import { BotRepositoryService } from "../bot-repository-service/bot-repository.service";
 
 @Injectable()
 export class BotProcessService {

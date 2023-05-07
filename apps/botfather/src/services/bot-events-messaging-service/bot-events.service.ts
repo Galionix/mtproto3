@@ -1,7 +1,7 @@
 import { TProcessMessages } from "@core/types/client";
 import { Injectable, Logger } from "@nestjs/common";
 import { BotRepositoryService } from "../bot-repository-service/bot-repository.service";
-import { BotStateService } from "../services/bot-state-service/bot-state.service";
+import { BotStateService } from "../bot-state-service/bot-state.service";
 import { combinedListeners } from "./listeners";
 
 const l = new Logger("BotEventsService");

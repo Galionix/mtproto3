@@ -1,14 +1,14 @@
 import { Resolver, Query, Mutation, Args, Int } from "@nestjs/graphql";
 import { BotProcessService } from "../services/bot-process-service/bot-process.service";
-import { BotRepositoryService } from "../bot-repository-service/bot-repository.service";
 import { BotStateService } from "../services/bot-state-service/bot-state.service";
-import { SettingsService } from "../bot-events-messaging-service/settings-service/settings.service";
 import {
   JoinGroupsInput,
   BotEntity,
   BotStateEntity,
   CreateBotInput,
 } from "@core/types/server";
+import { BotRepositoryService } from "../services/bot-repository-service/bot-repository.service";
+import { SettingsService } from "../services/settings-service/settings.service";
 
 @Resolver(() => BotEntity)
 export class BotResolver {
