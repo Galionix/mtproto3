@@ -55,7 +55,7 @@ export class BotProcessService {
       return bot;
     }
 
-    const childProcess = fork("dist\\apps\\bot-client\\index.js", [
+    const childProcess = fork("dist\\apps\\bot-client\\main.js", [
       bot.api_id.toString(),
       bot.api_hash,
       bot.sessionString,
