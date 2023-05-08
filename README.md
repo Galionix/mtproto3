@@ -18,12 +18,14 @@ When i want to add a new bot, i want to be able to add it by providing the follo
 - api_id
 - api_hash
 - stringSession
+### Completed:
+- [x]: updating state corresponding to the crd operations
+- [x]: register new bot trough graphql
 
 ### TODO:
 - []: setup coverage testing
 
 ### FEAT:
-- []: register new bot trough graphql
 
 ### FIX:
 

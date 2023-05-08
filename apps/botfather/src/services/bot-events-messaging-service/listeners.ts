@@ -2,6 +2,7 @@ import { BotEventTypes } from "@core/types/client";
 import { infoListeners } from "./listeners/info.listeners";
 import { accountListeners } from "./listeners/account.listeners";
 import { chatManageListeners } from "./listeners/chat_manage.listeners";
+import { generalListeners } from "./listeners/general.listeners";
 
 export type TListener = {
   event_type: keyof typeof BotEventTypes;
@@ -11,6 +12,7 @@ const listeners: TListener[] = [
   ...infoListeners,
   ...accountListeners,
   ...chatManageListeners,
+  ...generalListeners,
 ];
 
 export const combinedListeners = listeners.reduce(

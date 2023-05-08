@@ -1,4 +1,5 @@
 import { EChatManageTypes, TChatManage } from "./chatManage";
+import { EGeneralBotEventTypes, TBotGeneralEvents } from "./general";
 import { processMessagesTypes, TProcessMessages } from "./processMessages";
 import {
   registrationMessagesTypes,
@@ -12,7 +13,8 @@ export type BotEvents =
   | TRegistrationMessages
   | TUsernameMessages
   | TProcessMessages
-  | TChatManage;
+  | TChatManage
+  | TBotGeneralEvents;
 
 // ToServerMessagesTypes is a const enum with all possible types of messages from bot to server
 export const BotEventTypes = {
@@ -20,6 +22,7 @@ export const BotEventTypes = {
   ...usernameMessagesTypes,
   ...processMessagesTypes,
   ...EChatManageTypes,
+  ...EGeneralBotEventTypes,
 } as const;
 
 export * from "./chatManage";
@@ -28,3 +31,4 @@ export * from "./registration";
 export * from "./usernameChange";
 export * from "./sendAndWait";
 export * from "./usernameChange";
+export * from "./general";

@@ -8,10 +8,17 @@ type BotEntity {
   sessionString: String
 }
 
+type BotEvent {
+  event_date: Float
+  event_message: String
+  log_event: String
+}
+
 type BotStateEntity {
   bot: BotEntity
   childProcess: ChildProcessEntity
-  error: ErrorEntity
+  error: String
+  eventLogs: [BotEvent!]
   isErrored: Boolean
   isRunning: Boolean
   isStarted: Boolean
@@ -40,12 +47,6 @@ input CreateBotInput {
   api_hash: String
   api_id: Int
   sessionString: String
-}
-
-type ErrorEntity {
-  message: String
-  name: String
-  stack: String
 }
 
 input JoinGroupsInput {

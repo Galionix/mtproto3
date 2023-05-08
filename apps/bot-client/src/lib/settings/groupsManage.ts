@@ -1,10 +1,8 @@
 import { BotEventTypes } from "@core/types/client";
 import { JoinGroupsInput, ServerEventTypes } from "@core/types/server";
 import { Api } from "telegram";
-// import { JoinGroupsInput } from "../../../bot/dto/join-group.input";
-// import { BotEventTypes } from "../../../messagesTypes/bot-events";
-// import { ServerEventTypes } from "../../../messagesTypes/server-events";
 import { IDefaultListenerArgs } from "../processApi/combineListeners";
+import { logEvent } from "../processApi/logEventTostate";
 
 // TODO: Finish wiring: add api_ids, behaviour_model, processing_enabled, spam_frequency
 export const joinGroups =
@@ -26,7 +24,7 @@ export const joinGroups =
             channel: chat_id,
           })
         );
-        // console.log(result); // prints the result
+        logEvent(BotEventTypes.CHAT_JOINED, chat_id);
         process.send({ event_type: BotEventTypes.CHAT_JOINED, chat_id });
       }, join_delay * (index + 1));
     });

@@ -20,7 +20,6 @@ import { BotEntity, BotStateEntity } from "@core/types/server/entities";
 // }
 
 export const defaultBotState: BotStateEntity = {
-
   isRunning: false,
   isStopped: false,
   stoppedDate: 0,
@@ -31,7 +30,7 @@ export const defaultBotState: BotStateEntity = {
   lastUpdate: 0,
   lastMessage: "",
   childProcess: null,
-  // id: "",
+  eventLogs: [],
   bot: new BotEntity(),
   joining_groups: false,
   joining_groups_chat_ids: [],

@@ -27,11 +27,11 @@ function listenError({
   api_id,
 }: TListenerArgs<TBotErrorMessage>) {
   const { botStateService, l } = services;
-  // console.log("Bot errored: ", api_id);
+  // probably this will never happen, but just in case
   l.log("Bot errored: ", api_id);
   botStateService.updateBotState(api_id, {
     isErrored: true,
-    error: message.error,
+    error: message.error.message,
   });
 }
 

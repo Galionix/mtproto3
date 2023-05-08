@@ -7,10 +7,6 @@ import { ErrorEntity } from "./error.entity";
 @Entity()
 @ObjectType()
 export class BotStateEntity {
-  // @Field(() => String, { nullable: true })
-  // @PrimaryGeneratedColumn("uuid")
-  // id: string;
-
   @Field(() => BotEntity, { nullable: true })
   @PrimaryColumn()
   bot: BotEntity;
@@ -41,7 +37,7 @@ export class BotStateEntity {
 
   @Field({ nullable: true })
   @Column()
-  error: ErrorEntity;
+  error: string;
 
   @Field({ nullable: true })
   @Column()
@@ -70,4 +66,23 @@ export class BotStateEntity {
   @Field(() => [String], { nullable: true })
   @Column()
   leaving_groups_chat_ids: string[];
+
+  // events log
+  @Field(() => [BotEvent], { nullable: true })
+  @Column()
+  eventLogs: BotEvent[];
+}
+
+@Entity()
+@ObjectType()
+export class BotEvent {
+  @Field({ nullable: true })
+  @Column()
+  log_event: string;
+  @Field({ nullable: true })
+  @Column()
+  event_date: number;
+  @Field({ nullable: true })
+  @Column()
+  event_message: string;
 }

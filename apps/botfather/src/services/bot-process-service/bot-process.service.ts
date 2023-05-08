@@ -68,20 +68,24 @@ export class BotProcessService {
     // childProcess.
     this.botProcesses.push(childProcess);
     childProcess.on("exit", (code: number) => {
+      console.log(childProcess.pid, "childProcess exited with code: ", code);
       // find botState and set childProcess to null
       //   const botState = this.botStateService.getBotState(bot.api_id);
+
+      this.botProcesses = this.botProcesses.filter(
+        (chProcess) => chProcess.pid !== childProcess.pid
+      );
       this.botStateService.updateBotState(api_id, {
         childProcess: null,
         isStarted: false,
         isRunning: false,
         isStopped: true,
+        isErrored: true,
+        error: `childProcess exited with code: ${code}`,
         stoppedDate: Date.now(),
       });
-      //   botState.childProcess = null;
-      //   botState.isStarted = false;
-      //   botState.isRunning = false;
-      //   botState.isStopped = true;
-      //   botState.stoppedDate = Date.now();
+
+      console.log("this.botProcesses: ", this.botProcesses);
 
       console.log("childProcess exited with code: ", code);
     });
