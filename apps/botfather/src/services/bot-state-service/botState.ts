@@ -20,10 +20,7 @@ import { BotEntity, BotStateEntity } from "@core/types/server/entities";
 // }
 
 export const defaultBotState: BotStateEntity = {
-  //   id: "",
-  // api_id: 0,
-  // api_hash: "",
-  // sessionString: "",
+
   isRunning: false,
   isStopped: false,
   stoppedDate: 0,

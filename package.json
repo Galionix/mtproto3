@@ -8,9 +8,7 @@
     "botfather:e2e": "nx e2e botfather-e2e",
     "botfather:e2e:watch": "nx e2e botfather-e2e --watch",
     "botfather:e2e:coverage": "nx e2e botfather-e2e --coverage",
-    "botclient:build": "tsc ./apps/bot-client/src/index.ts  --esModuleInterop true --outDir ./apps/bot-client/src/dist",
-    "botclient:build:watch": "tsc ./apps/botfather/src/botClient/index.ts  --esModuleInterop true --outDir ./apps/botfather/src/botClient/dist --watch",
-    "bot:build": " nx build bot-client"
+    "bot-client:build": "nx build bot-client"
   },
   "private": true,
   "dependencies": {

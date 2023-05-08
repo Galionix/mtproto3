@@ -9,6 +9,9 @@ import {
 } from "@core/types/server";
 import { BotRepositoryService } from "../services/bot-repository-service/bot-repository.service";
 import { SettingsService } from "../services/settings-service/settings.service";
+import { Logger } from "@nestjs/common";
+
+const l = new Logger("BotResolver");
 
 @Resolver(() => BotEntity)
 export class BotResolver {
@@ -20,8 +23,11 @@ export class BotResolver {
   ) {}
 
   @Mutation(() => BotEntity)
-  createBot(@Args("createBotInput") createBotInput: CreateBotInput) {
-    return this.botRepositoryService.create(createBotInput);
+  async createBot(@Args("createBotInput") createBotInput: CreateBotInput) {
+    const res = await this.botRepositoryService.create(createBotInput);
+    this.botStateService.addBotState(createBotInput);
+    // await this.botStateService.reload();
+    return res;
   }
 
   @Query(() => [BotEntity], { name: "bots" })
@@ -30,18 +36,30 @@ export class BotResolver {
   }
 
   @Query(() => BotEntity, { name: "bot" })
-  findOne(@Args("id", { type: () => Int }) api_id: number) {
+  findOne(@Args("api_id", { type: () => Int }) api_id: number) {
     return this.botRepositoryService.findOne(api_id);
   }
 
   @Mutation(() => BotEntity)
-  removeBot(@Args("id", { type: () => Int }) id: number) {
-    return this.botRepositoryService.remove(id);
+  async removeBot(@Args("api_id", { type: () => Int }) api_id: number) {
+    // 1. stop bot
+    await this.botProcessService.stopBot(api_id);
+    l.log("bot stopped: ", api_id);
+
+    const res = await this.botRepositoryService.remove(api_id);
+    l.log("removeBot: ", api_id);
+    await this.botStateService.removeBotState(api_id);
+    return res;
   }
 
   @Query(() => [BotEntity], { name: "startBots" })
   startBots() {
     return this.botProcessService.startBots();
+  }
+
+  @Query(() => BotEntity, { name: "startBot" })
+  startBot(@Args("api_id", { type: () => Int }) api_id: number) {
+    return this.botProcessService.startBot(api_id);
   }
 
   @Query(() => [BotEntity], { name: "stopBots" })

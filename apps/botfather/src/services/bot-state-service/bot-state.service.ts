@@ -2,6 +2,10 @@ import { Injectable } from "@nestjs/common";
 import { BotStateEntity } from "@core/types/server/entities";
 import { defaultBotState } from "./botState";
 import { BotRepositoryService } from "../bot-repository-service/bot-repository.service";
+import { Logger } from "@nestjs/common";
+import { CreateBotInput } from "@core/types/server";
+
+const l = new Logger("BotStateService");
 
 @Injectable()
 export class BotStateService {
@@ -26,11 +30,30 @@ export class BotStateService {
 
     return { ...botState };
   }
+  removeBotState(api_id: number) {
+    this.botStates = this.botStates.filter(
+      (botState) => botState.bot.api_id !== api_id
+    );
+  }
 
   getBotStates(): ReadonlyArray<BotStateEntity> {
     return this.botStates;
   }
+  addBotState(botState: CreateBotInput) {
+    this.botStates.push({
+      ...defaultBotState,
+      bot: botState,
+    });
+  }
 
+  /*
+   * updateBotState
+   * @param api_id - api_id of bot
+   * @param botState - partial bot state to update
+   * @returns void
+   * @description
+   * Updates bot state with new values
+   * */
   updateBotState(api_id: number, botState: Partial<BotStateEntity>) {
     const index = this.botStates.findIndex(
       (botState) => botState.bot.api_id === api_id
@@ -40,7 +63,15 @@ export class BotStateService {
     this.botStates[index] = { ...currentState, ...botState };
   }
 
+  /*
+   * reload
+   * @returns void
+   * @description
+   * Drops all bot states to initial state
+   * */
+
   async reload() {
+    l.log("Reloading bot states from database");
     await this.botRepositoryService.findAll().then((bots) => {
       this.botStates = bots.map((bot) => ({
         ...defaultBotState,

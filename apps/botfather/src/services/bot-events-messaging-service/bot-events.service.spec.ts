@@ -1,5 +1,5 @@
 import { Test, TestingModule } from "@nestjs/testing";
-import { BotEventsService } from "../bot-events/bot-events.service";
+import { BotEventsService } from "./bot-events.service";
 
 describe("BotMessageService", () => {
   let service: BotEventsService;

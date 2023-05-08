@@ -1,6 +1,4 @@
 import { Injectable } from "@nestjs/common";
-// import { CreateBotInput } from "./dto/create-bot.input";
-// import { BotEntity } from "./entities/bot.entity";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { Logger } from "@nestjs/common";
@@ -30,8 +28,6 @@ export class BotRepositoryService {
       sessionString: createBotInput.sessionString,
     });
 
-    // await this.botStateService.reload();
-
     return newBot;
   }
 
@@ -47,8 +43,9 @@ export class BotRepositoryService {
   }
 
   async remove(id: number) {
+    const removedId = await this.botRepository.delete(id);
     // await this.botStateService.reload();
-    return `This action removes a #${id} bot`;
+    return removedId;
   }
 
   async updateSessionString(api_id: number, sessionString: string) {

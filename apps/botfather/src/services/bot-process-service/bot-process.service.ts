@@ -37,6 +37,9 @@ export class BotProcessService {
       this.botStateService.updateBotState(api_id, {
         childProcess: null,
       });
+      this.botProcesses = this.botProcesses.filter(
+        (childProcess) => childProcess.pid !== botState.childProcess.pid
+      );
     }
     return this.botRepositoryService.findOne(api_id);
   }

@@ -61,17 +61,18 @@ type Mutation {
   createBot(createBotInput: CreateBotInput!): BotEntity!
   joinGroups(JoinGroupsInput: JoinGroupsInput!): [BotStateEntity!]!
   leaveGroups(api_ids: [Int!]!, group_ids: [String!]!, leave_delay: Int): [BotStateEntity!]!
-  removeBot(id: Int!): BotEntity!
+  removeBot(api_id: Int!): BotEntity!
   setUsername(api_id: Int!, username: String!): String!
 }
 
 type Query {
-  bot(id: Int!): BotEntity!
+  bot(api_id: Int!): BotEntity!
   bots: [BotEntity!]!
   getBotState(id: Int!): BotStateEntity!
   getBotStates: [BotStateEntity!]!
   getProcessesCount: Int!
   reloadStates: [BotStateEntity!]!
+  startBot(api_id: Int!): BotEntity!
   startBots: [BotEntity!]!
   stopBot(api_id: Int!): BotStateEntity!
   stopBots: [BotEntity!]!

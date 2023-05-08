@@ -12,11 +12,11 @@ interface IServiceArgs {
   l: Logger;
 }
 
-export type TListenerArgs<T = TProcessMessages, E = object> = {
+export type TListenerArgs<T = TProcessMessages, O = object> = {
   services: IServiceArgs;
   message: T;
   api_id: number;
-} & E;
+} & O;
 
 @Injectable()
 export class BotEventsService {
