@@ -1,3 +1,4 @@
+import { EIncomingInteractions } from "./IncomingInteractions";
 import { EChatManageTypes, TChatManage } from "./chatManage";
 import { EBotErrorTypes } from "./errors";
 import { EGeneralBotEventTypes, TBotGeneralEvents } from "./general";
@@ -25,6 +26,7 @@ export const BotEventTypes = {
   ...EChatManageTypes,
   ...EGeneralBotEventTypes,
   ...EBotErrorTypes,
+  ...EIncomingInteractions,
 } as const;
 
 export * from "./chatManage";

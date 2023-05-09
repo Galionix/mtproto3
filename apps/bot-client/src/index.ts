@@ -46,6 +46,7 @@ const dmHandler = dmHandlers[behavior_model].default;
   function messageOrchestrator(event: NewMessageEvent) {
     const { isPrivate, isChannel, isGroup } = event;
     if (isPrivate) {
+      logEvent(BotEventTypes.DIRECT_MESSAGE, event.message.message);
       dmHandler(event, answers_db);
     }
   }
