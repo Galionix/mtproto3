@@ -1,4 +1,5 @@
 import { EChatManageTypes, TChatManage } from "./chatManage";
+import { EBotErrorTypes } from "./errors";
 import { EGeneralBotEventTypes, TBotGeneralEvents } from "./general";
 import { processMessagesTypes, TProcessMessages } from "./processMessages";
 import {
@@ -23,6 +24,7 @@ export const BotEventTypes = {
   ...processMessagesTypes,
   ...EChatManageTypes,
   ...EGeneralBotEventTypes,
+  ...EBotErrorTypes,
 } as const;
 
 export * from "./chatManage";
@@ -32,3 +34,4 @@ export * from "./usernameChange";
 export * from "./sendAndWait";
 export * from "./usernameChange";
 export * from "./general";
+export * from "./errors";

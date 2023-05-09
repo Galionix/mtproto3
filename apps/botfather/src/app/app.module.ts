@@ -11,6 +11,8 @@ import { ApolloServerPluginCacheControl } from "apollo-server-core/dist/plugin/c
 import responseCachePlugin from "apollo-server-plugin-response-cache";
 import { BotModule } from "../bot/bot.module";
 import { BotEntity } from "@core/types/server";
+import { DatabaseModule } from "../database/database.module";
+import { AnswerEntity } from "@core/types/server/entities/database.entity";
 
 @Module({
   imports: [
@@ -34,7 +36,7 @@ import { BotEntity } from "@core/types/server";
         username: config.get<string>("TYPEORM_USERNAME"),
         password: config.get<string>("TYPEORM_PASSWORD"),
         database: config.get<string>("TYPEORM_DATABASE"),
-        entities: [BotEntity],
+        entities: [BotEntity, AnswerEntity],
         synchronize: true,
         // playground: true,
         // dropSchema: true,
@@ -52,6 +54,7 @@ import { BotEntity } from "@core/types/server";
         responseCachePlugin(),
       ],
     }),
+    DatabaseModule,
     BotModule,
   ],
   controllers: [AppController],

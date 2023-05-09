@@ -1,4 +1,4 @@
-import { ServerEvents } from "@core/types/server";
+import { EGetDatabaseResponseTypes, ServerEvents } from "@core/types/server";
 import { TelegramClient } from "telegram";
 import { NewMessageEvent, NewMessage } from "telegram/events";
 import { StringSession } from "telegram/sessions";
@@ -7,36 +7,49 @@ import { getCombinedListeners } from "./lib/processApi/combineListeners";
 import { generalReducer } from "./lib/processApi/composeReducer";
 import { listeners } from "./lib/processApi/listeners";
 import { logEvent } from "./lib/processApi/logEventTostate";
+import { sendToFather } from "@core/functions/tg-client/messaging/sendAndWait";
 import * as dmHandlers from "./lib/behaviour/dm";
+import { state } from "./lib/state";
+import { readDb, readDbSequence } from "./lib/utils/readDb";
 
-console.log("dmHandlers: ", dmHandlers);
+const [
+  apiId,
+  apiHash,
+  stringSession,
+  behavior_model = "base",
+  answers_db = "base",
+  read_delay = "1000",
+  type_delay_multiplier = "1",
+] = process.argv.slice(2);
 
-const [apiId, apiHash, stringSession, behaviour_model = "unset"] =
-  process.argv.slice(2);
+state.apiId = parseInt(apiId);
+state.apiHash = apiHash;
+state.stringSession = stringSession;
+state.behavior_model = behavior_model;
+state.answers_db = answers_db;
+state.read_delay = parseInt(read_delay);
+state.type_delay_multiplier = parseInt(type_delay_multiplier);
 
-const dmHandler = dmHandlers[behaviour_model].default;
+const dmResponseOptions = {
+  answers_db,
+  read_delay,
+  type_delay_multiplier,
+};
+
+const dmHandler = dmHandlers[behavior_model].default;
 
 (async () => {
-  function messageOrchestrator(client: TelegramClient) {
-    return async function (event: NewMessageEvent) {
-      // const message = event.message;
+  await readDbSequence({
+    answers_db,
+  });
 
-      // Checks if it's a private message (from user or bot)
-      if (event.isPrivate) {
-        dmHandler(client, event);
-        // // prints sender id
-        // console.log(message.senderId);
-        // // read message
-        // if (message.text == "hello") {
-        //   const sender = await message.getSender();
-        //   console.log("sender is", sender);
-        //   await client.sendMessage(sender, {
-        //     message: `hi your id is ${message.senderId}`,
-        //   });
-        // }
-      }
-    };
+  function messageOrchestrator(event: NewMessageEvent) {
+    const { isPrivate, isChannel, isGroup } = event;
+    if (isPrivate) {
+      dmHandler(event, answers_db);
+    }
   }
+
   try {
     const client = new TelegramClient(
       new StringSession(stringSession),
@@ -94,7 +107,7 @@ const dmHandler = dmHandlers[behaviour_model].default;
       console.log(update.message);
     });
 
-    client.addEventHandler(messageOrchestrator(client), new NewMessage({}));
+    client.addEventHandler(messageOrchestrator, new NewMessage({}));
 
     const combinedListeners = getCombinedListeners(listeners);
 

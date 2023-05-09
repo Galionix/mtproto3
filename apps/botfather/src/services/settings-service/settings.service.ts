@@ -29,7 +29,7 @@ export class SettingsService {
   async joinGroups({
     chat_ids,
     api_ids,
-    behaviour_model,
+    behavior_model,
     processing_enabled,
     spam_frequency,
     join_delay,
@@ -46,7 +46,7 @@ export class SettingsService {
             event_type: ServerEventTypes.JOIN_GROUPS,
             chat_ids,
             api_ids,
-            behaviour_model,
+            behavior_model,
             processing_enabled,
             spam_frequency,
             join_delay: join_delay * (index + 1),

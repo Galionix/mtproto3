@@ -17,9 +17,9 @@
     "baseUrl": ".",
     "paths": {
       "@client/*": ["apps/bot-client/src/*"],
-      "@father/*": ["apps/botfather/src/*"],
-      "@core/types/*": ["libs/core/src/types/*"],
       "@core/functions/*": ["libs/core/src/functions/*"],
+      "@core/types/*": ["libs/core/src/types/*"],
+      "@father/*": ["apps/botfather/src/*"]
     }
   },
   "exclude": ["node_modules", "tmp"]

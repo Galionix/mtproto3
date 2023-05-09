@@ -1,14 +1,17 @@
-import { BotEventTypes, TBotGeneralEvents } from "@core/types/client";
+import {
+  BotEventTypes,
+  TBotGeneralEvents,
+  TGetDatabase,
+  TProcessMessages,
+} from "@core/types/client";
 import { TListenerArgs } from "../bot-events.service";
-import { Logger } from "@nestjs/common";
+import { EGetDatabaseResponseTypes } from "@core/types/server";
 
-const l = new Logger("general.listeners");
 function listenLogEventToState({
   services,
   message,
   api_id,
 }: TListenerArgs<TBotGeneralEvents>) {
-  l.log(message, "listenLogEventToState");
   const { botStateService } = services;
 
   // first we need to check if event log is less than process.env.BOT_EVENT_LOG_MAX_SIZE
@@ -27,9 +30,42 @@ function listenLogEventToState({
   }
 }
 
+// get db listener
+async function listenForBotToRequestDB({
+  services,
+  message,
+  api_id,
+}: TListenerArgs<TGetDatabase>) {
+  const { database } = message;
+
+  try {
+    const { answersRepositoryService, l } = services;
+
+    const db = await answersRepositoryService.findSome({
+      behavior_model: database,
+    });
+
+    l.log("bot requested db", api_id, message);
+
+    return {
+      event_type: EGetDatabaseResponseTypes.DB_GET_SUCCESS,
+      db,
+    };
+  } catch (error) {
+    return {
+      event_type: EGetDatabaseResponseTypes.DB_GET_ERROR,
+      error,
+    };
+  }
+}
+
 export const generalListeners = [
   {
     event_type: BotEventTypes.LOG_EVENT,
     listener: listenLogEventToState,
+  },
+  {
+    event_type: BotEventTypes.GET_DATABASE,
+    listener: listenForBotToRequestDB,
   },
 ];

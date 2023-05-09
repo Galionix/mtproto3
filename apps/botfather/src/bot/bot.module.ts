@@ -1,3 +1,4 @@
+import { AnswerEntity } from "../../../../libs/core/src/types/server/entities/database.entity";
 import { Module } from "@nestjs/common";
 import { BotService } from "./bot.service";
 import { BotResolver } from "./bot.resolver";
@@ -8,9 +9,13 @@ import { BotStateService } from "../services/bot-state-service/bot-state.service
 import { BotEventsService } from "../services/bot-events-messaging-service/bot-events.service";
 import { BotRepositoryService } from "../services/bot-repository-service/bot-repository.service";
 import { SettingsService } from "../services/settings-service/settings.service";
+import { DatabaseRepositoryService } from "../database/database-repository/database-repository.service";
 
 @Module({
-  imports: [TypeOrmModule.forFeature([BotEntity])],
+  imports: [
+    TypeOrmModule.forFeature([BotEntity]),
+    TypeOrmModule.forFeature([AnswerEntity]),
+  ],
   providers: [
     BotResolver,
     BotService,
@@ -19,6 +24,7 @@ import { SettingsService } from "../services/settings-service/settings.service";
     BotProcessService,
     BotEventsService,
     SettingsService,
+    DatabaseRepositoryService,
   ],
   exports: [
     BotService,

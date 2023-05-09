@@ -85,9 +85,6 @@ export class BotProcessService {
         stoppedDate: Date.now(),
       });
 
-      console.log("this.botProcesses: ", this.botProcesses);
-
-      console.log("childProcess exited with code: ", code);
     });
     childProcess.on("message", (message) =>
       this.botMessageService.botsMessagesReducer.bind(this.botMessageService)(
@@ -103,7 +100,7 @@ export class BotProcessService {
     //   .find((botState) => botState.bot.api_id === bot.api_id).childProcess =
     //   childProcess;
     this.botStateService.updateBotState(api_id, {
-      childProcess: childProcess,
+      childProcess: childProcess as any,
       isStarted: true,
       isRunning: true,
       isStopped: false,

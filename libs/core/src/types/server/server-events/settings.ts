@@ -14,15 +14,14 @@ export type TSetUsernameMessage = TGenericMessage<
   username: string;
 };
 
-export type TJoinGroupsMessage =
-  TGenericMessage<ESettingsMessageType.JOIN_GROUPS> & {
-    chat_ids: string[];
-    api_ids: number[];
-    behaviour_model: string;
-    processing_enabled: boolean;
-    spam_frequency: number;
-    join_delay: number;
-  };
+export type TJoinGroupsMessage = TGenericMessage<ESettingsMessageType.JOIN_GROUPS> & {
+  chat_ids: string[];
+  api_ids: number[];
+  behavior_model: string;
+  processing_enabled: boolean;
+  spam_frequency: number;
+  join_delay: number;
+};
 
 export type TLeaveGroupsMessage =
   TGenericMessage<ESettingsMessageType.LEAVE_GROUPS> & {

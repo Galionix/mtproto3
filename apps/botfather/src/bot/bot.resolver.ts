@@ -122,4 +122,18 @@ export class BotResolver {
       leave_delay,
     });
   }
+
+  // restart bot
+  @Mutation(() => BotEntity, { name: "restartBot" })
+  async restartBot(@Args("api_id", { type: () => Int }) api_id: number) {
+    // 1. stop bot
+    await this.botProcessService.stopBot(api_id);
+    l.log("bot stopped: ", api_id);
+
+    // 2. start bot
+    const res = await this.botProcessService.startBot(api_id);
+    l.log("bot started: ", api_id);
+
+    return res;
+  }
 }

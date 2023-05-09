@@ -2,7 +2,6 @@ import { ObjectType, Field } from "@nestjs/graphql";
 import { Entity, PrimaryColumn, Column } from "typeorm";
 import { BotEntity } from "./bot.entity";
 import { ChildProcessEntity } from "./childProcess.entity";
-import { ErrorEntity } from "./error.entity";
 
 @Entity()
 @ObjectType()

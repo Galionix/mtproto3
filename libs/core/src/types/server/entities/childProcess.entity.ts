@@ -38,4 +38,6 @@ export class ChildProcessEntity {
 
   kill: () => void;
   disconnect: () => void;
+
+  send: (data: any) => void;
 }

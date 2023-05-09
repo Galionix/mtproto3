@@ -13,7 +13,7 @@ export class JoinGroupsInput {
 
   @Field(() => String, { nullable: true })
   @Column()
-  behaviour_model = "default";
+  behavior_model = "default";
 
   @Field(() => Boolean, { nullable: true })
   @Column()

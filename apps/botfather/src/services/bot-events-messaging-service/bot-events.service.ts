@@ -3,12 +3,14 @@ import { Injectable, Logger } from "@nestjs/common";
 import { BotRepositoryService } from "../bot-repository-service/bot-repository.service";
 import { BotStateService } from "../bot-state-service/bot-state.service";
 import { combinedListeners } from "./listeners";
+import { DatabaseRepositoryService } from "../../database/database-repository/database-repository.service";
 
 const l = new Logger("BotEventsService");
 
 interface IServiceArgs {
   botStateService: BotStateService;
   botRepositoryService: BotRepositoryService;
+  answersRepositoryService: DatabaseRepositoryService;
   l: Logger;
 }
 
@@ -22,10 +24,11 @@ export type TListenerArgs<T = TProcessMessages, O = object> = {
 export class BotEventsService {
   constructor(
     private readonly botStateService: BotStateService,
-    private readonly botRepositoryService: BotRepositoryService
+    private readonly botRepositoryService: BotRepositoryService,
+    private readonly answersRepositoryService: DatabaseRepositoryService
   ) {}
 
-  botsMessagesReducer(message: TProcessMessages, api_id: number) {
+  async botsMessagesReducer(message: TProcessMessages, api_id: number) {
     const botState = this.botStateService
       .getBotStates()
       .find((botState) => botState.bot.api_id === api_id);
@@ -33,11 +36,24 @@ export class BotEventsService {
     const services: IServiceArgs = {
       botStateService: this.botStateService,
       botRepositoryService: this.botRepositoryService,
+      answersRepositoryService: this.answersRepositoryService,
       l,
     };
     if (botState) {
       if (message.event_type in combinedListeners) {
-        combinedListeners[message.event_type]({ services, message, api_id });
+        const res = await combinedListeners[message.event_type]({
+          services,
+          message,
+          api_id,
+        });
+        console.log("res: ", res);
+        console.log("message.response_types: ", message.response_types);
+        if (res && "event_type" in res) {
+          if (message.response_types.includes(res.event_type)) {
+            console.log("sending response: ", res);
+            botState.childProcess.send(res);
+          }
+        }
       }
     }
   }

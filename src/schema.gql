@@ -2,6 +2,26 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type AnswerEntity {
+  base_probability: String
+  behavior_model: String
+
+  """notes"""
+  description: String
+
+  """entity id"""
+  id: String
+  isChannelAnswer: Boolean
+  isDmAnswer: Boolean
+  isGroupAnswer: Boolean
+
+  """request"""
+  request: String
+
+  """response"""
+  response: String
+}
+
 type BotEntity {
   api_hash: String
   api_id: String
@@ -43,6 +63,32 @@ type ChildProcessEntity {
   spawnfile: String
 }
 
+input CreateAnswerEntityInput {
+  """base_probability"""
+  base_probability: String!
+
+  """behavior_model"""
+  behavior_model: String!
+
+  """description"""
+  description: String
+
+  """isChannelAnswer"""
+  isChannelAnswer: Boolean!
+
+  """isDmAnswer"""
+  isDmAnswer: Boolean!
+
+  """isGroupAnswer"""
+  isGroupAnswer: Boolean!
+
+  """request"""
+  request: String!
+
+  """response"""
+  response: String!
+}
+
 input CreateBotInput {
   api_hash: String
   api_id: Int
@@ -51,7 +97,7 @@ input CreateBotInput {
 
 input JoinGroupsInput {
   api_ids: [Int!]!
-  behaviour_model: String = "default"
+  behavior_model: String = "default"
   chat_ids: [String!]!
   join_delay: Int = 5000
   processing_enabled: Boolean = false
@@ -59,22 +105,54 @@ input JoinGroupsInput {
 }
 
 type Mutation {
+  createAnswer(createDatabaseInput: CreateAnswerEntityInput!): AnswerEntity!
   createBot(createBotInput: CreateBotInput!): BotEntity!
   joinGroups(JoinGroupsInput: JoinGroupsInput!): [BotStateEntity!]!
   leaveGroups(api_ids: [Int!]!, group_ids: [String!]!, leave_delay: Int): [BotStateEntity!]!
   removeBot(api_id: Int!): BotEntity!
+  removeDatabase(name: String!): Int!
+  restartBot(api_id: Int!): BotEntity!
   setUsername(api_id: Int!, username: String!): String!
 }
 
 type Query {
+  answer(name: String!): AnswerEntity
+  answers: [AnswerEntity!]!
   bot(api_id: Int!): BotEntity!
   bots: [BotEntity!]!
   getBotState(id: Int!): BotStateEntity!
   getBotStates: [BotStateEntity!]!
   getProcessesCount: Int!
   reloadStates: [BotStateEntity!]!
+  someAnswers(findSomeAnswersInput: UpdateDatabaseInput!): [AnswerEntity!]!
   startBot(api_id: Int!): BotEntity!
   startBots: [BotEntity!]!
   stopBot(api_id: Int!): BotStateEntity!
   stopBots: [BotEntity!]!
+}
+
+input UpdateDatabaseInput {
+  """base_probability"""
+  base_probability: String
+
+  """behavior_model"""
+  behavior_model: String
+
+  """description"""
+  description: String
+
+  """isChannelAnswer"""
+  isChannelAnswer: Boolean
+
+  """isDmAnswer"""
+  isDmAnswer: Boolean
+
+  """isGroupAnswer"""
+  isGroupAnswer: Boolean
+
+  """request"""
+  request: String
+
+  """response"""
+  response: String
 }

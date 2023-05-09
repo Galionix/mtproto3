@@ -42,7 +42,7 @@ export class GroupEntity {
 
   @Field({ nullable: true })
   @Column()
-  behaviour_model: string;
+  behavior_model: string;
 
   @Field({ nullable: true })
   @Column()

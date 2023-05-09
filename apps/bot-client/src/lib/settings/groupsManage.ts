@@ -4,13 +4,13 @@ import { Api } from "telegram";
 import { IDefaultListenerArgs } from "../processApi/combineListeners";
 import { logEvent } from "../processApi/logEventTostate";
 
-// TODO: Finish wiring: add api_ids, behaviour_model, processing_enabled, spam_frequency
+// TODO: Finish wiring: add api_ids, behavior_model, processing_enabled, spam_frequency
 export const joinGroups =
   ({ client }: IDefaultListenerArgs) =>
   ({
     chat_ids,
     // api_ids,
-    // behaviour_model,
+    // behavior_model,
     // processing_enabled,
     // spam_frequency,
     join_delay,
