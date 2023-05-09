@@ -1,7 +1,7 @@
 import { state } from "../state";
 import { getRandomInt } from "@core/functions/general";
 export const findDmAnswer = (request: string) => {
-  let res = null;
+  let res: string = null;
   state.dmDb.forEach((answer) => {
     console.log("answer: ", answer);
     const requests = answer.request.split("|");

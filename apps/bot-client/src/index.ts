@@ -1,16 +1,15 @@
-import { EGetDatabaseResponseTypes, ServerEvents } from "@core/types/server";
-import { TelegramClient } from "telegram";
-import { NewMessageEvent, NewMessage } from "telegram/events";
-import { StringSession } from "telegram/sessions";
 import { BotEventTypes, TPhoneCode, TPhoneNumber } from "@core/types/client";
+import { ServerEvents } from "@core/types/server";
+import { TelegramClient } from "telegram";
+import { NewMessage, NewMessageEvent } from "telegram/events";
+import { StringSession } from "telegram/sessions";
+import * as dmHandlers from "./lib/behaviour/dm";
 import { getCombinedListeners } from "./lib/processApi/combineListeners";
 import { generalReducer } from "./lib/processApi/composeReducer";
 import { listeners } from "./lib/processApi/listeners";
 import { logEvent } from "./lib/processApi/logEventTostate";
-import { sendToFather } from "@core/functions/tg-client/messaging/sendAndWait";
-import * as dmHandlers from "./lib/behaviour/dm";
 import { state } from "./lib/state";
-import { readDb, readDbSequence } from "./lib/utils/readDb";
+import { readDbSequence } from "./lib/utils/readDb";
 
 const [
   apiId,
@@ -30,11 +29,11 @@ state.answers_db = answers_db;
 state.read_delay = parseInt(read_delay);
 state.type_delay_multiplier = parseInt(type_delay_multiplier);
 
-const dmResponseOptions = {
-  answers_db,
-  read_delay,
-  type_delay_multiplier,
-};
+// const dmResponseOptions = {
+//   answers_db,
+//   read_delay,
+//   type_delay_multiplier,
+// };
 
 const dmHandler = dmHandlers[behavior_model].default;
 

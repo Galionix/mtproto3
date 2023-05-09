@@ -2,16 +2,20 @@ import {
   BotEventTypes,
   TBotGeneralEvents,
   TGetDatabase,
-  TProcessMessages,
 } from "@core/types/client";
-import { TListenerArgs } from "../bot-events.service";
 import { EGetDatabaseResponseTypes } from "@core/types/server";
+import { TListenerArgs } from "../bot-events.service";
+
+const { BOT_EVENT_LOG_MAX_SIZE } = process.env;
+
+const MAX_LOG_SIZE = parseInt(BOT_EVENT_LOG_MAX_SIZE);
 
 function listenLogEventToState({
   services,
   message,
   api_id,
 }: TListenerArgs<TBotGeneralEvents>) {
+  console.log("api_id: ", api_id);
   const { botStateService } = services;
 
   // first we need to check if event log is less than process.env.BOT_EVENT_LOG_MAX_SIZE
@@ -21,12 +25,18 @@ function listenLogEventToState({
   const botState = botStateService.getBotState(api_id);
 
   if (botState) {
-    const { eventLogs } = botState;
+    // const { eventLogs } = botState;
 
-    if (eventLogs.length >= parseInt(process.env.BOT_EVENT_LOG_MAX_SIZE)) {
-      eventLogs.shift();
-    }
-    eventLogs.push(message);
+    // if (eventLogs.length >= parseInt(process.env.BOT_EVENT_LOG_MAX_SIZE)) {
+    //   eventLogs.shift();
+    // }
+    // eventLogs.push(message);
+
+    // using botStateService.updateBotState
+
+    botStateService.updateBotState(api_id, {
+      eventLogs: [...botState.eventLogs, message].slice(-MAX_LOG_SIZE),
+    });
   }
 }
 
