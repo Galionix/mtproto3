@@ -2,6 +2,8 @@
 export * from "./bot.entity";
 export * from "./botState.entity";
 export * from "./childProcess.entity";
+export * from "./database.entity";
 export * from "./error.entity";
 export * from "./group.entity";
+export * from "./statistic.entity";
 // @endindex

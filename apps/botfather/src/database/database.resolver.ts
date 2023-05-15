@@ -10,8 +10,6 @@ import {
 @Resolver(() => AnswerEntity)
 export class DatabaseResolver {
   constructor(
-    private readonly databaseService: DatabaseService,
-
     private readonly databaseRepositoryService: DatabaseRepositoryService
   ) {}
 

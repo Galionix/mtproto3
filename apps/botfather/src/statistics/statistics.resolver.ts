@@ -1,31 +1,31 @@
 import { Resolver, Query, Mutation, Args, Int } from "@nestjs/graphql";
 import { StatisticsService } from "./statistics.service";
-import { Statistic } from "../../../../libs/core/src/types/server/entities/statistic.entity";
 import { CreateStatisticInput } from "./dto/create-statistic.input";
 import { UpdateStatisticInput } from "./dto/update-statistic.input";
+import { StatisticEntity } from "@core/types/server";
 
-@Resolver(() => Statistic)
+@Resolver(() => StatisticEntity)
 export class StatisticsResolver {
   constructor(private readonly statisticsService: StatisticsService) {}
 
-  @Mutation(() => Statistic)
+  @Mutation(() => StatisticEntity)
   createStatistic(
     @Args("createStatisticInput") createStatisticInput: CreateStatisticInput
   ) {
     return this.statisticsService.create(createStatisticInput);
   }
 
-  @Query(() => [Statistic], { name: "statistics" })
+  @Query(() => [StatisticEntity], { name: "statistics" })
   findAll() {
     return this.statisticsService.findAll();
   }
 
-  @Query(() => Statistic, { name: "statistic" })
+  @Query(() => StatisticEntity, { name: "statistic" })
   findOne(@Args("id", { type: () => Int }) id: number) {
     return this.statisticsService.findOne(id);
   }
 
-  @Mutation(() => Statistic)
+  @Mutation(() => StatisticEntity)
   updateStatistic(
     @Args("updateStatisticInput") updateStatisticInput: UpdateStatisticInput
   ) {
@@ -35,7 +35,7 @@ export class StatisticsResolver {
     );
   }
 
-  @Mutation(() => Statistic)
+  @Mutation(() => StatisticEntity)
   removeStatistic(@Args("id", { type: () => Int }) id: number) {
     return this.statisticsService.remove(id);
   }

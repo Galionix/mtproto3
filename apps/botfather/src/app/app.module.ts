@@ -10,9 +10,8 @@ import { join } from "path";
 import { ApolloServerPluginCacheControl } from "apollo-server-core/dist/plugin/cacheControl";
 import responseCachePlugin from "apollo-server-plugin-response-cache";
 import { BotModule } from "../bot/bot.module";
-import { BotEntity } from "@core/types/server";
+import { BotEntity, AnswerEntity, StatisticEntity } from "@core/types/server";
 import { DatabaseModule } from "../database/database.module";
-import { AnswerEntity } from "@core/types/server/entities/database.entity";
 
 @Module({
   imports: [
@@ -36,7 +35,7 @@ import { AnswerEntity } from "@core/types/server/entities/database.entity";
         username: config.get<string>("TYPEORM_USERNAME"),
         password: config.get<string>("TYPEORM_PASSWORD"),
         database: config.get<string>("TYPEORM_DATABASE"),
-        entities: [BotEntity, AnswerEntity],
+        entities: [BotEntity, AnswerEntity, StatisticEntity],
         synchronize: true,
         // playground: true,
         // dropSchema: true,

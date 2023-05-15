@@ -11,6 +11,7 @@ export interface IServiceArgs {
   botStateService: BotStateService;
   botRepositoryService: BotRepositoryService;
   answersRepositoryService: DatabaseRepositoryService;
+  // add statistics service
   l: Logger;
 }
 
