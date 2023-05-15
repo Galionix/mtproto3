@@ -15,6 +15,17 @@ export function sendToFather(
   wait = true,
   waitTimeout = WAIT_FOR_SERVER_MESSAGE_TIMEOUT
 ): Promise<ServerEvents> {
+  /*
+message: {
+    event_type: BotEventTypes.GET_DATABASE,
+    database: answers_db,
+    response_types: [
+      EGetDatabaseResponseTypes.DB_GET_ERROR,
+      EGetDatabaseResponseTypes.DB_GET_SUCCESS,
+    ],
+  }
+*/
+
   return new Promise((resolve, reject) => {
     const timeout = wait
       ? setTimeout(() => {

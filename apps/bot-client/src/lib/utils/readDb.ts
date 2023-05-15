@@ -50,6 +50,7 @@ export function readDb(db: AnswerEntity[]): {
 }
 
 export async function readDbSequence({ answers_db }) {
+
   const res = await sendToFather(process, {
     event_type: BotEventTypes.GET_DATABASE,
     database: answers_db,

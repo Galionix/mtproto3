@@ -33,3 +33,12 @@ export type TProcessMessages =
   | TBotErrorMessage
   | TSetSessionString
   | TGetDatabase;
+
+const databaseAction: TGetDatabase = {
+  event_type: processMessagesTypes.GET_DATABASE,
+  response_types: [
+    EGetDatabaseResponseTypes.DB_GET_SUCCESS,
+    EGetDatabaseResponseTypes.DB_GET_ERROR,
+  ],
+  database: "",
+};
