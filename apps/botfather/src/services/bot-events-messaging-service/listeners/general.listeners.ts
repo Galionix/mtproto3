@@ -2,7 +2,9 @@ import {
   BotEventTypes,
   TBotGeneralEvents,
   TGetDatabase,
+  TLogEvent,
   TProcessMessages,
+  TStatisticsEvent,
 } from "@core/types/client";
 import {
   EGetDatabaseResponseTypes,
@@ -18,7 +20,7 @@ function listenLogEventToState({
   services,
   message,
   api_id,
-}: TListenerArgs<TBotGeneralEvents>) {
+}: TListenerArgs<TLogEvent>) {
   const { botStateService } = services;
 
   // first we need to check if event log is less than process.env.BOT_EVENT_LOG_MAX_SIZE
@@ -138,6 +140,16 @@ async function listenForBotToRequestDB({
 //   }
 // }
 
+async function addStatisticsToDB({
+  services,
+  message,
+  api_id,
+}: TListenerArgs<TStatisticsEvent>) {
+  const { answersRepositoryService, l } = services;
+
+  const { type } = message;
+}
+
 export const generalListeners = [
   {
     event_type: BotEventTypes.LOG_EVENT,
@@ -147,4 +159,5 @@ export const generalListeners = [
     event_type: BotEventTypes.GET_DATABASE,
     listener: listenForBotToRequestDB,
   },
+  // TODO: add listener for statistics
 ];
