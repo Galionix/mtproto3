@@ -13,6 +13,8 @@ export type TGetDatabaseSuccess =
   };
 
 export type TGetDatabaseError =
-  TGenericMessage<EGetDatabaseResponseTypes.DB_GET_ERROR>;
+  TGenericMessage<EGetDatabaseResponseTypes.DB_GET_ERROR> & {
+    error: Error;
+  };
 
 export type TGetDatabaseResponse = TGetDatabaseSuccess | TGetDatabaseError;

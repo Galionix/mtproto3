@@ -2,10 +2,14 @@ import {
   BotEventTypes,
   TBotGeneralEvents,
   TGetDatabase,
+  TProcessMessages,
 } from "@core/types/client";
-import { EGetDatabaseResponseTypes } from "@core/types/server";
-import { TListenerArgs } from "../bot-events.service";
-
+import {
+  EGetDatabaseResponseTypes,
+  TGetDatabaseResponse,
+} from "@core/types/server";
+import { IServiceArgs, TListenerArgs } from "../bot-events.service";
+import { ServerEventTypes } from "@core/types/server";
 const { BOT_EVENT_LOG_MAX_SIZE } = process.env;
 
 const MAX_LOG_SIZE = parseInt(BOT_EVENT_LOG_MAX_SIZE);
@@ -15,7 +19,6 @@ function listenLogEventToState({
   message,
   api_id,
 }: TListenerArgs<TBotGeneralEvents>) {
-  console.log("api_id: ", api_id);
   const { botStateService } = services;
 
   // first we need to check if event log is less than process.env.BOT_EVENT_LOG_MAX_SIZE
@@ -25,27 +28,39 @@ function listenLogEventToState({
   const botState = botStateService.getBotState(api_id);
 
   if (botState) {
-    // const { eventLogs } = botState;
-
-    // if (eventLogs.length >= parseInt(process.env.BOT_EVENT_LOG_MAX_SIZE)) {
-    //   eventLogs.shift();
-    // }
-    // eventLogs.push(message);
-
-    // using botStateService.updateBotState
-
     botStateService.updateBotState(api_id, {
       eventLogs: [...botState.eventLogs, message].slice(-MAX_LOG_SIZE),
     });
   }
 }
 
+// type TListenerFunction<TBotRequestMessage, TServerResponse> = (
+//   args: TListenerArgs<TBotRequestMessage>
+// ) => Promise<TServerResponse>;
+
+// function myListener<TBotRequestMessage, TServerResponse>(
+//   listenerFunction: TListenerFunction<TBotRequestMessage, TServerResponse>
+// ) {
+//   return listenerFunction;
+// }
+
+// declare f
 // get db listener
+
+// declare function listenForBotToRequestDB<TBotRequestMessage, TServerResponse>(
+//   args: TListenerArgs<TBotRequestMessage>
+// ): Promise<TServerResponse>;
+
 async function listenForBotToRequestDB({
   services,
   message,
   api_id,
-}: TListenerArgs<TGetDatabase>) {
+}: TListenerArgs<TGetDatabase>): Promise<TGetDatabaseResponse> {
+  // async function listenForBotToRequestDB({
+  //   services,
+  //   message,
+  //   api_id,
+  // }) {
   const { database } = message;
 
   try {
@@ -67,7 +82,61 @@ async function listenForBotToRequestDB({
       error,
     };
   }
+
+  // const workFunction = async () => {
+  //   const { answersRepositoryService, l } = services;
+
+  //   const db = await answersRepositoryService.findSome({
+  //     behavior_model: database,
+  //   });
+
+  //   l.log("bot requested db", api_id, message);
+
+  //   return {
+  //     db,
+  //     // event_type: EGetDatabaseResponseTypes.DB_GET_SUCCESS,
+  //   };
+  // };
+
+  // const processChainRes:TGetDatabaseResponse = await processChain(
+  //   workFunction,
+  //   EGetDatabaseResponseTypes.DB_GET_SUCCESS,
+  //   EGetDatabaseResponseTypes.DB_GET_ERROR
+  // );
+
+  // return await processChain(
+  //   workFunction,
+  //   EGetDatabaseResponseTypes.DB_GET_SUCCESS,
+  //   EGetDatabaseResponseTypes.DB_GET_ERROR
+  // )
 }
+
+// type TWorkFunction<T> = () => Promise<T>;
+
+// type TProcessChain<T> = (
+//   workFunction: TWorkFunction<T>,
+//   resolveType: T["event_type"],
+//   rejectType: keyof typeof ServerEventTypes
+// ) => object;
+
+// async function processChain(
+//   workFunction,
+//   resolveType,
+//   rejectType
+// ):Promise<TProcessChain<TGetDatabaseResponse>> {
+//   try {
+//     const res = await workFunction();
+//     return {
+//       ...res,
+//       event_type: resolveType,
+//     };
+//   } catch (error) {
+//     return {
+//       error,
+//       event_type: rejectType,
+//     };
+//   }
+// }
 
 export const generalListeners = [
   {

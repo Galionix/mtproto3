@@ -7,7 +7,7 @@ import { DatabaseRepositoryService } from "../../database/database-repository/da
 
 const l = new Logger("BotEventsService");
 
-interface IServiceArgs {
+export interface IServiceArgs {
   botStateService: BotStateService;
   botRepositoryService: BotRepositoryService;
   answersRepositoryService: DatabaseRepositoryService;
