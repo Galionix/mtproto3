@@ -25,6 +25,8 @@ type AnswerEntity {
 type BotEntity {
   api_hash: String
   api_id: String
+  clientState: String
+  clientStateUpdateTime: String
   sessionString: String
 }
 

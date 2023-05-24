@@ -1,16 +1,46 @@
-import { BotEventTypes } from "@core/types/client";
+import { BotEventTypes, TRespondToDMMessagePayload } from "@core/types/client";
 import { NewMessageEvent } from "telegram/events";
 import { logEvent } from "../../../processApi/logEventTostate";
 // import { state } from "../../../state";
-import { findDmAnswer } from '../../../utils/messagingUtils';
+import { findDmAnswer } from "../../../utils/messagingUtils";
+// import { message } from "telegram/client";
+import { TelegramClient } from "telegram";
 
-export default async function dmHandler(event: NewMessageEvent) {
+async function dmHandlerOld(event: NewMessageEvent) {
   try {
     const { message, client } = event;
     const sender = await message.getSender();
 
     const answer = findDmAnswer(message.message);
+    console.log("answer", answer);
+    if (!answer) {
+      return;
+    }
     await client.sendMessage(sender, {
+      message: answer,
+    });
+  } catch (error) {
+    logEvent(BotEventTypes.ERROR_DIRECT_MESSAGE, error.message);
+  }
+}
+
+// upper function uses functions applied to message entity. we cant use it because
+// we dont have access to message entity in the context of pool of messages
+
+export type TDMHandlerArgs = TRespondToDMMessagePayload & {
+  client: TelegramClient;
+};
+export default async function dmHandler({
+  message,
+  client,
+  senderId,
+}: TDMHandlerArgs) {
+  try {
+    const answer = findDmAnswer(message);
+    if (!answer) {
+      return;
+    }
+    await client.sendMessage(senderId, {
       message: answer,
     });
   } catch (error) {

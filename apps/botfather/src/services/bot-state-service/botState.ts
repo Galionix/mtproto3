@@ -36,4 +36,7 @@ export const defaultBotState: BotStateEntity = {
   joining_groups_chat_ids: [],
   leaving_groups: false,
   leaving_groups_chat_ids: [],
+  // clientStateUpdateTime: 0,
+  // clientState: null,
+  // inner_state: null,
 };

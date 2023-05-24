@@ -14,4 +14,5 @@ export class CreateBotInput {
   @Field(() => String, { nullable: true })
   @Column()
   sessionString: string;
+
 }

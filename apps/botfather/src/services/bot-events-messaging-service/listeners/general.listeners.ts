@@ -4,6 +4,7 @@ import {
   TGetDatabase,
   TLogEvent,
   TProcessMessages,
+  TSendStateToServer,
   TStatisticsEvent,
 } from "@core/types/client";
 import {
@@ -36,33 +37,11 @@ function listenLogEventToState({
   }
 }
 
-// type TListenerFunction<TBotRequestMessage, TServerResponse> = (
-//   args: TListenerArgs<TBotRequestMessage>
-// ) => Promise<TServerResponse>;
-
-// function myListener<TBotRequestMessage, TServerResponse>(
-//   listenerFunction: TListenerFunction<TBotRequestMessage, TServerResponse>
-// ) {
-//   return listenerFunction;
-// }
-
-// declare f
-// get db listener
-
-// declare function listenForBotToRequestDB<TBotRequestMessage, TServerResponse>(
-//   args: TListenerArgs<TBotRequestMessage>
-// ): Promise<TServerResponse>;
-
 async function listenForBotToRequestDB({
   services,
   message,
   api_id,
 }: TListenerArgs<TGetDatabase>): Promise<TGetDatabaseResponse> {
-  // async function listenForBotToRequestDB({
-  //   services,
-  //   message,
-  //   api_id,
-  // }) {
   const { database } = message;
 
   try {
@@ -84,61 +63,7 @@ async function listenForBotToRequestDB({
       error,
     };
   }
-
-  // const workFunction = async () => {
-  //   const { answersRepositoryService, l } = services;
-
-  //   const db = await answersRepositoryService.findSome({
-  //     behavior_model: database,
-  //   });
-
-  //   l.log("bot requested db", api_id, message);
-
-  //   return {
-  //     db,
-  //     // event_type: EGetDatabaseResponseTypes.DB_GET_SUCCESS,
-  //   };
-  // };
-
-  // const processChainRes:TGetDatabaseResponse = await processChain(
-  //   workFunction,
-  //   EGetDatabaseResponseTypes.DB_GET_SUCCESS,
-  //   EGetDatabaseResponseTypes.DB_GET_ERROR
-  // );
-
-  // return await processChain(
-  //   workFunction,
-  //   EGetDatabaseResponseTypes.DB_GET_SUCCESS,
-  //   EGetDatabaseResponseTypes.DB_GET_ERROR
-  // )
 }
-
-// type TWorkFunction<T> = () => Promise<T>;
-
-// type TProcessChain<T> = (
-//   workFunction: TWorkFunction<T>,
-//   resolveType: T["event_type"],
-//   rejectType: keyof typeof ServerEventTypes
-// ) => object;
-
-// async function processChain(
-//   workFunction,
-//   resolveType,
-//   rejectType
-// ):Promise<TProcessChain<TGetDatabaseResponse>> {
-//   try {
-//     const res = await workFunction();
-//     return {
-//       ...res,
-//       event_type: resolveType,
-//     };
-//   } catch (error) {
-//     return {
-//       error,
-//       event_type: rejectType,
-//     };
-//   }
-// }
 
 async function addStatisticsToDB({
   services,
@@ -148,6 +73,18 @@ async function addStatisticsToDB({
   const { answersRepositoryService, l } = services;
 
   const { type } = message;
+}
+
+async function listenBotSyncState({
+  services,
+  message,
+  api_id,
+}: TListenerArgs<TSendStateToServer>) {
+  const { botRepositoryService, l } = services;
+
+  const { state } = message;
+
+  await botRepositoryService.updateClientState(api_id, state);
 }
 
 export const generalListeners = [
@@ -160,4 +97,8 @@ export const generalListeners = [
     listener: listenForBotToRequestDB,
   },
   // TODO: add listener for statistics
+  {
+    event_type: BotEventTypes.SEND_STATE_TO_SERVER,
+    listener: listenBotSyncState,
+  },
 ];

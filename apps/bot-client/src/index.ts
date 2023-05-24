@@ -1,6 +1,12 @@
-import { BotEventTypes, TPhoneCode, TPhoneNumber } from "@core/types/client";
+import {
+  BotEventTypes,
+  EDMMessageStep,
+  TPhoneCode,
+  TPhoneNumber,
+  TRespondToDMMessagePayload,
+} from "@core/types/client";
 import { ServerEvents } from "@core/types/server";
-import { TelegramClient } from "telegram";
+import { Api, TelegramClient } from "telegram";
 import { NewMessage, NewMessageEvent } from "telegram/events";
 import { StringSession } from "telegram/sessions";
 import * as dmHandlers from "./lib/behaviour/dm";
@@ -10,6 +16,10 @@ import { listeners } from "./lib/processApi/listeners";
 import { logEvent } from "./lib/processApi/logEventTostate";
 import { state } from "./lib/state";
 import { readDbSequence } from "./lib/utils/readDb";
+import { delayFactory, getDMMessageStep } from "./lib/utils/messagingUtils";
+import scenarioHandler from "./lib/behaviour/dm/scenarioHandler";
+import { addDmTask } from "./lib/tasksApi/addTask";
+import { TDMHandlerArgs } from "./lib/behaviour/dm/base";
 
 const [
   apiId,
@@ -35,18 +45,57 @@ state.type_delay_multiplier = parseInt(type_delay_multiplier);
 //   type_delay_multiplier,
 // };
 
-const dmHandler = dmHandlers[behavior_model].default;
+const { readDelay, typeDelay } = delayFactory();
+
+type TDMHandler = (args: TDMHandlerArgs) => Promise<void>;
+const dmHandler = dmHandlers[behavior_model].default as TDMHandler;
 
 (async () => {
   await readDbSequence({
     answers_db,
   });
 
-  function messageOrchestrator(event: NewMessageEvent) {
+  async function messageOrchestrator(event: NewMessageEvent) {
     const { isPrivate, isChannel, isGroup } = event;
     if (isPrivate) {
-      logEvent(BotEventTypes.DIRECT_MESSAGE, event.message.message);
-      dmHandler(event, answers_db);
+      const { client, chat, message } = event;
+
+      const senderId = (await message.getSender()).id;
+      const messageText = message.message;
+      logEvent(BotEventTypes.DIRECT_MESSAGE, messageText);
+      const { step, count } = await getDMMessageStep(client, senderId);
+
+      addDmTask({
+        senderId,
+        message: messageText,
+        step,
+      });
+      // code below is to move to task handlers
+      //
+      //
+      await readDelay();
+      // we cant use await message.markAsRead() because its not reproducable by params
+      await client.markAsRead(senderId);
+
+      await typeDelay(messageText);
+
+      if (step === EDMMessageStep.FINISHED) {
+        await dmHandler({
+          step,
+          message: messageText,
+          client,
+          senderId,
+        });
+      } else {
+        await scenarioHandler({ count });
+      }
+
+      // here we need to create a pool of incoming messages
+      // and somehow process them in sequence
+      // and also we need to keep track on server wehter we have responded to the message
+      // so bot's state on server in dmChats should be updated once we receive a message
+      // with parameters, necessary to respond
+      // and then bot on startup should aplly this state to itself, and then continue.
     }
   }
 

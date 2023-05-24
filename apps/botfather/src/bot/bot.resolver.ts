@@ -24,7 +24,7 @@ export class BotResolver {
 
   @Mutation(() => BotEntity)
   async createBot(@Args("createBotInput") createBotInput: CreateBotInput) {
-    const res = await this.botRepositoryService.create(createBotInput);
+    const res = await this.botRepositoryService.create({ ...createBotInput });
     this.botStateService.addBotState(createBotInput);
     // await this.botStateService.reload();
     return res;

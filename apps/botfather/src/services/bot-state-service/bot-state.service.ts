@@ -40,10 +40,15 @@ export class BotStateService {
     return this.botStates;
   }
   addBotState(botState: CreateBotInput) {
-    this.botStates.push({
+    const newBotState = {
       ...defaultBotState,
-      bot: botState,
-    });
+      bot: {
+        ...botState,
+        clientState: null,
+        clientStateUpdateTime: new Date(Date.now()),
+      },
+    };
+    this.botStates.push(newBotState);
   }
 
   /*

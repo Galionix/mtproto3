@@ -1,35 +1,19 @@
-import { TAnswer } from "@core/types/client";
+import {
+  EGeneralBotEventTypes,
+  TAnswer,
+  TScenarioElement,
+  TSendStateToServer,
+  TState,
+  TTask,
+} from "@core/types/client";
 
-export type TState = {
-  dmDb: TAnswer[];
-  groupDb: TAnswer[];
-  channelDb: TAnswer[];
-  apiId: number;
-  apiHash: string;
-  stringSession: string;
-  behavior_model: string;
-  answers_db: string;
-  read_delay: number;
-  type_delay_multiplier: number;
-  // message_probability: this is a number between 0 and 1
-  // that represents the probability of a message being sent
-  // which is generally speaking the probability that bot will respond.
-  // 1 means 100% probability, 0 means 0% probability.
-  // then it will multiply the base_probability of the answer
-  // for example: if base_probability is 0.5 and message_probability is 0.5
-  // then the probability of the answer being sent is 0.25
-  // then random throws a number between 0 and 1
-  // if the number is less than 0.25 then the answer will be sent
-
-  // if message_probability is 0 then the answer will never be sent
-  // if message_probability is 2 then the answer will always be sent, not regarding the message base_probability
-  message_probability: number;
-};
+// export type TDMMessagePoolItem = {};
 
 export const state: TState = {
   dmDb: [],
   groupDb: [],
   channelDb: [],
+  tasks: [],
   apiId: 0,
   apiHash: "",
   stringSession: "",
@@ -38,4 +22,16 @@ export const state: TState = {
   read_delay: 1000,
   type_delay_multiplier: 1,
   message_probability: 1,
+  latestGroupJoinDate: 0,
+  scenario: [],
+};
+
+export const sendStateToFatherProcess = (state: TState) => {
+  console.log("state: ", state);
+  const message: TSendStateToServer = {
+    event_type: EGeneralBotEventTypes.SEND_STATE_TO_SERVER,
+    state: JSON.stringify(state),
+  };
+
+  process.send(message);
 };

@@ -1,6 +1,7 @@
 import { ObjectType, Field } from "@nestjs/graphql";
 // import { ChildProcess } from "child_process";
 import { Column, Entity, PrimaryColumn } from "typeorm";
+import { TState } from "../../client";
 // import { IBotState } from "../types/botState";
 
 @Entity()
@@ -18,7 +19,11 @@ export class BotEntity {
   @Column()
   sessionString: string;
 
-  // @Field({ nullable: true })
-  // @Column()
-  // state: string;
+  @Field({ nullable: true })
+  @Column()
+  clientState?: string;
+
+  @Field(() => String, { nullable: true })
+  @Column()
+  clientStateUpdateTime: Date;
 }

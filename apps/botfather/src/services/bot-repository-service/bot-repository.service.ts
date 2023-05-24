@@ -26,6 +26,8 @@ export class BotRepositoryService {
       api_id: createBotInput.api_id,
       api_hash: createBotInput.api_hash,
       sessionString: createBotInput.sessionString,
+      clientState: "",
+      clientStateUpdateTime: new Date(Date.now()),
     });
 
     return newBot;
@@ -56,5 +58,14 @@ export class BotRepositoryService {
     this.botRepository.save(bot);
 
     l.log("sessionString updated: ", sessionString);
+  }
+
+  async updateClientState(api_id: number, state: string) {
+    const bot = await this.findOne(api_id);
+
+    bot.clientState = state;
+    bot.clientStateUpdateTime = new Date(Date.now());
+
+    this.botRepository.save(bot);
   }
 }
