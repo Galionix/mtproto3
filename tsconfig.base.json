@@ -19,6 +19,7 @@
       "@core/functions": ["libs/core/src/functions/index.ts"],
       "@core/types/client": ["libs/core/src/types/client/index.ts"],
       "@core/types/server": ["libs/core/src/types/server/index.ts"],
+      "@core/types": ["libs/core/src/types/index.ts"],
     }
   },
   "exclude": ["node_modules", "tmp"]

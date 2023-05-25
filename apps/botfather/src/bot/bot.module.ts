@@ -1,9 +1,8 @@
-import { AnswerEntity } from "../../../../libs/core/src/types/server/entities/database.entity";
 import { Module } from "@nestjs/common";
 import { BotService } from "./bot.service";
 import { BotResolver } from "./bot.resolver";
 import { TypeOrmModule } from "@nestjs/typeorm";
-import { BotEntity } from "@core/types/server/entities";
+import { BotEntity, AnswerEntity } from "@core/types/server";
 import { BotProcessService } from "../services/bot-process-service/bot-process.service";
 import { BotStateService } from "../services/bot-state-service/bot-state.service";
 import { BotEventsService } from "../services/bot-events-messaging-service/bot-events.service";

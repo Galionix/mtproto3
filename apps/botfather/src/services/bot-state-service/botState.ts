@@ -1,5 +1,5 @@
 // import { ChildProcess } from "child_process";
-import { BotEntity, BotStateEntity } from "@core/types/server/entities";
+import { BotEntity, BotStateEntity } from "@core/types/server";
 
 // export interface IBotState {
 //   //   id: string;
