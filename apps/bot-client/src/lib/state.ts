@@ -1,13 +1,8 @@
 import {
   EGeneralBotEventTypes,
-  TAnswer,
-  TScenarioElement,
   TSendStateToServer,
   TState,
-  TTask,
 } from "@core/types/client";
-
-// export type TDMMessagePoolItem = {};
 
 export const state: TState = {
   dmDb: [],
@@ -24,10 +19,15 @@ export const state: TState = {
   message_probability: 1,
   latestGroupJoinDate: 0,
   scenario: [],
+  taskOrder: [],
 };
 
+// use this with caution!
+// this will load the server and force it to write the state to the database
+// ideally, this should be called every n minutes, or after longer periods of time
+// the purpose of this is to make sure that the state is saved to the database
+// which is not very important
 export const sendStateToFatherProcess = (state: TState) => {
-  console.log("state: ", state);
   const message: TSendStateToServer = {
     event_type: EGeneralBotEventTypes.SEND_STATE_TO_SERVER,
     state: JSON.stringify(state),

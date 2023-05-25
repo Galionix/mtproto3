@@ -1,12 +1,7 @@
+import { getRandomInt } from "@core/functions";
+import { EDMMessageStep, TAnyDMMessageStep } from "@core/types/client";
+import { TelegramClient } from "telegram";
 import { state } from "../state";
-import { getRandomInt } from "@core/functions/general";
-import {
-  EDMMessageStep,
-  TAnyDMMessageStep,
-  TScenarioElement,
-} from "@core/types/client";
-import { Api, TelegramClient } from "telegram";
-import { Entity } from "telegram/define";
 
 export const findDmAnswer = (request: string) => {
   let res: string = null;
@@ -80,4 +75,3 @@ export const getDMMessageStep = async (
     count: -1,
   };
 };
-

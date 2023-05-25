@@ -1,7 +1,7 @@
-import { sendToFather } from "@core/functions/tg-client/messaging/sendAndWait";
+import { sendToFather } from "@core/functions";
 import { BotEventTypes, TAnswer } from "@core/types/client";
 import { EGetDatabaseResponseTypes } from "@core/types/server";
-import { AnswerEntity } from "@core/types/server/entities/database.entity";
+import { AnswerEntity } from "@core/types/server";
 import { logEvent } from "../processApi/logEventTostate";
 import { state } from "../state";
 
@@ -50,7 +50,6 @@ export function readDb(db: AnswerEntity[]): {
 }
 
 export async function readDbSequence({ answers_db }) {
-
   const res = await sendToFather(process, {
     event_type: BotEventTypes.GET_DATABASE,
     database: answers_db,

@@ -1,5 +1,4 @@
-import { ObjectType } from "@nestjs/graphql";
-import { TTask } from "../bot-tasks";
+import { TTask, TTaskOrder } from "../bot-tasks";
 import { TAnswer } from "./botAnswer";
 import { TScenarioElement } from "./scenario";
 
@@ -31,6 +30,7 @@ export type TState = {
   // if message_probability is 2 then the answer will always be sent, not regarding the message base_probability
   message_probability: number;
   latestGroupJoinDate: number;
+  taskOrder: TTaskOrder;
 };
 
 // graphql typeorm entity of state

@@ -3,7 +3,7 @@ import { ServerEventTypes, JoinGroupsInput } from "@core/types/server";
 import { Injectable } from "@nestjs/common";
 import { ChildProcess } from "child_process";
 import { BotStateService } from "../../services/bot-state-service/bot-state.service";
-import { sendToBot } from "@core/functions/server/messaging/sendAndWait";
+import { sendToBot } from "@core/functions";
 
 @Injectable()
 export class SettingsService {

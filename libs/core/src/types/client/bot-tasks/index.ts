@@ -7,8 +7,10 @@ export enum ETaskType {
   GROUP_JOIN = "GROUP_JOIN",
   GROUP_LEAVE = "GROUP_LEAVE",
 }
+export type TAnyTaskType = keyof typeof ETaskType;
 
 export type TGenericTask<T extends ETaskType, P> = {
+  id: string;
   type: T;
   date: number;
   payload: P;
@@ -49,3 +51,7 @@ export type TRespondToDMMessage = TGenericTask<
 
 // type TRespondToGroupMessageTask = TGenericTask<ETaskType.RESPOND_TO_GROUP_MESSAGE> & {
 export type TTask = TRespondToDMMessage;
+
+export type TTaskOrder = TAnyTaskType[];
+
+

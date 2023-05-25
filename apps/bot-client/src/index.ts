@@ -1,25 +1,34 @@
 import {
   BotEventTypes,
   EDMMessageStep,
+  ETaskType,
   TPhoneCode,
   TPhoneNumber,
-  TRespondToDMMessagePayload,
+  TTaskOrder,
 } from "@core/types/client";
 import { ServerEvents } from "@core/types/server";
-import { Api, TelegramClient } from "telegram";
+import { TelegramClient } from "telegram";
 import { NewMessage, NewMessageEvent } from "telegram/events";
 import { StringSession } from "telegram/sessions";
 import * as dmHandlers from "./lib/behaviour/dm";
+import { TDMHandlerArgs } from "./lib/behaviour/dm/base";
+import scenarioHandler from "./lib/behaviour/dm/scenarioHandler";
 import { getCombinedListeners } from "./lib/processApi/combineListeners";
 import { generalReducer } from "./lib/processApi/composeReducer";
 import { listeners } from "./lib/processApi/listeners";
 import { logEvent } from "./lib/processApi/logEventTostate";
 import { state } from "./lib/state";
-import { readDbSequence } from "./lib/utils/readDb";
-import { delayFactory, getDMMessageStep } from "./lib/utils/messagingUtils";
-import scenarioHandler from "./lib/behaviour/dm/scenarioHandler";
 import { addDmTask } from "./lib/tasksApi/addTask";
-import { TDMHandlerArgs } from "./lib/behaviour/dm/base";
+import { delayFactory, getDMMessageStep } from "./lib/utils/messagingUtils";
+import { readDbSequence } from "./lib/utils/readDb";
+
+const temporaryTaskOrder: TTaskOrder = [
+  ETaskType.RESPOND_TO_DM_MESSAGE,
+  ETaskType.SPAM_TO_GROUP,
+  ETaskType.GROUP_JOIN,
+  ETaskType.GROUP_LEAVE,
+  ETaskType.RESPOND_TO_GROUP_MESSAGE,
+];
 
 const [
   apiId,
@@ -29,7 +38,10 @@ const [
   answers_db = "base",
   read_delay = "1000",
   type_delay_multiplier = "1",
+  taskOrder = temporaryTaskOrder.join(","),
 ] = process.argv.slice(2);
+
+state.taskOrder = taskOrder.split(",") as TTaskOrder;
 
 state.apiId = parseInt(apiId);
 state.apiHash = apiHash;
