@@ -31,6 +31,8 @@ export type TState = {
   message_probability: number;
   latestGroupJoinDate: number;
   taskOrder: TTaskOrder;
+  afterTaskDelay: number;
+  afterTaskIdleTime: number;
 };
 
 // graphql typeorm entity of state

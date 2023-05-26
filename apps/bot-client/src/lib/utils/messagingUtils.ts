@@ -1,6 +1,6 @@
 import { getRandomInt } from "@core/functions";
 import { EDMMessageStep, TAnyDMMessageStep } from "@core/types/client";
-import { TelegramClient } from "telegram";
+import { Api, TelegramClient } from "telegram";
 import { state } from "../state";
 
 export const findDmAnswer = (request: string) => {
@@ -33,15 +33,63 @@ export const delayFactory = () => {
     const delay = state.read_delay + getRandomInt(3);
     await new Promise((resolve) => setTimeout(resolve, delay));
   };
-  const typeDelay = async (message: string) => {
+  const typeDelay = async (
+    client: TelegramClient,
+    message: string,
+    senderId: bigInt.BigInteger
+  ) => {
+    // send typing action
+    // const result = await client.invoke(
+    //   new Api.messages.SetTyping({
+    //     peer: senderId,
+    //     action: new Api.SendMessageTypingAction(),
+    //     // topMsgId: 43,
+    //   })
+    // );
+
     const delay =
       message.length * state.type_delay_multiplier + getRandomInt(5);
+    console.log("delay: ", delay);
+    //  each 5 seconds of delay we send typing action again
+    const typingActionInterval = 5;
+
+    const typingActionIntervalCount = Math.floor(delay / typingActionInterval);
+    console.log("typingActionIntervalCount: ", typingActionIntervalCount);
+
+    console.time("typeDelay");
+    for (let i = 0; i < typingActionIntervalCount; i++) {
+      await new Promise((resolve) =>
+        setTimeout(async () => {
+          await client.invoke(
+            new Api.messages.SetTyping({
+              peer: senderId,
+              action: new Api.SendMessageTypingAction(),
+              // topMsgId: 43,
+            })
+          );
+          resolve(true);
+        }, (typingActionInterval + getRandomInt(5)) * 1000)
+      );
+    }
+    console.timeEnd("typeDelay");
+    // console.log("typeDelay", delay);
+    // await new Promise((resolve) => setTimeout(resolve, delay));
+  };
+  const waitAfterTaskDelay = async () => {
+    const delay = state.afterTaskDelay + getRandomInt(3);
+    await new Promise((resolve) => setTimeout(resolve, delay));
+  };
+
+  const waitAfterTaskIdleTime = async () => {
+    const delay = state.afterTaskIdleTime + getRandomInt(3);
     await new Promise((resolve) => setTimeout(resolve, delay));
   };
 
   return {
     readDelay,
     typeDelay,
+    waitAfterTaskDelay,
+    waitAfterTaskIdleTime,
   };
 };
 

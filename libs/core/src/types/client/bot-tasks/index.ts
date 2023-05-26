@@ -6,15 +6,10 @@ export enum ETaskType {
   SPAM_TO_GROUP = "SPAM_TO_GROUP",
   GROUP_JOIN = "GROUP_JOIN",
   GROUP_LEAVE = "GROUP_LEAVE",
+  RESPOND_1 = "RESPOND_1",
+  RESPOND_2 = "RESPOND_2",
 }
 export type TAnyTaskType = keyof typeof ETaskType;
-
-export type TGenericTask<T extends ETaskType, P> = {
-  id: string;
-  type: T;
-  date: number;
-  payload: P;
-};
 
 export enum EDMMessageStep {
   // INITIAL - user just started conversation with bot
@@ -38,20 +33,44 @@ export enum EDMMessageStep {
 
 export type TAnyDMMessageStep = keyof typeof EDMMessageStep;
 
+export type TGenericTask<T extends ETaskType, P> = {
+  id: string;
+  type: T;
+  date: number;
+  payload: P;
+};
+
 export type TRespondToDMMessagePayload = {
   step: TAnyDMMessageStep;
   message: string;
   senderId: bigInt.BigInteger;
+  count: number;
 };
 
-export type TRespondToDMMessage = TGenericTask<
-  ETaskType.RESPOND_TO_DM_MESSAGE,
-  TRespondToDMMessagePayload
->;
+export interface TRespondToDMMessage {
+  id: string;
+  type: ETaskType.RESPOND_TO_DM_MESSAGE;
+  date: number;
+  payload: TRespondToDMMessagePayload;
+}
 
-// type TRespondToGroupMessageTask = TGenericTask<ETaskType.RESPOND_TO_GROUP_MESSAGE> & {
-export type TTask = TRespondToDMMessage;
+export type TRespondToGroupMessagePayload = {
+  message: string;
+  senderId: bigInt.BigInteger;
+  chatId: bigInt.BigInteger;
+};
+
+// export type TRespondToGroupMessage = TGenericTask<
+//   ETaskType.RESPOND_TO_GROUP_MESSAGE,
+//   TRespondToGroupMessagePayload
+// >;
+export interface TRespondToGroupMessage {
+  id: string;
+
+  type: ETaskType.RESPOND_TO_GROUP_MESSAGE;
+  date: number;
+  payload: TRespondToGroupMessagePayload;
+}
+export type TTask = TRespondToDMMessage | TRespondToGroupMessage;
 
 export type TTaskOrder = TAnyTaskType[];
-
-

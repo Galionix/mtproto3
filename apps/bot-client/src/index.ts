@@ -21,6 +21,8 @@ import { state } from "./lib/state";
 import { addDmTask } from "./lib/tasksApi/addTask";
 import { delayFactory, getDMMessageStep } from "./lib/utils/messagingUtils";
 import { readDbSequence } from "./lib/utils/readDb";
+import { taskProcessor } from "./lib/tasksApi/processor";
+import { taskArranger } from "./lib/tasksApi/taskArranger";
 
 const temporaryTaskOrder: TTaskOrder = [
   ETaskType.RESPOND_TO_DM_MESSAGE,
@@ -39,10 +41,14 @@ const [
   read_delay = "1000",
   type_delay_multiplier = "1",
   taskOrder = temporaryTaskOrder.join(","),
+  afterTaskDelay = "1000",
+  afterTaskIdleTime = "10000",
 ] = process.argv.slice(2);
 
 state.taskOrder = taskOrder.split(",") as TTaskOrder;
 
+state.afterTaskDelay = parseInt(afterTaskDelay);
+state.afterTaskIdleTime = parseInt(afterTaskIdleTime);
 state.apiId = parseInt(apiId);
 state.apiHash = apiHash;
 state.stringSession = stringSession;
@@ -57,7 +63,8 @@ state.type_delay_multiplier = parseInt(type_delay_multiplier);
 //   type_delay_multiplier,
 // };
 
-const { readDelay, typeDelay } = delayFactory();
+const { readDelay, typeDelay, waitAfterTaskDelay, waitAfterTaskIdleTime } =
+  delayFactory();
 
 type TDMHandler = (args: TDMHandlerArgs) => Promise<void>;
 const dmHandler = dmHandlers[behavior_model].default as TDMHandler;
@@ -81,26 +88,11 @@ const dmHandler = dmHandlers[behavior_model].default as TDMHandler;
         senderId,
         message: messageText,
         step,
+        count,
       });
       // code below is to move to task handlers
       //
       //
-      await readDelay();
-      // we cant use await message.markAsRead() because its not reproducable by params
-      await client.markAsRead(senderId);
-
-      await typeDelay(messageText);
-
-      if (step === EDMMessageStep.FINISHED) {
-        await dmHandler({
-          step,
-          message: messageText,
-          client,
-          senderId,
-        });
-      } else {
-        await scenarioHandler({ count });
-      }
 
       // here we need to create a pool of incoming messages
       // and somehow process them in sequence
@@ -109,6 +101,22 @@ const dmHandler = dmHandlers[behavior_model].default as TDMHandler;
       // with parameters, necessary to respond
       // and then bot on startup should aplly this state to itself, and then continue.
     }
+  }
+
+  let isRunning = false;
+
+  async function runTasks(client: TelegramClient) {
+    if (isRunning) return;
+    isRunning = true;
+    const tasks = [...taskArranger(state.tasks)];
+    state.tasks = [];
+    for (const task of tasks) {
+      await taskProcessor(task, client);
+      await waitAfterTaskDelay();
+    }
+    await waitAfterTaskIdleTime();
+    console.log(`Idle time: ${state.afterTaskIdleTime} of ${state.apiId}`);
+    isRunning = false;
   }
 
   try {
@@ -163,10 +171,10 @@ const dmHandler = dmHandlers[behavior_model].default as TDMHandler;
     process.send({ event_type: "STARTED" });
     logEvent(BotEventTypes.STARTED);
 
-    client.addEventHandler((update) => {
-      console.log("Received new Update");
-      console.log(update.message);
-    });
+    // client.addEventHandler((update) => {
+    //   console.log("Received new Update");
+    //   console.log(update.message);
+    // });
 
     client.addEventHandler(messageOrchestrator, new NewMessage({}));
 
@@ -176,6 +184,8 @@ const dmHandler = dmHandlers[behavior_model].default as TDMHandler;
     process.on("message", async (message: ServerEvents) => {
       reducer(message);
     });
+
+    setInterval(() => runTasks(client), 1000);
   } catch (error) {
     logEvent(BotEventTypes.ERROR, error.message);
   }

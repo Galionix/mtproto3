@@ -20,6 +20,8 @@ export const state: TState = {
   latestGroupJoinDate: 0,
   scenario: [],
   taskOrder: [],
+  afterTaskDelay: 1000,
+  afterTaskIdleTime: 10000,
 };
 
 // use this with caution!

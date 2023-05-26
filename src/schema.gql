@@ -111,8 +111,8 @@ type Mutation {
   createBot(createBotInput: CreateBotInput!): BotEntity!
   joinGroups(JoinGroupsInput: JoinGroupsInput!): [BotStateEntity!]!
   leaveGroups(api_ids: [Int!]!, group_ids: [String!]!, leave_delay: Int): [BotStateEntity!]!
+  removeAnswer(id: String!): Int!
   removeBot(api_id: Int!): BotEntity!
-  removeDatabase(name: String!): Int!
   restartBot(api_id: Int!): BotEntity!
   setUsername(api_id: Int!, username: String!): String!
 }

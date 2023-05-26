@@ -1,8 +1,8 @@
 import { Resolver, Query, Mutation, Args, Int } from "@nestjs/graphql";
 import { DatabaseService } from "./database.service";
-import { AnswerEntity } from "../../../../libs/core/src/types/server/entities/database.entity";
 import { DatabaseRepositoryService } from "./database-repository/database-repository.service";
 import {
+  AnswerEntity,
   CreateAnswerEntityInput,
   UpdateDatabaseInput,
 } from "@core/types/server";
@@ -50,8 +50,8 @@ export class DatabaseResolver {
   // }
 
   @Mutation(() => Int)
-  removeDatabase(@Args("name", { type: () => String }) name: string) {
-    return this.databaseRepositoryService.remove(name);
+  removeAnswer(@Args("id", { type: () => String }) id: string) {
+    return this.databaseRepositoryService.remove(id);
   }
 
   // getAnswersByBehaviorModel(behavior_model: string)

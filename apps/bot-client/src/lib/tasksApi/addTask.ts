@@ -10,6 +10,7 @@ export const addDmTask = async ({
   senderId,
   message,
   step,
+  count,
 }: TRespondToDMMessagePayload) => {
   const task: TRespondToDMMessage = {
     id: uuid(),
@@ -19,6 +20,7 @@ export const addDmTask = async ({
       step: step,
       message: message,
       senderId,
+      count,
     },
   };
   state.tasks.push(task);

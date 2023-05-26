@@ -1,8 +1,8 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
-import { AnswerEntity } from "../../../../../libs/core/src/types/server/entities/database.entity";
-import { CreateAnswerEntityInput } from "@core/types/server";
+// import { AnswerEntity } from "../../../../../libs/core/src/types/server/entities/database.entity";
+import { AnswerEntity, CreateAnswerEntityInput } from "@core/types/server";
 
 @Injectable()
 export class DatabaseRepositoryService {

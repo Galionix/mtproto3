@@ -1,4 +1,8 @@
-import { BotEventTypes, TRespondToDMMessagePayload } from "@core/types/client";
+import {
+  BotEventTypes,
+  TRespondToDMMessagePayload,
+  TTask,
+} from "@core/types/client";
 import { NewMessageEvent } from "telegram/events";
 import { logEvent } from "../../../processApi/logEventTostate";
 // import { state } from "../../../state";
@@ -27,7 +31,7 @@ async function dmHandlerOld(event: NewMessageEvent) {
 // upper function uses functions applied to message entity. we cant use it because
 // we dont have access to message entity in the context of pool of messages
 
-export type TDMHandlerArgs = TRespondToDMMessagePayload & {
+export type TDMHandlerArgs = TTask["payload"] & {
   client: TelegramClient;
 };
 export default async function dmHandler({
@@ -36,6 +40,25 @@ export default async function dmHandler({
   senderId,
 }: TDMHandlerArgs) {
   try {
+    /*
+          await readDelay();
+      // we cant use await message.markAsRead() because its not reproducable by params
+      await client.markAsRead(senderId);
+
+      await typeDelay(messageText);
+
+      if (step === EDMMessageStep.FINISHED) {
+        await dmHandler({
+          step,
+          message: messageText,
+          client,
+          senderId,
+        });
+      } else {
+        await scenarioHandler({ count });
+      }
+    */
+
     const answer = findDmAnswer(message);
     if (!answer) {
       return;
