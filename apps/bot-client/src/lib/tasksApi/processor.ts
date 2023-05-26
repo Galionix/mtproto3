@@ -14,7 +14,6 @@ const { readDelay, typeDelay } = delayFactory();
 export const taskProcessor: TTaskProcessor = async (task, client) => {
   console.time("taskProcessor: " + task.id);
   const { payload } = task;
-  console.log("taskProcessor", task);
 
   switch (task.type) {
     case ETaskType.RESPOND_TO_DM_MESSAGE:
@@ -37,7 +36,7 @@ export const taskProcessor: TTaskProcessor = async (task, client) => {
             count,
           });
         } else {
-          await scenarioHandler({ count });
+          await scenarioHandler({ count, client, senderId });
         }
       }
       break;

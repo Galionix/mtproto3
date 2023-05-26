@@ -35,11 +35,9 @@ type TAudioScenarioElement = {
   text?: string;
 };
 
-export type TScenarioElement = {
-  type: TAnyScenarioElementType;
-  payload:
+export type TScenarioElement =
     | TTextScenarioElement
     | TImageScenarioElement
     | TVideoScenarioElement
     | TAudioScenarioElement;
-};
+// };

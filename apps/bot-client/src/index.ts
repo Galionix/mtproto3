@@ -1,13 +1,15 @@
 import {
   BotEventTypes,
   EDMMessageStep,
+  EScenarioElementType,
   ETaskType,
   TPhoneCode,
   TPhoneNumber,
+  TScenarioElement,
   TTaskOrder,
 } from "@core/types/client";
 import { ServerEvents } from "@core/types/server";
-import { TelegramClient } from "telegram";
+import { Api, TelegramClient } from "telegram";
 import { NewMessage, NewMessageEvent } from "telegram/events";
 import { StringSession } from "telegram/sessions";
 import * as dmHandlers from "./lib/behaviour/dm";
@@ -32,6 +34,17 @@ const temporaryTaskOrder: TTaskOrder = [
   ETaskType.RESPOND_TO_GROUP_MESSAGE,
 ];
 
+const temporaryScenario: TScenarioElement[] = [
+  {
+    type: EScenarioElementType.TEXT,
+    text: "message 1",
+  },
+  {
+    type: EScenarioElementType.TEXT,
+    text: "message 2",
+  },
+];
+
 const [
   apiId,
   apiHash,
@@ -43,6 +56,7 @@ const [
   taskOrder = temporaryTaskOrder.join(","),
   afterTaskDelay = "1000",
   afterTaskIdleTime = "10000",
+  scenario = JSON.stringify(temporaryScenario),
 ] = process.argv.slice(2);
 
 state.taskOrder = taskOrder.split(",") as TTaskOrder;
@@ -56,6 +70,7 @@ state.behavior_model = behavior_model;
 state.answers_db = answers_db;
 state.read_delay = parseInt(read_delay);
 state.type_delay_multiplier = parseInt(type_delay_multiplier);
+state.scenario = JSON.parse(scenario);
 
 // const dmResponseOptions = {
 //   answers_db,
@@ -106,7 +121,7 @@ const dmHandler = dmHandlers[behavior_model].default as TDMHandler;
   let isRunning = false;
 
   async function runTasks(client: TelegramClient) {
-    if (isRunning) return;
+    if (isRunning || state.tasks.length === 0) return;
     isRunning = true;
     const tasks = [...taskArranger(state.tasks)];
     state.tasks = [];
@@ -162,6 +177,13 @@ const dmHandler = dmHandlers[behavior_model].default as TDMHandler;
 
     await client.connect();
     console.log(apiId, " connected.");
+
+    // const result = await client.invoke(
+    //   new Api.messages.GetAllChats({
+    //     exceptIds: [],
+    //   })
+    // );
+    // console.log(result); // prints the result
 
     process.send({
       event_type: BotEventTypes.SET_SESSION_STRING,

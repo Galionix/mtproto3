@@ -31,6 +31,8 @@ export enum EDMMessageStep {
   FINISHED = "FINISHED",
 }
 
+export const EDMMessageStepValues = Object.values(EDMMessageStep);
+
 export type TAnyDMMessageStep = keyof typeof EDMMessageStep;
 
 export type TGenericTask<T extends ETaskType, P> = {

@@ -1,5 +1,9 @@
 import { getRandomInt } from "@core/functions";
-import { EDMMessageStep, TAnyDMMessageStep } from "@core/types/client";
+import {
+  EDMMessageStep,
+  EDMMessageStepValues,
+  TAnyDMMessageStep,
+} from "@core/types/client";
 import { Api, TelegramClient } from "telegram";
 import { state } from "../state";
 
@@ -103,23 +107,26 @@ export const getDMMessageStep = async (
   // count sent messages to this user
   const messages = await client.getMessages(senderId, {
     limit: state.scenario.length + 2,
+    fromUser: "me",
   });
+  console.log("messages: ", messages);
   const messagesCount = messages.length;
+  console.log("messagesCount: ", messagesCount);
 
   // if messages count is less than scenario length, we return corresponding step.
   // if messages count is more than scenario length, we return 'finished' step.
   // if messages count is zero, we return 'initial' step.
 
-  if (messagesCount > state.scenario.length) {
+  if (messagesCount > state.scenario.length - 1) {
     return {
       step: EDMMessageStep.FINISHED,
-      count: messagesCount,
+      count: -1,
     };
   }
 
   return {
-    step: EDMMessageStep[messagesCount],
+    step: EDMMessageStepValues[messagesCount],
     // -1 because we cannot actually know, because we request 2 more messages than in scenario length
-    count: -1,
+    count: messagesCount,
   };
 };

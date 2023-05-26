@@ -30,9 +30,11 @@ export const state: TState = {
 // the purpose of this is to make sure that the state is saved to the database
 // which is not very important
 export const sendStateToFatherProcess = (state: TState) => {
+
+  const { dmDb, groupDb, channelDb, ...stateTosend } = state;
   const message: TSendStateToServer = {
     event_type: EGeneralBotEventTypes.SEND_STATE_TO_SERVER,
-    state: JSON.stringify(state),
+    state: JSON.stringify(stateTosend),
   };
 
   process.send(message);
