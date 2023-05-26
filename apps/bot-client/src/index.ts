@@ -5,6 +5,7 @@ import {
   ETaskType,
   TPhoneCode,
   TPhoneNumber,
+  TReplacement,
   TScenarioElement,
   TTaskOrder,
 } from "@core/types/client";
@@ -36,14 +37,38 @@ const temporaryTaskOrder: TTaskOrder = [
 
 const temporaryScenario: TScenarioElement[] = [
   {
-    type: EScenarioElementType.TEXT,
-    text: "message 1",
+    type: EScenarioElementType.VOICE,
+    fileName: "step1.ogg",
+  },
+  {
+    type: EScenarioElementType.VOICE,
+    fileName: "step2.ogg",
+  },
+  {
+    type: EScenarioElementType.VOICE,
+    fileName: "step3.ogg",
+  },
+  {
+    type: EScenarioElementType.VOICE,
+    fileName: "step4.ogg",
   },
   {
     type: EScenarioElementType.TEXT,
-    text: "message 2",
+    text: "смотри, мой ник там ##botName##\r\nhttps://meetka1.name/?r=1515&sk=586\r\nможешь при регистрации пропускать все поля, это не важно)",
+  },
+  {
+    type: EScenarioElementType.TEXT,
+    text: "прости, не могу говорить, я уже в эфире",
+  },
+  {
+    type: EScenarioElementType.TEXT,
+    text: "если не сложно добавь меня в какой-то чатик для общения а то тут стало скучно😘",
   },
 ];
+
+const temporaryReplacements: TReplacement = {
+  botName: "monika",
+};
 
 const [
   apiId,
@@ -57,9 +82,14 @@ const [
   afterTaskDelay = "1000",
   afterTaskIdleTime = "10000",
   scenario = JSON.stringify(temporaryScenario),
+  voice = "ksenia",
+  replacements = JSON.stringify(temporaryReplacements),
 ] = process.argv.slice(2);
 
+state.replacements = JSON.parse(replacements);
+
 state.taskOrder = taskOrder.split(",") as TTaskOrder;
+state.voice = voice;
 
 state.afterTaskDelay = parseInt(afterTaskDelay);
 state.afterTaskIdleTime = parseInt(afterTaskIdleTime);

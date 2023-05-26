@@ -35,9 +35,15 @@ type TAudioScenarioElement = {
   text?: string;
 };
 
+type TVoiceScenarioElement = {
+  type: EScenarioElementType.VOICE;
+  fileName: string;
+};
+
 export type TScenarioElement =
-    | TTextScenarioElement
-    | TImageScenarioElement
-    | TVideoScenarioElement
-    | TAudioScenarioElement;
+  | TTextScenarioElement
+  | TImageScenarioElement
+  | TVideoScenarioElement
+  | TAudioScenarioElement
+  | TVoiceScenarioElement;
 // };

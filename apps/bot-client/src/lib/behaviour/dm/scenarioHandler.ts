@@ -6,6 +6,8 @@ import {
 import { state } from "../../state";
 import { logEvent } from "../../processApi/logEventTostate";
 import { TelegramClient } from "telegram";
+import path from "path";
+import { applyReplacements } from "../../utils/messagingUtils";
 
 export type TScenarioHandlerArgs = {
   count: number;
@@ -31,8 +33,29 @@ export default async function scenarioHandler({
     case EScenarioElementType.TEXT:
       if ("text" in scenarioElement) {
         await client.sendMessage(senderId, {
-          message: scenarioElement.text,
+          message: applyReplacements(scenarioElement.text),
         });
       }
+      break;
+    case EScenarioElementType.VOICE:
+      if ("fileName" in scenarioElement) {
+        console.log("__dirname: ", __dirname);
+        const filePath = path.join(
+          __dirname,
+          "..",
+          "..",
+          "..",
+          "client-resources",
+          "voices",
+          state.voice,
+          scenarioElement.fileName
+        );
+        console.log("filePath: ", filePath);
+        await client.sendFile(senderId, {
+          file: filePath,
+          voiceNote: true,
+        });
+      }
+      break;
   }
 }

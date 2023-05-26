@@ -1,8 +1,12 @@
 import { TTask, TTaskOrder } from "../bot-tasks";
 import { TAnswer } from "./botAnswer";
 import { TScenarioElement } from "./scenario";
+export type TReplacement = {
+  [key: string]: string;
+};
 
 export type TState = {
+  voice: string;
   dmDb: TAnswer[];
   groupDb: TAnswer[];
   channelDb: TAnswer[];
@@ -33,6 +37,7 @@ export type TState = {
   taskOrder: TTaskOrder;
   afterTaskDelay: number;
   afterTaskIdleTime: number;
+  replacements: TReplacement;
 };
 
 // graphql typeorm entity of state

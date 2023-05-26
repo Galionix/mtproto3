@@ -5,6 +5,7 @@ import {
 } from "@core/types/client";
 
 export const state: TState = {
+  voice: "",
   dmDb: [],
   groupDb: [],
   channelDb: [],
@@ -22,6 +23,7 @@ export const state: TState = {
   taskOrder: [],
   afterTaskDelay: 1000,
   afterTaskIdleTime: 10000,
+  replacements: {},
 };
 
 // use this with caution!

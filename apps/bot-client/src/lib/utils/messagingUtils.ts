@@ -130,3 +130,18 @@ export const getDMMessageStep = async (
     count: messagesCount,
   };
 };
+
+
+export const applyReplacements = (message: string) => {
+  const { replacements } = state;
+
+  // replacements are presented in object, where key is a string to replace, and value is a string to replace with
+  // we iterate through all replacements and replace all occurrences of key with value
+  // occurrences are case insensitive and surrounded by ##, so we can replace only whole words
+
+  Object.keys(replacements).forEach((key) => {
+    const regex = new RegExp(`##${key}##`, "gi");
+    message = message.replace(regex, replacements[key]);
+  });
+  return message;
+};
