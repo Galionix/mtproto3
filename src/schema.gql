@@ -23,11 +23,22 @@ type AnswerEntity {
 }
 
 type BotEntity {
+  afterTaskDelay: Int
+  afterTaskIdleTime: Int
+  answersDb: String
   api_hash: String
   api_id: String
+  behaviorModel: String
   clientState: String
   clientStateUpdateTime: String
+  copyFrom: Int
+  readDelay: Int
+  replacements: String
+  scenario: String
   sessionString: String
+  taskOrder: String
+  typeDelayMultiplier: String
+  voice: String
 }
 
 type BotEvent {
@@ -92,9 +103,20 @@ input CreateAnswerEntityInput {
 }
 
 input CreateBotInput {
+  afterTaskDelay: Int
+  afterTaskIdleTime: Int
+  answersDb: String
   api_hash: String
   api_id: Int
+  behaviorModel: String
+  copyFrom: Int
+  readDelay: Int
+  replacements: String
+  scenario: String
   sessionString: String
+  taskOrder: String
+  typeDelayMultiplier: Int
+  voice: String
 }
 
 input JoinGroupsInput {
@@ -115,6 +137,7 @@ type Mutation {
   removeBot(api_id: Int!): BotEntity!
   restartBot(api_id: Int!): BotEntity!
   setUsername(api_id: Int!, username: String!): String!
+  updateBot(api_id: Int!, updateBotInput: UpdateBotInput!): BotEntity!
 }
 
 type Query {
@@ -131,6 +154,19 @@ type Query {
   startBots: [BotEntity!]!
   stopBot(api_id: Int!): BotStateEntity!
   stopBots: [BotEntity!]!
+}
+
+input UpdateBotInput {
+  afterTaskDelay: Int
+  afterTaskIdleTime: Int
+  answersDb: String
+  behaviorModel: String
+  readDelay: Int
+  replacements: String
+  scenario: String
+  taskOrder: String
+  typeDelayMultiplier: String
+  voice: String
 }
 
 input UpdateDatabaseInput {

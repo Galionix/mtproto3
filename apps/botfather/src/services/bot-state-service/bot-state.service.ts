@@ -1,9 +1,7 @@
-import { Injectable } from "@nestjs/common";
-import { BotStateEntity } from "@core/types/server";
-import { defaultBotState } from "./botState";
+import { BotEntity, BotStateEntity } from "@core/types/server";
+import { Injectable, Logger } from "@nestjs/common";
 import { BotRepositoryService } from "../bot-repository-service/bot-repository.service";
-import { Logger } from "@nestjs/common";
-import { CreateBotInput } from "@core/types/server";
+import { defaultBotState } from "./botState";
 
 const l = new Logger("BotStateService");
 
@@ -39,12 +37,12 @@ export class BotStateService {
   getBotStates(): ReadonlyArray<BotStateEntity> {
     return this.botStates;
   }
-  addBotState(botState: CreateBotInput) {
-    const newBotState = {
+  addBotState(botEntity: BotEntity) {
+    const newBotState: BotStateEntity = {
       ...defaultBotState,
       bot: {
-        ...botState,
-        clientState: null,
+        ...botEntity,
+        clientState: "",
         clientStateUpdateTime: new Date(Date.now()),
       },
     };

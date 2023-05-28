@@ -1,8 +1,8 @@
-import { Injectable } from "@nestjs/common";
+import { BotEntity, CreateBotInput, UpdateBotInput } from "@core/types/server";
+import { Injectable, Logger } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
-import { Logger } from "@nestjs/common";
-import { BotEntity, CreateBotInput } from "@core/types/server";
+import { defaultValues } from "./default-values";
 
 const l = new Logger("BotRepositoryService");
 
@@ -17,18 +17,24 @@ export class BotRepositoryService {
     const existingBot = await this.botRepository.findOne({
       where: { api_id: createBotInput.api_id },
     });
-
+    
     if (existingBot) {
       return existingBot;
     }
+    
+    let copyFromBot: BotEntity;
+    
+    if(createBotInput.copyFrom) {
+      copyFromBot = await this.botRepository.findOne({
+        where: { api_id: createBotInput.api_id },
+      });
+    }
 
-    const newBot = this.botRepository.save({
-      api_id: createBotInput.api_id,
-      api_hash: createBotInput.api_hash,
-      sessionString: createBotInput.sessionString,
-      clientState: "",
-      clientStateUpdateTime: new Date(Date.now()),
-    });
+    const newBot: BotEntity = {
+      ...defaultValues,
+      ...copyFromBot,
+      ...createBotInput,
+    }
 
     return newBot;
   }
@@ -67,5 +73,13 @@ export class BotRepositoryService {
     bot.clientStateUpdateTime = new Date(Date.now());
 
     this.botRepository.save(bot);
+  }
+
+  async update(api_id: number, updateBotInput: UpdateBotInput) {
+    const bot = await this.findOne(api_id);
+    if(!bot) {
+      throw new Error(`Bot with api_id ${api_id} not found`);
+    }
+    return await this.botRepository.save({...bot, ...updateBotInput});
   }
 }

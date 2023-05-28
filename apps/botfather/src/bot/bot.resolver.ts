@@ -1,15 +1,16 @@
-import { Resolver, Query, Mutation, Args, Int } from "@nestjs/graphql";
-import { BotProcessService } from "../services/bot-process-service/bot-process.service";
-import { BotStateService } from "../services/bot-state-service/bot-state.service";
 import {
-  JoinGroupsInput,
   BotEntity,
   BotStateEntity,
   CreateBotInput,
+  JoinGroupsInput,
+  UpdateBotInput,
 } from "@core/types/server";
-import { BotRepositoryService } from "../services/bot-repository-service/bot-repository.service";
-import { SettingsService } from "../services/settings-service/settings.service";
 import { Logger } from "@nestjs/common";
+import { Args, Int, Mutation, Query, Resolver } from "@nestjs/graphql";
+import { BotProcessService } from "../services/bot-process-service/bot-process.service";
+import { BotRepositoryService } from "../services/bot-repository-service/bot-repository.service";
+import { BotStateService } from "../services/bot-state-service/bot-state.service";
+import { SettingsService } from "../services/settings-service/settings.service";
 
 const l = new Logger("BotResolver");
 
@@ -21,18 +22,22 @@ export class BotResolver {
     private readonly botStateService: BotStateService,
     private readonly messagingSettingsService: SettingsService
   ) {}
-
+  
+  
   @Mutation(() => BotEntity)
   async createBot(@Args("createBotInput") createBotInput: CreateBotInput) {
-    const res = await this.botRepositoryService.create({ ...createBotInput });
-    this.botStateService.addBotState(createBotInput);
+    // const { api_id, api_hash, sessionString } = createBotInput; 
+    // const botState = { api_id, api_hash, sessionString };
+
+    const botEntity = await this.botRepositoryService.create({ ...createBotInput });
+    this.botStateService.addBotState(botEntity);
     // await this.botStateService.reload();
-    return res;
+    return botEntity;
   }
 
   @Query(() => [BotEntity], { name: "bots" })
-  findAll() {
-    return this.botRepositoryService.findAll();
+  async findAll() {
+    return await this.botRepositoryService.findAll();
   }
 
   @Query(() => BotEntity, { name: "bot" })
@@ -135,5 +140,14 @@ export class BotResolver {
     l.log("bot started: ", api_id);
 
     return res;
+  }
+
+  // update bot
+  @Mutation(() => BotEntity, { name: "updateBot" })
+  async updateBot(
+    @Args("api_id", { type: () => Int }) api_id: number,
+    @Args("updateBotInput") updateBotInput: UpdateBotInput
+  ) {
+    return await this.botRepositoryService.update(api_id, updateBotInput);
   }
 }
