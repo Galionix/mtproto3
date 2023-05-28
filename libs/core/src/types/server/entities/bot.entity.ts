@@ -1,7 +1,8 @@
-import { ObjectType, Field } from "@nestjs/graphql";
+import { ObjectType, Field, Int, InputType } from "@nestjs/graphql";
 // import { ChildProcess } from "child_process";
 import { Column, Entity, PrimaryColumn } from "typeorm";
 import { TState } from "../../client";
+import { IsOptional } from "class-validator";
 // import { IBotState } from "../types/botState";
 
 @Entity()
@@ -15,15 +16,59 @@ export class BotEntity {
   @Column()
   api_hash: string;
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   @Column()
   sessionString: string;
 
   @Field({ nullable: true })
   @Column()
-  clientState?: string;
+  clientState: string;
 
   @Field(() => String, { nullable: true })
   @Column()
   clientStateUpdateTime: Date;
+
+  @Field(() => String, { nullable: true })
+  @Column()
+  behaviorModel: string;
+
+  @Field(() => String, { nullable: true })
+  @Column()
+  answersDb: string;
+
+  @Field(() => Int, { nullable: true })
+  @Column()
+  readDelay: number;
+
+  @Field(() => String, { nullable: true })
+  @Column()
+  typeDelayMultiplier: number;
+
+  @Field(() => String, { nullable: true })
+  @Column()
+  taskOrder: string;
+
+  @Field(() => Int, { nullable: true })
+  @Column()
+  afterTaskDelay: number;
+
+  @Field(() => Int, { nullable: true })
+  @Column()
+  afterTaskIdleTime: number;
+
+  @Field(() => String, { nullable: true })
+  @Column()
+  scenario: string;
+
+  @Field(() => String, { nullable: true })
+  @Column()
+  voice: string;
+
+  @Field(() => String, { nullable: true })
+  @Column()
+  replacements: string;
+
+  @Field(() => Int, { nullable: true })
+  @Column()
+  copyFrom: number;
 }
