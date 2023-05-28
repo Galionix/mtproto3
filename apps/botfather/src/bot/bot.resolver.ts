@@ -22,16 +22,11 @@ export class BotResolver {
     private readonly botStateService: BotStateService,
     private readonly messagingSettingsService: SettingsService
   ) {}
-  
-  
+
   @Mutation(() => BotEntity)
   async createBot(@Args("createBotInput") createBotInput: CreateBotInput) {
-    // const { api_id, api_hash, sessionString } = createBotInput; 
-    // const botState = { api_id, api_hash, sessionString };
-
-    const botEntity = await this.botRepositoryService.create({ ...createBotInput });
+    const botEntity = await this.botRepositoryService.create(createBotInput);
     this.botStateService.addBotState(botEntity);
-    // await this.botStateService.reload();
     return botEntity;
   }
 

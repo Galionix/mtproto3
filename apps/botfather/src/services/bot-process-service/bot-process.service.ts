@@ -76,6 +76,7 @@ export class BotProcessService {
         (chProcess) => chProcess.pid !== childProcess.pid
       );
       this.botStateService.updateBotState(api_id, {
+        bot,
         childProcess: null,
         isStarted: false,
         isRunning: false,
@@ -84,7 +85,6 @@ export class BotProcessService {
         error: `childProcess exited with code: ${code}`,
         stoppedDate: Date.now(),
       });
-
     });
     childProcess.on("message", (message) =>
       this.botMessageService.botsMessagesReducer.bind(this.botMessageService)(
@@ -100,6 +100,7 @@ export class BotProcessService {
     //   .find((botState) => botState.bot.api_id === bot.api_id).childProcess =
     //   childProcess;
     this.botStateService.updateBotState(api_id, {
+      bot,
       childProcess: childProcess as any,
       isStarted: true,
       isRunning: true,
@@ -107,7 +108,7 @@ export class BotProcessService {
       //   startedDate: Date.now(),
     });
     // this.
-    return this.botRepositoryService.findOne(api_id);
+    return bot;
   }
 
   async startBots() {
