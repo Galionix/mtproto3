@@ -48,8 +48,9 @@ export const defaultScenario: TScenarioElement[] = [
 
 export const defaultValues: Omit<
   BotEntity,
-  "api_id" | "api_hash" | "sessionString"
+  "api_id" | "api_hash"
 > = {
+  sessionString: "",
   clientState: "",
   clientStateUpdateTime: new Date(Date.now()),
   behaviorModel: "base",
@@ -62,5 +63,5 @@ export const defaultValues: Omit<
   afterTaskIdleTime: 1000,
   voice: "ksenia",
   replacements: "",
-  copyFrom: null,
+  copyFrom: -1,
 };

@@ -26,16 +26,17 @@ export class BotRepositoryService {
     
     if(createBotInput.copyFrom) {
       copyFromBot = await this.botRepository.findOne({
-        where: { api_id: createBotInput.api_id },
+        where: { api_id: createBotInput.copyFrom },
       });
     }
-
+    
     const newBot: BotEntity = {
       ...defaultValues,
       ...copyFromBot,
       ...createBotInput,
     }
 
+    await this.botRepository.save(newBot);
     return newBot;
   }
 

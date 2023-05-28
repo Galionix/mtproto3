@@ -16,7 +16,7 @@ export class BotEntity {
   @Column()
   api_hash: string;
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   @Column()
   sessionString: string;
 
