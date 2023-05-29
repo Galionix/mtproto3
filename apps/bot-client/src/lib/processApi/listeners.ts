@@ -1,5 +1,5 @@
-import { changeUsernameListener } from "../account/username";
-import { groupManageListeners } from "../settings/groupsManage";
+import { changeUsernameListener } from "../listeners/username";
+import { groupManageListeners } from "../listeners/groupsManage";
 import { TListener } from "./combineListeners";
 
 export const listeners: TListener[] = [

@@ -1,11 +1,11 @@
-import { TTask } from "@core/types/client";
+import { TAnyTaskPayload, TTask } from "@core/types/client";
 import { state } from "../state";
 
-const isSenderEqual = (
-  senderId: bigInt.BigInteger,
-  senderId2: bigInt.BigInteger
-) => {
-  return senderId.toString() === senderId2.toString();
+const isSenderEqual = (payload: TAnyTaskPayload, payload2: TAnyTaskPayload) => {
+  if ("senderId" in payload && "senderId" in payload2) {
+    return payload.senderId.toString() === payload2.senderId.toString();
+  }
+  return false;
 };
 
 /*
@@ -20,17 +20,20 @@ export const taskArranger = (tasks: TTask[]): TTask[] => {
   // dedupe by senderId. if senderId is present, we only keep the newest task
   const dedupedTasks = tasks.reduce((acc, task) => {
     const isTaskPresent = acc.find((t) =>
-      isSenderEqual(t.payload.senderId, task.payload.senderId)
+      isSenderEqual(t.payload, task.payload)
     );
+
+    const isIdPresent = acc.find((t) => t.id === task.id);
 
     if (isTaskPresent) {
       return acc.map((t) => {
-        if (isSenderEqual(t.payload.senderId, task.payload.senderId)) {
+        if (isSenderEqual(t.payload, task.payload)) {
           return task;
         }
         return t;
       });
-    } else {
+    }
+    if (!isIdPresent) {
       return [...acc, task];
     }
   }, [] as TTask[]);

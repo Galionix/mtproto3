@@ -122,17 +122,22 @@ input CreateBotInput {
 input JoinGroupsInput {
   api_ids: [Int!]!
   behavior_model: String = "default"
-  chat_ids: [String!]!
+  chatNames: [String!]!
   join_delay: Int = 5000
   processing_enabled: Boolean = false
   spam_frequency: Int = 1000
+}
+
+input LeaveGroupsInput {
+  api_ids: [Int!]!
+  chatNames: [String!]!
 }
 
 type Mutation {
   createAnswer(createDatabaseInput: CreateAnswerEntityInput!): AnswerEntity!
   createBot(createBotInput: CreateBotInput!): BotEntity!
   joinGroups(JoinGroupsInput: JoinGroupsInput!): [BotStateEntity!]!
-  leaveGroups(api_ids: [Int!]!, group_ids: [String!]!, leave_delay: Int): [BotStateEntity!]!
+  leaveGroups(input: LeaveGroupsInput!): [BotStateEntity!]!
   removeAnswer(id: String!): Int!
   removeBot(api_id: Int!): BotEntity!
   restartBot(api_id: Int!): BotEntity!

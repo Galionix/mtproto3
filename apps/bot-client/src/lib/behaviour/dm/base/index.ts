@@ -1,5 +1,6 @@
 import {
   BotEventTypes,
+  TRespondToDMMessage,
   TRespondToDMMessagePayload,
   TTask,
 } from "@core/types/client";
@@ -31,7 +32,7 @@ async function dmHandlerOld(event: NewMessageEvent) {
 // upper function uses functions applied to message entity. we cant use it because
 // we dont have access to message entity in the context of pool of messages
 
-export type TDMHandlerArgs = TTask["payload"] & {
+export type TDMHandlerArgs = TRespondToDMMessagePayload & {
   client: TelegramClient;
 };
 export default async function dmHandler({

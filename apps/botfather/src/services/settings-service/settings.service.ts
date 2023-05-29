@@ -1,9 +1,10 @@
+import { sendToBot } from "@core/functions";
 import { BotEventTypes } from "@core/types/client";
-import { ServerEventTypes, JoinGroupsInput } from "@core/types/server";
+import { JoinGroupsInput, LeaveGroupsInput, ServerEventTypes } from "@core/types/server";
 import { Injectable } from "@nestjs/common";
 import { ChildProcess } from "child_process";
 import { BotStateService } from "../../services/bot-state-service/bot-state.service";
-import { sendToBot } from "@core/functions";
+import { sanitizeGroupNames } from "./utils";
 
 @Injectable()
 export class SettingsService {
@@ -27,7 +28,7 @@ export class SettingsService {
   }
 
   async joinGroups({
-    chat_ids,
+    chatNames,
     api_ids,
     behavior_model,
     processing_enabled,
@@ -44,7 +45,7 @@ export class SettingsService {
           botState.childProcess as ChildProcess,
           {
             event_type: ServerEventTypes.JOIN_GROUPS,
-            chat_ids,
+            chatNames: sanitizeGroupNames(chatNames),
             api_ids,
             behavior_model,
             processing_enabled,
@@ -56,7 +57,7 @@ export class SettingsService {
 
         botStateService.updateBotState(api_id, {
           joining_groups: true,
-          joining_groups_chat_ids: chat_ids,
+          joining_groups_chat_ids: chatNames,
         });
       }
     });
@@ -66,13 +67,8 @@ export class SettingsService {
 
   async leaveGroups({
     api_ids,
-    group_ids,
-    leave_delay,
-  }: {
-    api_ids: number[];
-    group_ids: string[];
-    leave_delay: number;
-  }) {
+    chatNames
+  }: LeaveGroupsInput) {
     const botStateService = this.botStateService;
 
     // const botStates = botStateService.getBotStates();
@@ -84,15 +80,14 @@ export class SettingsService {
           botState.childProcess as ChildProcess,
           {
             event_type: ServerEventTypes.LEAVE_GROUPS,
-            group_ids,
-            leave_delay,
+            chatNames: sanitizeGroupNames(chatNames),
           },
           false
         );
 
         botStateService.updateBotState(api_id, {
           leaving_groups: true,
-          leaving_groups_chat_ids: group_ids,
+          leaving_groups_chat_ids: chatNames,
         });
       }
     });

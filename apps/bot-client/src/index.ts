@@ -79,7 +79,7 @@ const [
   read_delay = "1000",
   type_delay_multiplier = "1",
   taskOrder = temporaryTaskOrder.join(","),
-  afterTaskDelay = "1000",
+  afterTaskDelay = "3000",
   afterTaskIdleTime = "10000",
   scenario = JSON.stringify(temporaryScenario),
   voice = "ksenia",
@@ -145,19 +145,24 @@ const dmHandler = dmHandlers[behavior_model].default as TDMHandler;
   let isRunning = false;
 
   async function runTasks(client: TelegramClient) {
+    console.log(apiId, "runTasks", state.tasks);
     if (isRunning || state.tasks.length === 0) return;
     isRunning = true;
-    let tasks = [...taskArranger(state.tasks)];
-    state.tasks = [];
+    const tasks = [...taskArranger(state.tasks)];
+    // state.tasks = [];
     for (const task of tasks) {
       // this is untested.
-      tasks = [...taskArranger([...state.tasks, ...tasks])];
-      state.tasks = [];
+      // tasks = [...taskArranger([...state.tasks, ...tasks])];
+      // state.tasks = [];
       // the idea is to whatch for new tasks while processing current ones
 
       await taskProcessor(task, client);
       await waitAfterTaskDelay();
     }
+    // if we have processed all available tasks, we need to store rest of them
+    // dont worry, they are deduplicated by id, so we can just add them to the end
+
+    // state.tasks = [...state.tasks];
     await waitAfterTaskIdleTime();
     console.log(`Idle time: ${state.afterTaskIdleTime} of ${state.apiId}`);
     isRunning = false;
@@ -236,7 +241,7 @@ const dmHandler = dmHandlers[behavior_model].default as TDMHandler;
       reducer(message);
     });
 
-    setInterval(() => runTasks(client), 1000);
+    setInterval(() => runTasks(client), state.afterTaskDelay);
   } catch (error) {
     logEvent(BotEventTypes.ERROR, error.message);
   }

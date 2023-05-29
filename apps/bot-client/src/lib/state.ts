@@ -4,6 +4,8 @@ import {
   TState,
 } from "@core/types/client";
 
+const twoHours = 1000 * 60 * 60 * 2;
+
 export const state: TState = {
   voice: "",
   dmDb: [],
@@ -18,7 +20,8 @@ export const state: TState = {
   read_delay: 1000,
   type_delay_multiplier: 1,
   message_probability: 1,
-  latestGroupJoinDate: 0,
+  latestGroupJoinDate: 1685333489917,
+  groupJoinInterval: twoHours,
   scenario: [],
   taskOrder: [],
   afterTaskDelay: 1000,

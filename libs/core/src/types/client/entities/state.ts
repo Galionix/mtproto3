@@ -38,6 +38,7 @@ export type TState = {
   afterTaskDelay: number;
   afterTaskIdleTime: number;
   replacements: TReplacement;
+  groupJoinInterval: number;
 };
 
 // graphql typeorm entity of state

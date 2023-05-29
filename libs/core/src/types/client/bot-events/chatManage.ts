@@ -6,7 +6,7 @@ export enum EChatManageTypes {
 }
 
 export type TChatJoined = TGenericMessage<EChatManageTypes.CHAT_JOINED> & {
-  chat_id: string;
+  chatName: string;
 };
 
 export type TChatLeft = TGenericMessage<EChatManageTypes.CHAT_LEFT> & {

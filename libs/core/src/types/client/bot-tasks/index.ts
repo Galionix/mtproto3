@@ -73,6 +73,35 @@ export interface TRespondToGroupMessage {
   date: number;
   payload: TRespondToGroupMessagePayload;
 }
-export type TTask = TRespondToDMMessage | TRespondToGroupMessage;
+
+export type TGroupJoinTaskPayload = {
+  joinGroupName: string;
+};
+
+export type TGroupJoinTask = TGenericTask<
+  ETaskType.GROUP_JOIN,
+  TGroupJoinTaskPayload
+>;
+
+export type TGroupLeaveTaskPayload = {
+  leaveGroupName: string;
+};
+
+export type TGroupLeaveTask = TGenericTask<
+  ETaskType.GROUP_LEAVE,
+  TGroupLeaveTaskPayload
+>;
+
+export type TTask =
+  | TRespondToDMMessage
+  | TRespondToGroupMessage
+  | TGroupJoinTask
+  | TGroupLeaveTask;
 
 export type TTaskOrder = TAnyTaskType[];
+
+export type TAnyTaskPayload =
+  | TGroupLeaveTaskPayload
+  | TGroupJoinTaskPayload
+  | TRespondToGroupMessagePayload
+  | TRespondToDMMessagePayload;

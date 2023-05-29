@@ -5,7 +5,7 @@ import { Column } from "typeorm";
 export class JoinGroupsInput {
   @Field(() => [String])
   @Column()
-  chat_ids: string[];
+  chatNames: string[];
 
   @Field(() => [Int])
   @Column()

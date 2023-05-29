@@ -8,12 +8,12 @@ function listenChatJoin({
   api_id,
 }: TListenerArgs<TChatJoined>) {
   const { botStateService } = services;
-  const { chat_id } = message;
+  const { chatName } = message;
 
   const { joining_groups_chat_ids } = botStateService.getBotState(api_id);
 
   const newJoiningGroupsChatIds = joining_groups_chat_ids.filter(
-    (id) => id !== chat_id
+    (id) => id !== chatName
   );
 
   botStateService.updateBotState(api_id, {
@@ -28,12 +28,12 @@ function listenChatLeave({
   api_id,
 }: TListenerArgs<TChatJoined>) {
   const { botStateService } = services;
-  const { chat_id } = message;
+  const { chatName } = message;
 
   const { leaving_groups_chat_ids } = botStateService.getBotState(api_id);
 
   const newLeavingGroupsChatIds = leaving_groups_chat_ids.filter(
-    (id) => id !== chat_id
+    (id) => id !== chatName
   );
 
   botStateService.updateBotState(api_id, {

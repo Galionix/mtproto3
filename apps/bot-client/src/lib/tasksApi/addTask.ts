@@ -1,5 +1,7 @@
 import {
   ETaskType,
+  TGroupJoinTask,
+  TGroupLeaveTask,
   TRespondToDMMessage,
   TRespondToDMMessagePayload,
 } from "@core/types/client";
@@ -27,4 +29,38 @@ export const addDmTask = async ({
   sendStateToFatherProcess(state);
 };
 
+export const addJoinGroupTask = async ({
+  joinGroupName,
+}: {
+  joinGroupName: string;
+}) => {
+  const task: TGroupJoinTask = {
+    id: uuid(),
+    type: ETaskType.GROUP_JOIN,
+    date: Date.now(),
+    payload: {
+      joinGroupName,
+    },
+  };
 
+  state.tasks.push(task);
+  sendStateToFatherProcess(state);
+};
+
+export const addLeaveGroupTask = async ({
+  groupName,
+}: {
+  groupName: string;
+}) => {
+  const task: TGroupLeaveTask = {
+    id: uuid(),
+    type: ETaskType.GROUP_LEAVE,
+    date: Date.now(),
+    payload: {
+      leaveGroupName: groupName,
+    },
+  };
+
+  state.tasks.push(task);
+  sendStateToFatherProcess(state);
+};

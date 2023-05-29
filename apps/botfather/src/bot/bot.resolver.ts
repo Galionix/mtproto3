@@ -3,6 +3,7 @@ import {
   BotStateEntity,
   CreateBotInput,
   JoinGroupsInput,
+  LeaveGroupsInput,
   UpdateBotInput,
 } from "@core/types/server";
 import { Logger } from "@nestjs/common";
@@ -42,7 +43,6 @@ export class BotResolver {
 
   @Mutation(() => BotEntity)
   async removeBot(@Args("api_id", { type: () => Int }) api_id: number) {
-    // 1. stop bot
     await this.botProcessService.stopBot(api_id);
     l.log("bot stopped: ", api_id);
 
@@ -102,42 +102,30 @@ export class BotResolver {
 
   @Mutation(() => [BotStateEntity], { name: "joinGroups" })
   async joinGroups(@Args("JoinGroupsInput") joinGroupsInput: JoinGroupsInput) {
-    // flow is the following:
-    // 1. give all bots task to join groups
-    // 2. update their states and return them
-    // 3. set approximate time of completion in state
-
     return await this.messagingSettingsService.joinGroups(joinGroupsInput);
   }
 
   @Mutation(() => [BotStateEntity], { name: "leaveGroups" })
-  async leaveGroups(
-    @Args("group_ids", { type: () => [String] }) group_ids: string[],
-    @Args("api_ids", { type: () => [Int] }) api_ids: number[],
-    @Args("leave_delay", { type: () => Int, nullable: true }) leave_delay = 5000
-  ) {
+  async leaveGroups(@Args("input") leaveGroupsInput: LeaveGroupsInput) {
+    const { api_ids, chatNames } = leaveGroupsInput;
+
     return await this.messagingSettingsService.leaveGroups({
       api_ids,
-      group_ids,
-      leave_delay,
+      chatNames,
     });
   }
 
-  // restart bot
   @Mutation(() => BotEntity, { name: "restartBot" })
   async restartBot(@Args("api_id", { type: () => Int }) api_id: number) {
-    // 1. stop bot
     await this.botProcessService.stopBot(api_id);
     l.log("bot stopped: ", api_id);
 
-    // 2. start bot
     const res = await this.botProcessService.startBot(api_id);
     l.log("bot started: ", api_id);
 
     return res;
   }
 
-  // update bot
   @Mutation(() => BotEntity, { name: "updateBot" })
   async updateBot(
     @Args("api_id", { type: () => Int }) api_id: number,
