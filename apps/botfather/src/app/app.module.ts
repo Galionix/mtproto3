@@ -12,9 +12,17 @@ import responseCachePlugin from "apollo-server-plugin-response-cache";
 import { BotModule } from "../bot/bot.module";
 import { BotEntity, AnswerEntity, StatisticEntity } from "@core/types/server";
 import { DatabaseModule } from "../database/database.module";
+import { MulterModule } from "@nestjs/platform-express";
 
 @Module({
   imports: [
+    MulterModule.registerAsync({
+      imports: [ConfigModule],
+      useFactory: async (config: ConfigService) => ({
+        dest: config.get<string>("UPLOADS_PATH"),
+      }),
+      inject: [ConfigService],
+    }),
     ConfigModule.forRoot({
       isGlobal: true,
     }),

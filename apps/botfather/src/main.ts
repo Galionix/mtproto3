@@ -9,9 +9,11 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app/app.module';
 import { BotProcessService } from "./services/bot-process-service/bot-process.service";
 
+
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  const globalPrefix = 'api/v1';
+  const globalPrefix = "api/v1";
+
   app.setGlobalPrefix(globalPrefix);
   app.useGlobalPipes(new ValidationPipe());
   const port = process.env.API_PORT || 3333;

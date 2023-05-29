@@ -21,13 +21,15 @@ export class DatabaseRepositoryService {
     base_probability,
     behavior_model,
   }: CreateAnswerEntityInput) {
-    // const existingAnswer = await this.databaseRepository.findOne({
-    //   where: { id: createDatabaseInput.id },
-    // });
+    const existingAnswer = await this.databaseRepository.findOne({
+      where: { request },
+    });
 
-    // if (existingAnswer) {
-    //   return existingAnswer;
-    // }
+    if (existingAnswer) {
+      return {
+        error: "Answer already exists for this request: " + request,
+      };
+    }
 
     const newAnswer = this.databaseRepository.save({
       request,
