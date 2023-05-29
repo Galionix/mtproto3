@@ -2,6 +2,7 @@ import {
   Controller,
   Get,
   Post,
+  Res,
   UploadedFile,
   UploadedFiles,
   UseInterceptors,
@@ -11,7 +12,7 @@ import { AppService } from "./app.service";
 import { FilesInterceptor } from "@nestjs/platform-express";
 import { DatabaseRepositoryService } from "../database/database-repository/database-repository.service";
 import { ReadStream } from "typeorm/platform/PlatformTools";
-import { readFile, unlink } from "fs";
+import { readFile, unlink, writeFile, writeFileSync } from "fs";
 import { validateAnswers } from "../utils/file-upload";
 
 @Controller()
@@ -63,7 +64,7 @@ export class AppController {
     for (const file of files) {
       try {
         const data = await readFilePromise(file.path, "utf-8");
-        const { answers } = JSON.parse(data);
+        const answers = JSON.parse(data);
 
         const { isValid, error } = validateAnswers(answers);
 
@@ -100,6 +101,34 @@ export class AppController {
   async getAnswers() {
     const answers = await this.databaseRepository.findAll();
     return answers;
+  }
+
+  @Get("download-answers")
+  async downloadAnswers(@Res() res) {
+    const answers = await this.databaseRepository.findAll();
+    const data = JSON.stringify(answers, null, 2);
+
+    // write data to file
+
+    const filename = process.env.UPLOADS_PATH + "/answers.json";
+
+    writeFileSync(filename, data, {
+      encoding: "utf-8",
+    });
+
+    // send file to client
+    res.download(filename, (err) => {
+      return err;
+    });
+
+    // remove file
+    setTimeout(() => {
+      unlink(filename, (err) => {
+        if (err) {
+          console.log("err: ", err);
+        }
+      });
+    }, 60000);
   }
 }
 
