@@ -102,12 +102,6 @@ state.read_delay = parseInt(read_delay);
 state.type_delay_multiplier = parseInt(type_delay_multiplier);
 state.scenario = JSON.parse(scenario);
 
-// const dmResponseOptions = {
-//   answers_db,
-//   read_delay,
-//   type_delay_multiplier,
-// };
-
 const { readDelay, typeDelay, waitAfterTaskDelay, waitAfterTaskIdleTime } =
   delayFactory();
 
@@ -153,9 +147,14 @@ const dmHandler = dmHandlers[behavior_model].default as TDMHandler;
   async function runTasks(client: TelegramClient) {
     if (isRunning || state.tasks.length === 0) return;
     isRunning = true;
-    const tasks = [...taskArranger(state.tasks)];
+    let tasks = [...taskArranger(state.tasks)];
     state.tasks = [];
     for (const task of tasks) {
+      // this is untested.
+      tasks = [...taskArranger([...state.tasks, ...tasks])];
+      state.tasks = [];
+      // the idea is to whatch for new tasks while processing current ones
+
       await taskProcessor(task, client);
       await waitAfterTaskDelay();
     }

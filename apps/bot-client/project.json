@@ -14,7 +14,8 @@
         "main": "./apps//bot-client//src//index.ts",
         "tsConfig": ".//apps//bot-client//tsconfig.app.json",
         "isolatedConfig": true,
-        "webpackConfig": "apps/bot-client/webpack.config.js"
+        "webpackConfig": "apps/bot-client/webpack.config.js",
+        "verbose": true
       },
       "configurations": {
         "production": {

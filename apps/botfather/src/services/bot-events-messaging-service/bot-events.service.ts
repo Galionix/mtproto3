@@ -47,11 +47,8 @@ export class BotEventsService {
           message,
           api_id,
         });
-        console.log("res: ", res);
-        console.log("message.response_types: ", message.response_types);
         if (res && "event_type" in res) {
           if (message.response_types.includes(res.event_type)) {
-            console.log("sending response: ", res);
             botState.childProcess.send(res);
           }
         }
