@@ -1,21 +1,23 @@
-import { BotEventTypes } from "@core/types/client";
+import { BotEventTypes, BotEvents } from "@core/types/client";
 import { infoListeners } from "./listeners/info.listeners";
 import { accountListeners } from "./listeners/account.listeners";
 import { chatManageListeners } from "./listeners/chat_manage.listeners";
 import { generalListeners } from "./listeners/general.listeners";
 import { TGenericMessage } from "@core/types";
+import { TListenerArgs } from "./bot-events.service";
+import { ServerEvents } from "@core/types/server";
 
 export type TListener = {
   event_type: keyof typeof BotEventTypes;
-  // TODO: fix this any
   // this will lead us to road of chain requests. Think it through later
   listener: (
-    message: any
+    message: TListenerArgs<BotEvents>
   ) =>
     | void
-    | TGenericMessage<any, any>
+    | TGenericMessage<BotEvents, ServerEvents>
     | Promise<void>
-    | Promise<TGenericMessage<any, any>>;
+    | Promise<ServerEvents>
+    | Promise<TGenericMessage<ServerEvents>>;
 };
 const listeners: TListener[] = [
   ...infoListeners,
@@ -26,7 +28,7 @@ const listeners: TListener[] = [
 
 export const combinedListeners = listeners.reduce(
   (acc, { event_type, listener }) => {
-    acc[event_type as any] = listener;
+    acc[event_type] = listener;
     return acc;
   },
   {} as Record<keyof typeof BotEventTypes, TListener["listener"]>

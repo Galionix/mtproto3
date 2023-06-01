@@ -3,6 +3,7 @@ import { ChildProcess, fork } from "child_process";
 import { BotEventsService } from "../bot-events-messaging-service/bot-events.service";
 import { BotStateService } from "../bot-state-service/bot-state.service";
 import { BotRepositoryService } from "../bot-repository-service/bot-repository.service";
+import { ChildProcessEntity } from "@core/types/server";
 
 @Injectable()
 export class BotProcessService {
@@ -101,7 +102,7 @@ export class BotProcessService {
     //   childProcess;
     this.botStateService.updateBotState(api_id, {
       bot,
-      childProcess: childProcess as any,
+      childProcess: childProcess as ChildProcessEntity,
       isStarted: true,
       isRunning: true,
       isStopped: false,

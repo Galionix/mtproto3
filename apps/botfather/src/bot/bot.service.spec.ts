@@ -158,7 +158,6 @@ describe("BotService", () => {
   //     };
   //     // jest.spyOn(global, "setTimeout").mockImplementation((fn) => fn());
 
-  //     // jest.spyOn("child_process", "fork").mockReturnValue(childProcess as any);
 
   //     const result = await service.startBots();
 

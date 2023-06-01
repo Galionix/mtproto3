@@ -12,14 +12,14 @@ export type TListener = {
   event_type: keyof typeof ServerEventTypes;
   listener: (
     args: IDefaultListenerArgs
-  ) => (...args: any) => Promise<void> | void;
+  ) => ({ ...args }) => Promise<void> | void;
 };
 
 export type TCombinedListeners = Record<EventType, TListener["listener"]>;
 
 export const getCombinedListeners = (listeners: TListener[]) => {
   return listeners.reduce((acc, { event_type, listener }) => {
-    acc[event_type as any] = listener;
+    acc[event_type] = listener;
     return acc;
   }, {} as TCombinedListeners);
 };

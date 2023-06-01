@@ -48,7 +48,9 @@ export class BotEventsService {
           api_id,
         });
         if (res && "event_type" in res) {
-          if (message.response_types.includes(res.event_type)) {
+          // TODO: fix this any
+
+          if (message.response_types.includes(res.event_type as any)) {
             botState.childProcess.send(res);
           }
         }

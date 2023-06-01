@@ -3,11 +3,6 @@ import { BotEvents } from "../../../types/client";
 import { ServerEvents } from "../../../types/server/server-events";
 export const WAIT_FOR_MESSAGE_TIMEOUT = 5000;
 
-// export type TsendAndWaitProps = {
-//   child: ChildProcess;
-//   message: any;
-//   onErr?: (err: Error) => void;
-// };
 
 /**
  * Sends a message to a child process and waits for a response.

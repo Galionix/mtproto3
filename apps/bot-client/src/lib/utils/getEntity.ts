@@ -1,3 +1,4 @@
+import bigInt from "big-integer";
 import { TelegramClient, Api } from "telegram";
 
 export async function getChatById(client: TelegramClient, chatId: string) {
@@ -5,10 +6,10 @@ export async function getChatById(client: TelegramClient, chatId: string) {
     // const peer = await client.resolvePeer(chatId);
     // const entity = await client.getEntity(chatId);
     //   const chat = await client.getInputEntity(chatId);
-    const id = BigInt(chatId);
+    const id = bigInt(chatId);
     const entity = await client.invoke(
       new Api.messages.GetChats({
-        id: [id as any],
+        id: [id],
       })
     );
     // console.log("entity: ", entity);
