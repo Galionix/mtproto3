@@ -74,4 +74,8 @@ export class CreateBotInput {
   @Column()
   @IsOptional()
   copyFrom?: number;
+
+  @Field(() => String, { nullable: true })
+  @Column()
+  botName: string;
 }

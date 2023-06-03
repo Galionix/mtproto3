@@ -29,6 +29,7 @@ type BotEntity {
   api_hash: String
   api_id: String
   behaviorModel: String
+  botName: String
   clientState: String
   clientStateUpdateTime: String
   copyFrom: Int
@@ -36,6 +37,7 @@ type BotEntity {
   replacements: String
   scenario: String
   sessionString: String
+  spamDBname: String
   taskOrder: String
   typeDelayMultiplier: String
   voice: String
@@ -109,6 +111,7 @@ input CreateBotInput {
   api_hash: String
   api_id: Int
   behaviorModel: String
+  botName: String
   copyFrom: Int
   readDelay: Int
   replacements: String

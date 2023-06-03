@@ -87,6 +87,29 @@ async function listenBotSyncState({
   await botRepositoryService.updateClientState(api_id, state);
 }
 
+// async function listenBotToRequestGeneralSettings({
+//   services,
+//   message,
+//   api_id,
+// }: TListenerArgs<TGetDatabase>) {
+//   const { botRepositoryService, l } = services;
+
+//   const bot = await botRepositoryService.findOne(api_id);
+
+//   if (bot) {
+//     return {
+//       event_type: ServerEventTypes.GET_GENERAL_SETTINGS_SUCCESS,
+//       settings: bot
+//     }
+//   }
+
+//   return {
+//     event_type: ServerEventTypes.GET_GENERAL_SETTINGS_ERROR,
+//     error: "bot not found"
+//   }
+// }
+  
+
 export const generalListeners = [
   {
     event_type: BotEventTypes.LOG_EVENT,
@@ -101,4 +124,8 @@ export const generalListeners = [
     event_type: BotEventTypes.SEND_STATE_TO_SERVER,
     listener: listenBotSyncState,
   },
+  // {
+  //   event_type: BotEventTypes.GET_GENERAL_SETTINGS,
+  //   listener: listenBotToRequestGeneralSettings
+  // }
 ];

@@ -4,6 +4,7 @@ import { BotEventsService } from "../bot-events-messaging-service/bot-events.ser
 import { BotStateService } from "../bot-state-service/bot-state.service";
 import { BotRepositoryService } from "../bot-repository-service/bot-repository.service";
 import { ChildProcessEntity } from "@core/types/server";
+import { sep } from "path";
 
 @Injectable()
 export class BotProcessService {
@@ -59,10 +60,21 @@ export class BotProcessService {
       return bot;
     }
 
-    const childProcess = fork("dist\\apps\\bot-client\\main.js", [
+    const childProcess = fork("dist" +sep+ "apps" +sep+ "bot-client" +sep+ "main.js", [
       bot.api_id.toString(),
       bot.api_hash,
       bot.sessionString,
+      bot.behaviorModel,
+      bot.answersDb,
+      bot.readDelay.toString(),
+      bot.typeDelayMultiplier.toString(),
+      bot.taskOrder,
+      bot.afterTaskDelay.toString(),
+      bot.afterTaskIdleTime.toString(),
+      bot.scenario,
+      bot.voice,
+      bot.replacements,
+      bot.spamDBname,
       // bot.id,
     ]);
     /* A variable that is not used. */

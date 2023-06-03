@@ -71,4 +71,12 @@ export class BotEntity {
   @Field(() => Int, { nullable: true })
   @Column()
   copyFrom: number;
+
+  @Field(() => String, { nullable: true })
+  @Column()
+  spamDBname: string;
+
+  @Field(() => String, { nullable: true })
+  @Column()
+  botName: string;
 }
