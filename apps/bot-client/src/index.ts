@@ -74,16 +74,17 @@ const [
   apiId,
   apiHash,
   stringSession,
-  behavior_model = "base",
-  answers_db = "base",
-  read_delay = "1000",
-  type_delay_multiplier = "1",
-  taskOrder = temporaryTaskOrder.join(","),
-  afterTaskDelay = "3000",
-  afterTaskIdleTime = "10000",
-  scenario = JSON.stringify(temporaryScenario),
-  voice = "ksenia",
-  replacements = JSON.stringify(temporaryReplacements),
+  behavior_model,
+  answers_db,
+  read_delay,
+  type_delay_multiplier,
+  taskOrder,
+  afterTaskDelay,
+  afterTaskIdleTime,
+  scenario,
+  voice,
+  replacements,
+  spamDBname,
 ] = process.argv.slice(2);
 
 state.replacements = JSON.parse(replacements);
@@ -105,12 +106,10 @@ state.scenario = JSON.parse(scenario);
 const { readDelay, typeDelay, waitAfterTaskDelay, waitAfterTaskIdleTime } =
   delayFactory();
 
-type TDMHandler = (args: TDMHandlerArgs) => Promise<void>;
-const dmHandler = dmHandlers[behavior_model].default as TDMHandler;
-
 (async () => {
   await readDbSequence({
     answers_db,
+    spamDBname,
   });
 
   async function messageOrchestrator(event: NewMessageEvent) {

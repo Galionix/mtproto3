@@ -64,4 +64,6 @@ export const defaultValues: Omit<
   voice: "ksenia",
   replacements: "",
   copyFrom: -1,
+  spamDBname: "base",
+  botName: "baseName",
 };

@@ -49,10 +49,11 @@ export function readDb(db: AnswerEntity[]): {
   return { dmDb, groupDb, channelDb };
 }
 
-export async function readDbSequence({ answers_db }) {
+export async function readDbSequence({ answers_db, spamDBname }) {
   const res = await sendToFather(process, {
     event_type: BotEventTypes.GET_DATABASE,
     database: answers_db,
+    spamDBname: spamDBname,
     response_types: [
       EGetDatabaseResponseTypes.DB_GET_ERROR,
       EGetDatabaseResponseTypes.DB_GET_SUCCESS,

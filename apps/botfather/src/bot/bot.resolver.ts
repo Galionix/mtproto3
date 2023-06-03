@@ -26,6 +26,12 @@ export class BotResolver {
 
   @Mutation(() => BotEntity)
   async createBot(@Args("createBotInput") createBotInput: CreateBotInput) {
+
+    // if bot with this name already exists - throw error
+    const isExistBotName = await this.botRepositoryService.findOneByName(createBotInput.botName);
+    if(isExistBotName) throw new Error("Bot with this name already exists");
+
+    // bot successfully creating
     const botEntity = await this.botRepositoryService.create(createBotInput);
     this.botStateService.addBotState(botEntity);
     return botEntity;

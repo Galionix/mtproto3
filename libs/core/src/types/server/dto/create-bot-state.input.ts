@@ -11,7 +11,7 @@ export class CreateBotStateInput {
 
   @Field(() => String, { nullable: true })
   @Column()
-  @Length(32, 32)
+  // @Length(32, 32)
   api_hash: string;
 
   @Field(() => String, { nullable: true })

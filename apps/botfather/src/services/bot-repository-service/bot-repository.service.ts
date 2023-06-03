@@ -51,6 +51,11 @@ export class BotRepositoryService {
     return res;
   }
 
+  async findOneByName(botName: string): Promise<BotEntity> {
+    const res = await this.botRepository.findOne({ where: { botName } });
+    return res;
+  }
+
   async remove(id: number) {
     const removedId = await this.botRepository.delete(id);
     // await this.botStateService.reload();
