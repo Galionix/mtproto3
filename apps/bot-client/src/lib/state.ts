@@ -12,6 +12,8 @@ export const state: TState = {
   dmDb: [],
   groupDb: [],
   channelDb: [],
+  spamDb: [],
+  spamDbName: "",
   tasks: [],
   apiId: 0,
   apiHash: "",
@@ -28,6 +30,7 @@ export const state: TState = {
   afterTaskDelay: 1000,
   afterTaskIdleTime: 10000,
   replacements: {},
+  groupCounters: {},
 };
 
 // use this with caution!

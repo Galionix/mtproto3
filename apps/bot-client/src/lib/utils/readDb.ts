@@ -49,7 +49,13 @@ export function readDb(db: AnswerEntity[]): {
   return { dmDb, groupDb, channelDb };
 }
 
-export async function readDbSequence({ answers_db, spamDBname }) {
+export async function readDbSequence({
+  answers_db,
+  spamDBname,
+}: {
+  answers_db: string;
+  spamDBname: string;
+}) {
   const res = await sendToFather(process, {
     event_type: BotEventTypes.GET_DATABASE,
     database: answers_db,
@@ -69,13 +75,15 @@ export async function readDbSequence({ answers_db, spamDBname }) {
     logEvent(BotEventTypes.LOG_EVENT, "db response success");
 
     try {
-      const { db } = res;
+      const { db, spamDb } = res;
+      console.log("spamDb: ", spamDb);
 
       const { dmDb, groupDb, channelDb } = readDb(db);
 
       state.dmDb = dmDb;
       state.groupDb = groupDb;
       state.channelDb = channelDb;
+      state.spamDb = spamDb;
     } catch (error) {
       logEvent(BotEventTypes.ERROR, "db read error" + error.message);
       process.exit(1);

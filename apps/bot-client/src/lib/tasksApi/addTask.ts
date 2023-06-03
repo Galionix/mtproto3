@@ -2,6 +2,7 @@ import {
   ETaskType,
   TGroupJoinTask,
   TGroupLeaveTask,
+  TGroupSpamTask,
   TRespondToDMMessage,
   TRespondToDMMessagePayload,
 } from "@core/types/client";
@@ -58,6 +59,25 @@ export const addLeaveGroupTask = async ({
     date: Date.now(),
     payload: {
       leaveGroupName: groupName,
+    },
+  };
+
+  state.tasks.push(task);
+  sendStateToFatherProcess(state);
+};
+
+export const addGroupSpamTask = async ({
+  spamGroupId,
+}: {
+  spamGroupId: bigInt.BigInteger;
+}) => {
+  const task: TGroupSpamTask = {
+    id: uuid(),
+    type: ETaskType.SPAM_TO_GROUP,
+    date: Date.now(),
+    payload: {
+      spamGroupId,
+      spamGroupIdString: spamGroupId.toString(),
     },
   };
 

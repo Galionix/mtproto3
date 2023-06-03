@@ -1,33 +1,38 @@
 import {
   BotEventTypes,
-  TRespondToDMMessage,
+  // TRespondToDMMessage,
   TRespondToDMMessagePayload,
-  TTask,
+  // TTask,
 } from "@core/types/client";
-import { NewMessageEvent } from "telegram/events";
+// import { NewMessageEvent } from "telegram/events";
 import { logEvent } from "../../../processApi/logEventTostate";
 // import { state } from "../../../state";
-import { findDmAnswer } from "../../../utils/messagingUtils";
+import { findDmAnswer, sendMessage } from "../../../utils/messagingUtils";
 // import { message } from "telegram/client";
 import { TelegramClient } from "telegram";
+import {
+  EMessageType,
+  TMessageEntity,
+  TSendableMessage,
+} from "@core/types/server";
 
-async function dmHandlerOld(event: NewMessageEvent) {
-  try {
-    const { message, client } = event;
-    const sender = await message.getSender();
+// async function dmHandlerOld(event: NewMessageEvent) {
+//   try {
+//     const { message, client } = event;
+//     const sender = await message.getSender();
 
-    const answer = findDmAnswer(message.message);
-    console.log("answer", answer);
-    if (!answer) {
-      return;
-    }
-    await client.sendMessage(sender, {
-      message: answer,
-    });
-  } catch (error) {
-    logEvent(BotEventTypes.ERROR_DIRECT_MESSAGE, error.message);
-  }
-}
+//     const answer = findDmAnswer(message.message);
+//     console.log("answer", answer);
+//     if (!answer) {
+//       return;
+//     }
+//     await client.sendMessage(sender, {
+//       message: answer,
+//     });
+//   } catch (error) {
+//     logEvent(BotEventTypes.ERROR_DIRECT_MESSAGE, error.message);
+//   }
+// }
 
 // upper function uses functions applied to message entity. we cant use it because
 // we dont have access to message entity in the context of pool of messages
@@ -64,9 +69,17 @@ export default async function dmHandler({
     if (!answer) {
       return;
     }
-    await client.sendMessage(senderId, {
-      message: answer,
-    });
+    const sendableMessage: TSendableMessage = {
+      receiver: senderId,
+      type: EMessageType.TEXT,
+      payload: {
+        text: answer,
+      },
+    };
+    await sendMessage(client, sendableMessage);
+    // await client.sendMessage(senderId, {
+    //   message: answer,
+    // });
   } catch (error) {
     logEvent(BotEventTypes.ERROR_DIRECT_MESSAGE, error.message);
   }

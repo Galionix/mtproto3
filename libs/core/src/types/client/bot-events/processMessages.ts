@@ -9,6 +9,7 @@ export enum processMessagesTypes {
 
   GET_DATABASE = "GET_DATABASE",
   // GET_GENERAL_SETTINGS = "GET_GENERAL_SETTINGS",
+  GET_SPAM_DATABASE = "GET_SPAM_DATABASE",
 }
 
 type TStarted = TGenericMessage<processMessagesTypes.STARTED>;
@@ -24,6 +25,15 @@ export type TGetDatabase = TGenericMessage<
   database: string;
   spamDBname: string;
 };
+
+export type TGetSpamDatabase = TGenericMessage<
+  processMessagesTypes.GET_SPAM_DATABASE,
+  EGetDatabaseResponseTypes
+> & {
+  database: string;
+  spamDBname: string;
+};
+
 export type TBotErrorMessage = TGenericMessage<processMessagesTypes.ERROR> & {
   error: Error;
 };
@@ -37,6 +47,6 @@ export type TProcessMessages =
   | TStopped
   | TBotErrorMessage
   | TSetSessionString
-  | TGetDatabase;
-  // | TGetGeneralSettings
+  | TGetDatabase
+  | TGetSpamDatabase;
 

@@ -2,11 +2,8 @@ import { EIncomingInteractions } from "./IncomingInteractions";
 import { EChatManageTypes, TChatManage } from "./chatManage";
 import { EBotErrorTypes } from "./errors";
 import { EGeneralBotEventTypes, TBotGeneralEvents } from "./general";
-import { processMessagesTypes, TProcessMessages } from "./processMessages";
-import {
-  registrationMessagesTypes,
-  TRegistrationMessages,
-} from "./registration";
+import { TProcessMessages, processMessagesTypes } from "./processMessages";
+import { registrationMessagesTypes } from "./registration";
 import { TUsernameMessages, usernameMessagesTypes } from "./usernameChange";
 
 // BotEvents is common type for all messages from bot to server. It includes type definition with type field and
@@ -27,10 +24,10 @@ export const BotEventTypes = {
 } as const;
 
 export * from "./chatManage";
+export * from "./errors";
+export * from "./general";
 export * from "./processMessages";
 export * from "./registration";
-export * from "./usernameChange";
 export * from "./sendAndWait";
 export * from "./usernameChange";
-export * from "./general";
-export * from "./errors";
+

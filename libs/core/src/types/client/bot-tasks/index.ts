@@ -1,4 +1,4 @@
-import { Api, TelegramClient } from "telegram";
+import bigInt from "big-integer";
 
 export enum ETaskType {
   RESPOND_TO_DM_MESSAGE = "RESPOND_TO_DM_MESSAGE",
@@ -6,8 +6,6 @@ export enum ETaskType {
   SPAM_TO_GROUP = "SPAM_TO_GROUP",
   GROUP_JOIN = "GROUP_JOIN",
   GROUP_LEAVE = "GROUP_LEAVE",
-  RESPOND_1 = "RESPOND_1",
-  RESPOND_2 = "RESPOND_2",
 }
 export type TAnyTaskType = keyof typeof ETaskType;
 
@@ -92,11 +90,22 @@ export type TGroupLeaveTask = TGenericTask<
   TGroupLeaveTaskPayload
 >;
 
+export type TGroupSpamTaskPayload = {
+  spamGroupId: bigInt.BigInteger;
+  spamGroupIdString: string;
+};
+
+export type TGroupSpamTask = TGenericTask<
+  ETaskType.SPAM_TO_GROUP,
+  TGroupSpamTaskPayload
+>;
+
 export type TTask =
   | TRespondToDMMessage
   | TRespondToGroupMessage
   | TGroupJoinTask
-  | TGroupLeaveTask;
+  | TGroupLeaveTask
+  | TGroupSpamTask;
 
 export type TTaskOrder = TAnyTaskType[];
 
@@ -104,4 +113,5 @@ export type TAnyTaskPayload =
   | TGroupLeaveTaskPayload
   | TGroupJoinTaskPayload
   | TRespondToGroupMessagePayload
-  | TRespondToDMMessagePayload;
+  | TRespondToDMMessagePayload
+  | TGroupSpamTaskPayload;

@@ -1,19 +1,39 @@
 import {
   BotEventTypes,
-  TBotGeneralEvents,
   TGetDatabase,
   TLogEvent,
-  TProcessMessages,
   TSendStateToServer,
   TStatisticsEvent,
 } from "@core/types/client";
 import {
   EGetDatabaseResponseTypes,
   TGetDatabaseResponse,
+  TMessageEntity,
+  EMessageType,
 } from "@core/types/server";
-import { IServiceArgs, TListenerArgs } from "../bot-events.service";
-import { ServerEventTypes } from "@core/types/server";
+import { TListenerArgs } from "../bot-events.service";
 const { BOT_EVENT_LOG_MAX_SIZE } = process.env;
+
+const spamDBValues: TMessageEntity[] = [
+  {
+    type: EMessageType.TEXT,
+    payload: {
+      text: "Hello",
+    },
+  },
+  {
+    type: EMessageType.TEXT,
+    payload: {
+      text: "Hello2",
+    },
+  },
+  {
+    type: EMessageType.TEXT,
+    payload: {
+      text: "Hello3",
+    },
+  },
+];
 
 const MAX_LOG_SIZE = parseInt(BOT_EVENT_LOG_MAX_SIZE);
 
@@ -42,7 +62,7 @@ async function listenForBotToRequestDB({
   message,
   api_id,
 }: TListenerArgs<TGetDatabase>): Promise<TGetDatabaseResponse> {
-  const { database } = message;
+  const { database, spamDBname } = message;
 
   try {
     const { answersRepositoryService, l } = services;
@@ -56,6 +76,7 @@ async function listenForBotToRequestDB({
     return {
       event_type: EGetDatabaseResponseTypes.DB_GET_SUCCESS,
       db,
+      spamDb: spamDBValues,
     };
   } catch (error) {
     return {

@@ -26,6 +26,7 @@ import { delayFactory, getDMMessageStep } from "./lib/utils/messagingUtils";
 import { readDbSequence } from "./lib/utils/readDb";
 import { taskProcessor } from "./lib/tasksApi/processor";
 import { taskArranger } from "./lib/tasksApi/taskArranger";
+import { messageOrchestrator } from "./lib/messagesOrchestrator";
 
 const temporaryTaskOrder: TTaskOrder = [
   ETaskType.RESPOND_TO_DM_MESSAGE,
@@ -102,6 +103,7 @@ state.answers_db = answers_db;
 state.read_delay = parseInt(read_delay);
 state.type_delay_multiplier = parseInt(type_delay_multiplier);
 state.scenario = JSON.parse(scenario);
+state.spamDbName = spamDBname;
 
 const { readDelay, typeDelay, waitAfterTaskDelay, waitAfterTaskIdleTime } =
   delayFactory();
@@ -112,44 +114,18 @@ const { readDelay, typeDelay, waitAfterTaskDelay, waitAfterTaskIdleTime } =
     spamDBname,
   });
 
-  async function messageOrchestrator(event: NewMessageEvent) {
-    const { isPrivate, isChannel, isGroup } = event;
-    if (isPrivate) {
-      const { client, chat, message } = event;
-
-      const senderId = (await message.getSender()).id;
-      const messageText = message.message;
-      logEvent(BotEventTypes.DIRECT_MESSAGE, messageText);
-      const { step, count } = await getDMMessageStep(client, senderId);
-
-      addDmTask({
-        senderId,
-        message: messageText,
-        step,
-        count,
-      });
-      // code below is to move to task handlers
-      //
-      //
-
-      // here we need to create a pool of incoming messages
-      // and somehow process them in sequence
-      // and also we need to keep track on server wehter we have responded to the message
-      // so bot's state on server in dmChats should be updated once we receive a message
-      // with parameters, necessary to respond
-      // and then bot on startup should aplly this state to itself, and then continue.
-    }
-  }
-
   let isRunning = false;
+  // let tasksDisplay = [];
 
   async function runTasks(client: TelegramClient) {
-    console.log(apiId, "runTasks", state.tasks);
+    console.log(apiId, "state.tasks", state.tasks);
     if (isRunning || state.tasks.length === 0) return;
     isRunning = true;
     const tasks = [...taskArranger(state.tasks)];
+    // tasksDisplay = tasks;
     // state.tasks = [];
     for (const task of tasks) {
+      console.log("runTasks: ", tasks);
       // this is untested.
       // tasks = [...taskArranger([...state.tasks, ...tasks])];
       // state.tasks = [];

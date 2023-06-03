@@ -1,8 +1,17 @@
+import { TMessageEntity } from "../../server";
 import { TTask, TTaskOrder } from "../bot-tasks";
 import { TAnswer } from "./botAnswer";
 import { TScenarioElement } from "./scenario";
 export type TReplacement = {
   [key: string]: string;
+};
+type TGroupCounters = {
+  [key: string]: {
+    id: bigInt.BigInteger;
+    messagesSinceLastSpam: number;
+    membersCount: number;
+    spamInterval: number;
+  };
 };
 
 export type TState = {
@@ -39,6 +48,10 @@ export type TState = {
   afterTaskIdleTime: number;
   replacements: TReplacement;
   groupJoinInterval: number;
+  groupCounters: TGroupCounters;
+
+  spamDb: TMessageEntity[];
+  spamDbName: string;
 };
 
 // graphql typeorm entity of state

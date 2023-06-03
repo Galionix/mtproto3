@@ -1,4 +1,3 @@
-import { ChildProcess } from "child_process";
 import { BotEvents } from "../../../types/client";
 import { ServerEvents } from "../../../types/server/server-events";
 export const WAIT_FOR_SERVER_MESSAGE_TIMEOUT = 5000;
