@@ -1,6 +1,6 @@
-import { TMessageEntity } from "../../server";
 import { TTask, TTaskOrder } from "../bot-tasks";
 import { TAnswer } from "./botAnswer";
+import { TMessageEntity } from "./message.entity";
 import { TScenarioElement } from "./scenario";
 export type TReplacement = {
   [key: string]: string;

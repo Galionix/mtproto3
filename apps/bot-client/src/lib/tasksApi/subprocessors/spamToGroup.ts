@@ -1,10 +1,9 @@
 import { client, Api } from "telegram";
 import { TTaskProcessorArgs } from ".";
-import { TGroupSpamTask } from "@core/types/client";
+import { TGroupSpamTask, TSendableMessage } from "@core/types/client";
 import { delayFactory, sendMessage } from "../../utils/messagingUtils";
 import { removeTaskFromQueue } from "../processor";
 import { state } from "../../state";
-import { TMessageEntity, TSendableMessage } from "@core/types/server";
 
 const { readDelay, typeDelay } = delayFactory();
 

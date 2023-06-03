@@ -1,5 +1,5 @@
 import { TGenericMessage } from "../..";
-import { TMessageEntity } from "../entities";
+import { TMessageEntity } from "../../client";
 import { AnswerEntity } from "../entities/database.entity";
 
 export type TDatabase = AnswerEntity[];

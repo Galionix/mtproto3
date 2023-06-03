@@ -5,6 +5,5 @@ export * from "./childProcess.entity";
 export * from "./database.entity";
 export * from "./error.entity";
 export * from "./group.entity";
-export * from "./message.entity";
 export * from "./statistic.entity";
 // @endindex

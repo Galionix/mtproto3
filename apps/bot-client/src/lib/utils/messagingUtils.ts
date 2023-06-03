@@ -2,15 +2,13 @@ import { getRandomInt } from "@core/functions";
 import {
   EDMMessageStep,
   EDMMessageStepValues,
+  EMessageType,
   TAnyDMMessageStep,
+  TSendableMessage,
 } from "@core/types/client";
 import { Api, TelegramClient } from "telegram";
 import { state } from "../state";
-import {
-  TMessageEntity,
-  EMessageType,
-  TSendableMessage,
-} from "@core/types/server";
+
 
 export const findDmAnswer = (request: string) => {
   let res: string = null;

@@ -1,19 +1,20 @@
 import {
   BotEventTypes,
+  EMessageType,
   TGetDatabase,
   TLogEvent,
+  TMessageEntity,
   TSendStateToServer,
   TStatisticsEvent,
 } from "@core/types/client";
 import {
   EGetDatabaseResponseTypes,
   TGetDatabaseResponse,
-  TMessageEntity,
-  EMessageType,
 } from "@core/types/server";
 import { TListenerArgs } from "../bot-events.service";
 const { BOT_EVENT_LOG_MAX_SIZE } = process.env;
 
+// TODO: remove this
 const spamDBValues: TMessageEntity[] = [
   {
     type: EMessageType.TEXT,
@@ -71,6 +72,7 @@ async function listenForBotToRequestDB({
       behavior_model: database,
     });
 
+    // TODO: query spamdb repos by spamDBname
     l.log("bot requested db", api_id, message);
 
     return {
@@ -129,7 +131,7 @@ async function listenBotSyncState({
 //     error: "bot not found"
 //   }
 // }
-  
+
 
 export const generalListeners = [
   {

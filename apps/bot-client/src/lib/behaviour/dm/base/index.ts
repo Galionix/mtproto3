@@ -1,7 +1,9 @@
 import {
   BotEventTypes,
+  EMessageType,
   // TRespondToDMMessage,
   TRespondToDMMessagePayload,
+  TSendableMessage,
   // TTask,
 } from "@core/types/client";
 // import { NewMessageEvent } from "telegram/events";
@@ -10,11 +12,7 @@ import { logEvent } from "../../../processApi/logEventTostate";
 import { findDmAnswer, sendMessage } from "../../../utils/messagingUtils";
 // import { message } from "telegram/client";
 import { TelegramClient } from "telegram";
-import {
-  EMessageType,
-  TMessageEntity,
-  TSendableMessage,
-} from "@core/types/server";
+
 
 // async function dmHandlerOld(event: NewMessageEvent) {
 //   try {

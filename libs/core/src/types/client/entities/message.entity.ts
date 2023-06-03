@@ -7,6 +7,8 @@ export enum EMessageType {
   STICKER = "STICKER",
   REACTION = "REACTION",
 }
+export const EMessageTypeValues = Object.values(EMessageType);
+
 type TTextMessagePayload = {
   text: string;
 };
@@ -61,6 +63,6 @@ export type TMessageEntity =
 // TODO: create graphql schema instead of this
 
 export type TSendableMessage = TMessageEntity & {
-  receiver?: number | bigInt.BigInteger;
+  receiver: number | bigInt.BigInteger;
   replyToMessageId?: number;
 };

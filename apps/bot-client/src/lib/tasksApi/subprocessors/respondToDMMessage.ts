@@ -1,10 +1,14 @@
-import { TRespondToDMMessage, EDMMessageStep } from "@core/types/client";
+import {
+  TRespondToDMMessage,
+  EDMMessageStep,
+  EMessageType,
+  TSendableMessage,
+} from "@core/types/client";
 import { TTaskProcessorArgs } from ".";
 import dmHandler from "../../behaviour/dm/base";
 import scenarioHandler from "../../behaviour/dm/scenarioHandler";
 import { removeTaskFromQueue } from "../processor";
 import { delayFactory } from "../../utils/messagingUtils";
-import { EMessageType, TSendableMessage } from "@core/types/server";
 
 const { readDelay, typeDelay } = delayFactory();
 
