@@ -7,7 +7,7 @@ export enum EMessageType {
   STICKER = "STICKER",
   REACTION = "REACTION",
 }
-export const EMessageTypeValues = Object.values(EMessageType);
+export const MessageTypeValues = Object.values(EMessageType);
 
 type TTextMessagePayload = {
   text: string;
