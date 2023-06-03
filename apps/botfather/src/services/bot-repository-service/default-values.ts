@@ -65,5 +65,5 @@ export const defaultValues: Omit<
   replacements: "",
   copyFrom: -1,
   spamDBname: "base",
-  botName: "base name",
+  botName: "baseName",
 };
