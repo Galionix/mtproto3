@@ -9,7 +9,9 @@
     "botfather:e2e:watch": "nx e2e botfather-e2e --watch",
     "botfather:e2e:coverage": "nx e2e botfather-e2e --coverage",
     "bot-client:build": "nx build bot-client",
-    "bot-client:build:watch": "nodemon"
+    "bot-client:build:watch": "nodemon",
+    "bot-client:test": "nx test bot-client --coverage",
+    "bot-client:test:watch": "nx test bot-client --watch --verbose"
   },
   "private": true,
   "dependencies": {
