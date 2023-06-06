@@ -11,7 +11,7 @@ import { ApolloServerPluginCacheControl } from "apollo-server-core/dist/plugin/c
 import responseCachePlugin from "apollo-server-plugin-response-cache";
 import { BotModule } from "../bot/bot.module";
 import { BotEntity, AnswerEntity, StatisticEntity, MessageEntity } from "@core/types/server";
-import { DatabaseModule } from "../databases/database.module";
+import { AnswersRepositoryModule } from "../databases/answers-repository/answers-repository.module";
 import { MulterModule } from "@nestjs/platform-express";
 import { SpamMessageModule } from "../databases/spam-repository/spam-database.module";
 
@@ -62,7 +62,7 @@ import { SpamMessageModule } from "../databases/spam-repository/spam-database.mo
         responseCachePlugin(),
       ],
     }),
-    DatabaseModule,
+    AnswersRepositoryModule,
     BotModule,
     SpamMessageModule,
   ],

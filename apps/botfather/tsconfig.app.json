@@ -8,5 +8,5 @@
     "target": "es2015"
   },
   "exclude": ["jest.config.ts", "src/**/*.spec.ts", "src/**/*.test.ts"],
-  "include": ["src/**/*.ts", "src/bot/index.ts", "../../libs/core/src/types/server/entities/database.entity.ts", "../../libs/core/src/types/server/entities/statistic.entity.ts"]
+  "include": ["src/**/*.ts", "src/bot/index.ts", "../../libs/core/src/types/server/entities/answer.entity.ts", "../../libs/core/src/types/server/entities/statistic.entity.ts"]
 }

@@ -10,7 +10,7 @@ import {
 
 import { AppService } from "./app.service";
 import { FilesInterceptor } from "@nestjs/platform-express";
-import { DatabaseRepositoryService } from "../databases/database-repository/database-repository.service";
+import { DatabaseRepositoryService } from "../databases/answers-repository/answers-repository.service";
 import { ReadStream } from "typeorm/platform/PlatformTools";
 import { readFile, unlink, writeFile, writeFileSync } from "fs";
 import { validateAnswers } from "../utils/file-upload";

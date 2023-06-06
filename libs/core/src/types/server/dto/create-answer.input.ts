@@ -1,5 +1,4 @@
-import { InputType, Int, Field } from "@nestjs/graphql";
-import { Column } from "typeorm";
+import { Field, InputType } from "@nestjs/graphql";
 
 @InputType()
 export class CreateAnswerEntityInput {

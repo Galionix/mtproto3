@@ -1,5 +1,5 @@
 import { Test, TestingModule } from "@nestjs/testing";
-import { DatabaseResolver } from "./database.resolver";
+import { DatabaseResolver } from "./answers-repository.resolver";
 import { DatabaseService } from "./database.service";
 
 describe("DatabaseResolver", () => {

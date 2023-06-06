@@ -1,6 +1,6 @@
 import { TGenericMessage } from "../..";
 import { TMessageEntity } from "../../client";
-import { AnswerEntity } from "../entities/database.entity";
+import { AnswerEntity } from "../entities/answer.entity";
 
 export type TDatabase = AnswerEntity[];
 export enum EGetDatabaseResponseTypes {

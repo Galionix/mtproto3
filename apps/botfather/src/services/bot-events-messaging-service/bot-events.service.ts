@@ -1,6 +1,6 @@
 import { TProcessMessages } from "@core/types/client";
 import { Injectable, Logger } from "@nestjs/common";
-import { DatabaseRepositoryService } from "../../databases/database-repository/database-repository.service";
+import { DatabaseRepositoryService } from "../../databases/answers-repository/answers-repository.service";
 import { BotRepositoryService } from "../bot-repository-service/bot-repository.service";
 import { BotStateService } from "../bot-state-service/bot-state.service";
 import { combinedListeners } from "./listeners";
