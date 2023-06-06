@@ -6,4 +6,5 @@ export * from "./join-group.input";
 export * from "./leave-groups.input";
 export * from "./update-bot.input";
 export * from "./update-database.input";
+export * from "./create-spam-message.input"
 // @endindex

@@ -10,9 +10,10 @@ import { join } from "path";
 import { ApolloServerPluginCacheControl } from "apollo-server-core/dist/plugin/cacheControl";
 import responseCachePlugin from "apollo-server-plugin-response-cache";
 import { BotModule } from "../bot/bot.module";
-import { BotEntity, AnswerEntity, StatisticEntity } from "@core/types/server";
-import { DatabaseModule } from "../database/database.module";
+import { BotEntity, AnswerEntity, StatisticEntity, MessageEntity } from "@core/types/server";
+import { DatabaseModule } from "../databases/database.module";
 import { MulterModule } from "@nestjs/platform-express";
+import { SpamMessageModule } from "../databases/spam-repository/spam-database.module";
 
 @Module({
   imports: [
@@ -43,7 +44,7 @@ import { MulterModule } from "@nestjs/platform-express";
         username: config.get<string>("TYPEORM_USERNAME"),
         password: config.get<string>("TYPEORM_PASSWORD"),
         database: config.get<string>("TYPEORM_DATABASE"),
-        entities: [BotEntity, AnswerEntity, StatisticEntity],
+        entities: [BotEntity, AnswerEntity, StatisticEntity, MessageEntity],
         synchronize: true,
         // playground: true,
         // dropSchema: true,
@@ -63,6 +64,7 @@ import { MulterModule } from "@nestjs/platform-express";
     }),
     DatabaseModule,
     BotModule,
+    SpamMessageModule,
   ],
   controllers: [AppController],
   providers: [AppService],

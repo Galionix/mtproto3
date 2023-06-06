@@ -6,4 +6,5 @@ export * from "./database.entity";
 export * from "./error.entity";
 export * from "./group.entity";
 export * from "./statistic.entity";
+export * from "./message.entity";
 // @endindex

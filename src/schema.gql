@@ -122,6 +122,44 @@ input CreateBotInput {
   voice: String
 }
 
+input CreateSpamMessageInput {
+  """payload of audio for message"""
+  audio: String
+
+  """payload of caption for message"""
+  caption: String
+
+  """coefficient for message"""
+  coefficient: String
+
+  """db_name"""
+  db_name: String
+
+  """notes"""
+  description: String
+
+  """entity id"""
+  id: String
+
+  """payload of photo for message"""
+  photo: String
+
+  """payload of reaction for message"""
+  reaction: String
+
+  """payload of sticker for message"""
+  sticker: String
+
+  """payload of text for message"""
+  text: String
+
+  """value of EMessageType"""
+  type: String
+
+  """payload of video for message"""
+  video: String
+}
+
 input JoinGroupsInput {
   api_ids: [Int!]!
   behavior_model: String = "default"
@@ -136,9 +174,48 @@ input LeaveGroupsInput {
   chatNames: [String!]!
 }
 
+type MessageEntity {
+  """payload of audio for message"""
+  audio: String
+
+  """payload of caption for message"""
+  caption: String
+
+  """coefficient for message"""
+  coefficient: String
+
+  """db_name"""
+  db_name: String
+
+  """notes"""
+  description: String
+
+  """entity id"""
+  id: String
+
+  """payload of photo for message"""
+  photo: String
+
+  """payload of reaction for message"""
+  reaction: String
+
+  """payload of sticker for message"""
+  sticker: String
+
+  """payload of text for message"""
+  text: String
+
+  """value of EMessageType"""
+  type: String
+
+  """payload of video for message"""
+  video: String
+}
+
 type Mutation {
   createAnswer(createDatabaseInput: CreateAnswerEntityInput!): AnswerEntity!
   createBot(createBotInput: CreateBotInput!): BotEntity!
+  createSpamMessage(createSpamMessageInput: CreateSpamMessageInput!): MessageEntity!
   joinGroups(JoinGroupsInput: JoinGroupsInput!): [BotStateEntity!]!
   leaveGroups(input: LeaveGroupsInput!): [BotStateEntity!]!
   removeAnswer(id: String!): Int!
@@ -158,6 +235,7 @@ type Query {
   getProcessesCount: Int!
   reloadStates: [BotStateEntity!]!
   someAnswers(findSomeAnswersInput: UpdateDatabaseInput!): [AnswerEntity!]!
+  spamMessages: [MessageEntity!]!
   startBot(api_id: Int!): BotEntity!
   startBots: [BotEntity!]!
   stopBot(api_id: Int!): BotStateEntity!

@@ -3,7 +3,7 @@ import { DatabaseService } from "./database.service";
 import { DatabaseResolver } from "./database.resolver";
 import { DatabaseRepositoryService } from "./database-repository/database-repository.service";
 import { TypeOrmModule } from "@nestjs/typeorm";
-import { AnswerEntity } from "../../../../libs/core/src/types/server/entities/database.entity";
+import { AnswerEntity } from "@core/types/server";
 
 @Module({
   imports: [TypeOrmModule.forFeature([AnswerEntity])],

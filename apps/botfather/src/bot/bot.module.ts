@@ -8,7 +8,7 @@ import { BotStateService } from "../services/bot-state-service/bot-state.service
 import { BotEventsService } from "../services/bot-events-messaging-service/bot-events.service";
 import { BotRepositoryService } from "../services/bot-repository-service/bot-repository.service";
 import { SettingsService } from "../services/settings-service/settings.service";
-import { DatabaseRepositoryService } from "../database/database-repository/database-repository.service";
+import { DatabaseRepositoryService } from "../databases/database-repository/database-repository.service";
 
 @Module({
   imports: [
