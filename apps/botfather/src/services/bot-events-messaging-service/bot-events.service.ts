@@ -1,16 +1,18 @@
 import { TProcessMessages } from "@core/types/client";
 import { Injectable, Logger } from "@nestjs/common";
-import { DatabaseRepositoryService } from "../../database/database-repository/database-repository.service";
 import { BotRepositoryService } from "../bot-repository-service/bot-repository.service";
 import { BotStateService } from "../bot-state-service/bot-state.service";
 import { combinedListeners } from "./listeners";
+import { AnswersRepositoryService } from "../../databases/answers-repository/answers-repository.service";
+import { SpamRepositoryService } from "../../databases/spam-repository/spam-repository.service";
 
 const l = new Logger("BotEventsService");
 
 export interface IServiceArgs {
   botStateService: BotStateService;
   botRepositoryService: BotRepositoryService;
-  answersRepositoryService: DatabaseRepositoryService;
+  answersRepositoryService: AnswersRepositoryService;
+  spamRepositoryService: SpamRepositoryService
   // add statistics service
   l: Logger;
 }
@@ -26,7 +28,8 @@ export class BotEventsService {
   constructor(
     private readonly botStateService: BotStateService,
     private readonly botRepositoryService: BotRepositoryService,
-    private readonly answersRepositoryService: DatabaseRepositoryService
+    private readonly answersRepositoryService: AnswersRepositoryService,
+    private readonly spamRepositoryService: SpamRepositoryService
   ) {}
 
   async botsMessagesReducer(message: TProcessMessages, api_id: number) {
@@ -38,6 +41,7 @@ export class BotEventsService {
       botStateService: this.botStateService,
       botRepositoryService: this.botRepositoryService,
       answersRepositoryService: this.answersRepositoryService,
+      spamRepositoryService: this.spamRepositoryService,
       l,
     };
     if (botState) {

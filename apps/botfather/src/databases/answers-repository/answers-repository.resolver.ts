@@ -1,42 +1,41 @@
 import { Resolver, Query, Mutation, Args, Int } from "@nestjs/graphql";
-import { DatabaseService } from "./database.service";
-import { DatabaseRepositoryService } from "./database-repository/database-repository.service";
 import {
   AnswerEntity,
   CreateAnswerEntityInput,
-  UpdateDatabaseInput,
+  UpdateAnswersRepositoryInput,
 } from "@core/types/server";
+import { AnswersRepositoryService } from "./answers-repository.service";
 
 @Resolver(() => AnswerEntity)
-export class DatabaseResolver {
+export class AnswersRepositoryResolver {
   constructor(
-    private readonly databaseRepositoryService: DatabaseRepositoryService
+    private readonly answersRepositoryService: AnswersRepositoryService
   ) {}
 
   @Mutation(() => AnswerEntity)
   async createAnswer(
-    @Args("createDatabaseInput") createDatabaseInput: CreateAnswerEntityInput
+    @Args("createAnswerInput") createAnswerInput: CreateAnswerEntityInput
   ) {
-    return this.databaseRepositoryService.create(createDatabaseInput);
+    return this.answersRepositoryService.create(createAnswerInput);
   }
 
   @Query(() => [AnswerEntity], { name: "answers" })
   findAll() {
-    return this.databaseRepositoryService.findAll();
+    return this.answersRepositoryService.findAll();
   }
 
   // findSome
   @Query(() => [AnswerEntity], { name: "someAnswers" })
   async someAnswers(
     @Args("findSomeAnswersInput")
-    findSomeAnswersInput: UpdateDatabaseInput
+    findSomeAnswersInput: UpdateAnswersRepositoryInput
   ) {
-    return this.databaseRepositoryService.findSome(findSomeAnswersInput);
+    return this.answersRepositoryService.findSome(findSomeAnswersInput);
   }
 
   @Query(() => AnswerEntity, { name: "answer", nullable: true })
   findOne(@Args("name", { type: () => String }) name: string) {
-    return this.databaseRepositoryService.findOne(name);
+    return this.answersRepositoryService.findOne(name);
   }
 
   // @Mutation(() => AnswerEntity)
@@ -51,7 +50,7 @@ export class DatabaseResolver {
 
   @Mutation(() => Int)
   removeAnswer(@Args("id", { type: () => String }) id: string) {
-    return this.databaseRepositoryService.remove(id);
+    return this.answersRepositoryService.remove(id);
   }
 
   // getAnswersByBehaviorModel(behavior_model: string)

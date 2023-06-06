@@ -3,7 +3,7 @@ import {
   EMessageType,
   TGetDatabase,
   TLogEvent,
-  TMessageEntity,
+  TClientMessage,
   TSendStateToServer,
   TStatisticsEvent,
 } from "@core/types/client";
@@ -12,29 +12,8 @@ import {
   TGetDatabaseResponse,
 } from "@core/types/server";
 import { TListenerArgs } from "../bot-events.service";
+import { messageTranformer } from "./utils";
 const { BOT_EVENT_LOG_MAX_SIZE } = process.env;
-
-// TODO: remove this
-const spamDBValues: TMessageEntity[] = [
-  {
-    type: EMessageType.TEXT,
-    payload: {
-      text: "Hello",
-    },
-  },
-  {
-    type: EMessageType.TEXT,
-    payload: {
-      text: "Hello2",
-    },
-  },
-  {
-    type: EMessageType.TEXT,
-    payload: {
-      text: "Hello3",
-    },
-  },
-];
 
 const MAX_LOG_SIZE = parseInt(BOT_EVENT_LOG_MAX_SIZE);
 
@@ -66,10 +45,13 @@ async function listenForBotToRequestDB({
   const { database, spamDBname } = message;
 
   try {
-    const { answersRepositoryService, l } = services;
+    const { answersRepositoryService, spamRepositoryService, l } = services;
 
     const db = await answersRepositoryService.findSome({
       behavior_model: database,
+    });
+    const spamDb = await spamRepositoryService.findSome({
+      db_name: spamDBname,
     });
 
     // TODO: query spamdb repos by spamDBname
@@ -78,7 +60,7 @@ async function listenForBotToRequestDB({
     return {
       event_type: EGetDatabaseResponseTypes.DB_GET_SUCCESS,
       db,
-      spamDb: spamDBValues,
+      spamDb: messageTranformer(spamDb),
     };
   } catch (error) {
     return {

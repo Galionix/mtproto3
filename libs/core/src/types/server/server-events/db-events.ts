@@ -1,6 +1,6 @@
 import { TGenericMessage } from "../..";
-import { TMessageEntity } from "../../client";
-import { AnswerEntity } from "../entities/database.entity";
+import { TClientMessage } from "../../client";
+import { AnswerEntity } from "../entities/answer.entity";
 
 export type TDatabase = AnswerEntity[];
 export enum EGetDatabaseResponseTypes {
@@ -11,7 +11,7 @@ export enum EGetDatabaseResponseTypes {
 export type TGetDatabaseSuccess =
   TGenericMessage<EGetDatabaseResponseTypes.DB_GET_SUCCESS> & {
     db: TDatabase;
-    spamDb: TMessageEntity[];
+    spamDb: TClientMessage[];
   };
 
 export type TGetDatabaseError =

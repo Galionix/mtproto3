@@ -52,7 +52,7 @@ type TStickerMessage = TGeneralMessage<
   TStickerMessagePayload
 >;
 
-export type TMessageEntity =
+export type TClientMessage =
   | TTextMessage
   | TReactionMessage
   | TPhotoMessage
@@ -60,9 +60,16 @@ export type TMessageEntity =
   | TAudioMessage
   | TStickerMessage;
 
+
+const myMessage: TClientMessage = {
+  type: EMessageType.TEXT,
+  payload: {
+    text: "hello",
+  },
+};
 // TODO: create graphql schema instead of this
 
-export type TSendableMessage = TMessageEntity & {
+export type TSendableMessage = TClientMessage & {
   receiver: number | bigInt.BigInteger;
   replyToMessageId?: number;
 };

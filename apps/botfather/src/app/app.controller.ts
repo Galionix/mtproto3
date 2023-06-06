@@ -3,23 +3,21 @@ import {
   Get,
   Post,
   Res,
-  UploadedFile,
   UploadedFiles,
-  UseInterceptors,
+  UseInterceptors
 } from "@nestjs/common";
 
-import { AppService } from "./app.service";
 import { FilesInterceptor } from "@nestjs/platform-express";
-import { DatabaseRepositoryService } from "../database/database-repository/database-repository.service";
-import { ReadStream } from "typeorm/platform/PlatformTools";
-import { readFile, unlink, writeFile, writeFileSync } from "fs";
+import { readFile, unlink, writeFileSync } from "fs";
+import { AnswersRepositoryService } from "../databases/answers-repository/answers-repository.service";
 import { validateAnswers } from "../utils/file-upload";
+import { AppService } from "./app.service";
 
 @Controller()
 export class AppController {
   constructor(
     private readonly appService: AppService,
-    private readonly databaseRepository: DatabaseRepositoryService
+    private readonly answersRepository: AnswersRepositoryService
   ) {}
 
   @Get()
@@ -74,7 +72,7 @@ export class AppController {
 
         for (const answer of answers) {
           console.log("answer: ", answer);
-          const res = await this.databaseRepository.create(answer);
+          const res = await this.answersRepository.create(answer);
           if ("error" in res) {
             return res;
           }
@@ -99,13 +97,13 @@ export class AppController {
 
   @Get("get-answers")
   async getAnswers() {
-    const answers = await this.databaseRepository.findAll();
+    const answers = await this.answersRepository.findAll();
     return answers;
   }
 
   @Get("download-answers")
   async downloadAnswers(@Res() res) {
-    const answers = await this.databaseRepository.findAll();
+    const answers = await this.answersRepository.findAll();
     const data = JSON.stringify(answers, null, 2);
 
     // write data to file

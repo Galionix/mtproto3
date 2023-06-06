@@ -1,14 +1,13 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
-// import { AnswerEntity } from "../../../../../libs/core/src/types/server/entities/database.entity";
 import { AnswerEntity, CreateAnswerEntityInput } from "@core/types/server";
 
 @Injectable()
-export class DatabaseRepositoryService {
+export class AnswersRepositoryService {
   constructor(
     @InjectRepository(AnswerEntity)
-    private readonly databaseRepository: Repository<AnswerEntity>
+    private readonly answersRepository: Repository<AnswerEntity>
   ) {}
 
   async create({
@@ -21,7 +20,7 @@ export class DatabaseRepositoryService {
     base_probability,
     behavior_model,
   }: CreateAnswerEntityInput) {
-    const existingAnswer = await this.databaseRepository.findOne({
+    const existingAnswer = await this.answersRepository.findOne({
       where: { request },
     });
 
@@ -31,7 +30,7 @@ export class DatabaseRepositoryService {
       };
     }
 
-    const newAnswer = this.databaseRepository.save({
+    const newAnswer = this.answersRepository.save({
       request,
       response,
       description,
@@ -46,25 +45,25 @@ export class DatabaseRepositoryService {
   }
 
   async findAll() {
-    const answers = await this.databaseRepository.find();
+    const answers = await this.answersRepository.find();
 
     return answers;
   }
 
   async findOne(id: string): Promise<AnswerEntity> {
-    const res = await this.databaseRepository.findOne({ where: { id } });
+    const res = await this.answersRepository.findOne({ where: { id } });
     return res;
   }
 
   async remove(id: string) {
-    const { affected } = await this.databaseRepository.delete(id);
+    const { affected } = await this.answersRepository.delete(id);
     return affected;
   }
 
   async findSome(
     input: Partial<CreateAnswerEntityInput>
   ): Promise<AnswerEntity[]> {
-    return await this.databaseRepository.find({
+    return await this.answersRepository.find({
       where: input,
     });
   }

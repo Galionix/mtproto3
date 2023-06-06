@@ -1,6 +1,6 @@
 import { Test, TestingModule } from "@nestjs/testing";
-import { DatabaseResolver } from "./database.resolver";
-import { DatabaseService } from "./database.service";
+import { DatabaseResolver } from "./spam-database.resolver";
+import { DatabaseService } from "./spam-database.service";
 
 describe("DatabaseResolver", () => {
   let resolver: DatabaseResolver;
