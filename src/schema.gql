@@ -213,7 +213,7 @@ type MessageEntity {
 }
 
 type Mutation {
-  createAnswer(createDatabaseInput: CreateAnswerEntityInput!): AnswerEntity!
+  createAnswer(createAnswerInput: CreateAnswerEntityInput!): AnswerEntity!
   createBot(createBotInput: CreateBotInput!): BotEntity!
   createSpamMessage(createSpamMessageInput: CreateSpamMessageInput!): MessageEntity!
   joinGroups(JoinGroupsInput: JoinGroupsInput!): [BotStateEntity!]!
@@ -234,7 +234,7 @@ type Query {
   getBotStates: [BotStateEntity!]!
   getProcessesCount: Int!
   reloadStates: [BotStateEntity!]!
-  someAnswers(findSomeAnswersInput: UpdateDatabaseInput!): [AnswerEntity!]!
+  someAnswers(findSomeAnswersInput: UpdateAnswersRepositoryInput!): [AnswerEntity!]!
   spamMessages: [MessageEntity!]!
   startBot(api_id: Int!): BotEntity!
   startBots: [BotEntity!]!
@@ -242,20 +242,7 @@ type Query {
   stopBots: [BotEntity!]!
 }
 
-input UpdateBotInput {
-  afterTaskDelay: Int
-  afterTaskIdleTime: Int
-  answersDb: String
-  behaviorModel: String
-  readDelay: Int
-  replacements: String
-  scenario: String
-  taskOrder: String
-  typeDelayMultiplier: String
-  voice: String
-}
-
-input UpdateDatabaseInput {
+input UpdateAnswersRepositoryInput {
   """base_probability"""
   base_probability: String
 
@@ -279,4 +266,17 @@ input UpdateDatabaseInput {
 
   """response"""
   response: String
+}
+
+input UpdateBotInput {
+  afterTaskDelay: Int
+  afterTaskIdleTime: Int
+  answersDb: String
+  behaviorModel: String
+  readDelay: Int
+  replacements: String
+  scenario: String
+  taskOrder: String
+  typeDelayMultiplier: String
+  voice: String
 }

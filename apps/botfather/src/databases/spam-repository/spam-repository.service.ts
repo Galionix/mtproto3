@@ -21,6 +21,15 @@ export class SpamRepositoryService {
     const spamMessages = await this.spamRepository.find();
     return spamMessages;
   }
+
+
+  async findSome(
+    input: Partial<MessageEntity>
+  ): Promise<MessageEntity[]> {
+    return await this.spamRepository.find({
+      where: input,
+    });
+  }
   // async findAll() {
   //   const answers = await this.spamRepository.find();
 
