@@ -225,6 +225,7 @@ type Mutation {
   removeMessages(ids: [String!]!): Int!
   restartBot(api_id: Int!): BotEntity!
   setUsername(api_id: Int!, username: String!): String!
+  updateAnswer(updateAnswerInput: UpdateAnswersRepositoryInput!): AnswerEntity!
   updateBot(api_id: Int!, updateBotInput: UpdateBotInput!): BotEntity!
   updateMessage(updateMessageInput: UpdateMessageInput!): MessageEntity!
 }
@@ -278,6 +279,9 @@ input UpdateAnswersRepositoryInput {
 
   """description"""
   description: String
+
+  """entity id"""
+  id: String
 
   """isChannelAnswer"""
   isChannelAnswer: Boolean

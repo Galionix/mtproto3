@@ -63,4 +63,10 @@ export class AnswersRepositoryResolver {
   //     behavior_model
   //   );
   // }
+  @Mutation(() => AnswerEntity)
+  async updateAnswer(
+    @Args("updateAnswerInput") updateAnswerInput: UpdateAnswersRepositoryInput
+  ) {
+    return await this.answersRepositoryService.update(updateAnswerInput);
+  }
 }

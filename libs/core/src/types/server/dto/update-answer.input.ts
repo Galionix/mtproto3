@@ -1,5 +1,12 @@
+import { Column } from "typeorm";
 import { CreateAnswerEntityInput } from "./create-answer.input";
-import { InputType, PartialType } from "@nestjs/graphql";
+import { Field, InputType, PartialType } from "@nestjs/graphql";
 
 @InputType()
-export class UpdateAnswersRepositoryInput extends PartialType(CreateAnswerEntityInput) {}
+export class UpdateAnswersRepositoryInput extends PartialType(
+  CreateAnswerEntityInput
+) {
+  @Field(() => String, { description: "entity id", nullable: true })
+  @Column("uuid")
+  id: string;
+}

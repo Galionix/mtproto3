@@ -6,6 +6,7 @@ import {
   CreateAnswerEntityInput,
   MessageEntity,
   StoredAnswerEntity,
+  UpdateAnswersRepositoryInput,
 } from "@core/types/server";
 import { MessagesRepositoryService } from "../messages-repository/messages-repository.service";
 
@@ -119,5 +120,15 @@ export class AnswersRepositoryService {
     // return await this.answersRepository.find({
     //   where: input,
     // });
+  }
+
+  async update(updateAnswerInput: UpdateAnswersRepositoryInput) {
+    const { id, ...rest } = updateAnswerInput;
+    // check if id exists
+    const answer = await this.answersRepository.findOne({ where: { id } });
+    if (!answer) throw new Error("Answer with id: " + id + " not found");
+    const res = await this.answersRepository.update(id, rest);
+    console.log("res: ", res);
+    return this.answersRepository.findOne({ where: { id } });
   }
 }
