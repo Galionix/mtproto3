@@ -1,22 +1,17 @@
-import {
-  CreateSpamMessageInput,
-  MessageEntity
-} from "@core/types/server";
+import { CreateMessageInput, MessageEntity } from "@core/types/server";
 import { Args, Mutation, Query, Resolver } from "@nestjs/graphql";
 import { SpamRepositoryService } from "./spam-repository.service";
 import { validateMessageInputByType } from "./utils";
 
 @Resolver(() => MessageEntity)
 export class SpamRepositoryResolver {
-  constructor(
-    private readonly spamRepositoryService: SpamRepositoryService
-  ) {}
+  constructor(private readonly spamRepositoryService: SpamRepositoryService) {}
 
   @Mutation(() => MessageEntity)
   async createSpamMessage(
-    @Args("createSpamMessageInput") createSpamMessageInput: CreateSpamMessageInput
+    @Args("createSpamMessageInput") createSpamMessageInput: CreateMessageInput
   ) {
-    console.log(createSpamMessageInput)
+    console.log(createSpamMessageInput);
     validateMessageInputByType(createSpamMessageInput);
 
     return this.spamRepositoryService.create(createSpamMessageInput);

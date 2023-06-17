@@ -2,6 +2,7 @@ import { Resolver, Query, Mutation, Args, Int } from "@nestjs/graphql";
 import {
   AnswerEntity,
   CreateAnswerEntityInput,
+  StoredAnswerEntity,
   UpdateAnswersRepositoryInput,
 } from "@core/types/server";
 import { AnswersRepositoryService } from "./answers-repository.service";
@@ -12,7 +13,7 @@ export class AnswersRepositoryResolver {
     private readonly answersRepositoryService: AnswersRepositoryService
   ) {}
 
-  @Mutation(() => AnswerEntity)
+  @Mutation(() => StoredAnswerEntity)
   async createAnswer(
     @Args("createAnswerInput") createAnswerInput: CreateAnswerEntityInput
   ) {
@@ -24,7 +25,7 @@ export class AnswersRepositoryResolver {
     return this.answersRepositoryService.findAll();
   }
 
-  // findSome
+  // // findSome
   @Query(() => [AnswerEntity], { name: "someAnswers" })
   async someAnswers(
     @Args("findSomeAnswersInput")
@@ -34,8 +35,8 @@ export class AnswersRepositoryResolver {
   }
 
   @Query(() => AnswerEntity, { name: "answer", nullable: true })
-  findOne(@Args("name", { type: () => String }) name: string) {
-    return this.answersRepositoryService.findOne(name);
+  findOne(@Args("id", { type: () => String }) id: string) {
+    return this.answersRepositoryService.findOne(id);
   }
 
   // @Mutation(() => AnswerEntity)

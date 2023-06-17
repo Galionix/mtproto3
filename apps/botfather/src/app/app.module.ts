@@ -14,6 +14,7 @@ import { BotEntity, AnswerEntity, StatisticEntity, MessageEntity } from "@core/t
 import { AnswersRepositoryModule } from "../databases/answers-repository/answers-repository.module";
 import { MulterModule } from "@nestjs/platform-express";
 import { SpamMessageModule } from "../databases/spam-repository/spam-database.module";
+import { MessagesRepositoryModule } from '../databases/messages-repository/messages-repository.module';
 
 @Module({
   imports: [
@@ -63,6 +64,7 @@ import { SpamMessageModule } from "../databases/spam-repository/spam-database.mo
       ],
     }),
     AnswersRepositoryModule,
+    MessagesRepositoryModule,
     BotModule,
     SpamMessageModule,
   ],

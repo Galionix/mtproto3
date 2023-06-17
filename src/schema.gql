@@ -4,7 +4,7 @@
 
 type AnswerEntity {
   base_probability: String
-  behavior_model: String
+  db_name: String
 
   """notes"""
   description: String
@@ -16,10 +16,10 @@ type AnswerEntity {
   isGroupAnswer: Boolean
 
   """request"""
-  request: String
+  request: [String!]
 
-  """response"""
-  response: String
+  """responses"""
+  responses: [MessageEntity!]!
 }
 
 type BotEntity {
@@ -82,8 +82,8 @@ input CreateAnswerEntityInput {
   """base_probability"""
   base_probability: String!
 
-  """behavior_model"""
-  behavior_model: String!
+  """db_name"""
+  db_name: String!
 
   """description"""
   description: String
@@ -98,10 +98,10 @@ input CreateAnswerEntityInput {
   isGroupAnswer: Boolean!
 
   """request"""
-  request: String!
+  request: [String!]!
 
   """response"""
-  response: String!
+  responses: [CreateMessageInput!]!
 }
 
 input CreateBotInput {
@@ -122,7 +122,7 @@ input CreateBotInput {
   voice: String
 }
 
-input CreateSpamMessageInput {
+input CreateMessageInput {
   """payload of audio for message"""
   audio: String
 
@@ -213,26 +213,33 @@ type MessageEntity {
 }
 
 type Mutation {
-  createAnswer(createAnswerInput: CreateAnswerEntityInput!): AnswerEntity!
+  createAnswer(createAnswerInput: CreateAnswerEntityInput!): StoredAnswerEntity!
   createBot(createBotInput: CreateBotInput!): BotEntity!
-  createSpamMessage(createSpamMessageInput: CreateSpamMessageInput!): MessageEntity!
+  createManyMessages(createManyMessagesInput: [CreateMessageInput!]!): [MessageEntity!]!
+  createMessage(createMessageInput: CreateMessageInput!): MessageEntity!
+  createSpamMessage(createSpamMessageInput: CreateMessageInput!): MessageEntity!
   joinGroups(JoinGroupsInput: JoinGroupsInput!): [BotStateEntity!]!
   leaveGroups(input: LeaveGroupsInput!): [BotStateEntity!]!
   removeAnswer(id: String!): Int!
   removeBot(api_id: Int!): BotEntity!
+  removeMessages(ids: [String!]!): Int!
   restartBot(api_id: Int!): BotEntity!
   setUsername(api_id: Int!, username: String!): String!
   updateBot(api_id: Int!, updateBotInput: UpdateBotInput!): BotEntity!
+  updateMessage(updateMessageInput: UpdateMessageInput!): MessageEntity!
 }
 
 type Query {
-  answer(name: String!): AnswerEntity
+  answer(id: String!): AnswerEntity
   answers: [AnswerEntity!]!
+  batchFind(ids: [String!]!): [MessageEntity!]!
   bot(api_id: Int!): BotEntity!
   bots: [BotEntity!]!
   getBotState(id: Int!): BotStateEntity!
   getBotStates: [BotStateEntity!]!
   getProcessesCount: Int!
+  message(id: String!): MessageEntity!
+  messages: [MessageEntity!]!
   reloadStates: [BotStateEntity!]!
   someAnswers(findSomeAnswersInput: UpdateAnswersRepositoryInput!): [AnswerEntity!]!
   spamMessages: [MessageEntity!]!
@@ -242,12 +249,32 @@ type Query {
   stopBots: [BotEntity!]!
 }
 
+type StoredAnswerEntity {
+  base_probability: String
+  db_name: String
+
+  """notes"""
+  description: String
+
+  """entity id"""
+  id: String
+  isChannelAnswer: Boolean
+  isDmAnswer: Boolean
+  isGroupAnswer: Boolean
+
+  """request"""
+  request: [String!]
+
+  """responsesIds"""
+  responsesIds: [String!]
+}
+
 input UpdateAnswersRepositoryInput {
   """base_probability"""
   base_probability: String
 
-  """behavior_model"""
-  behavior_model: String
+  """db_name"""
+  db_name: String
 
   """description"""
   description: String
@@ -262,10 +289,10 @@ input UpdateAnswersRepositoryInput {
   isGroupAnswer: Boolean
 
   """request"""
-  request: String
+  request: [String!]
 
   """response"""
-  response: String
+  responses: [CreateMessageInput!]
 }
 
 input UpdateBotInput {
@@ -279,4 +306,42 @@ input UpdateBotInput {
   taskOrder: String
   typeDelayMultiplier: String
   voice: String
+}
+
+input UpdateMessageInput {
+  """payload of audio for message"""
+  audio: String
+
+  """payload of caption for message"""
+  caption: String
+
+  """coefficient for message"""
+  coefficient: String
+
+  """db_name"""
+  db_name: String
+
+  """notes"""
+  description: String
+
+  """entity id"""
+  id: String
+
+  """payload of photo for message"""
+  photo: String
+
+  """payload of reaction for message"""
+  reaction: String
+
+  """payload of sticker for message"""
+  sticker: String
+
+  """payload of text for message"""
+  text: String
+
+  """value of EMessageType"""
+  type: String
+
+  """payload of video for message"""
+  video: String
 }

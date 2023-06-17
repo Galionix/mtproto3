@@ -1,4 +1,4 @@
-import { CreateSpamMessageInput, MessageEntity } from "@core/types/server";
+import { CreateMessageInput, MessageEntity } from "@core/types/server";
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
@@ -10,7 +10,7 @@ export class SpamRepositoryService {
     private readonly spamRepository: Repository<MessageEntity>
   ) {}
 
-  async create(createSpamMessageInput: CreateSpamMessageInput) {
+  async create(createSpamMessageInput: CreateMessageInput) {
     const newSpamMessage = await this.spamRepository.save(
       createSpamMessageInput
     );
@@ -22,10 +22,7 @@ export class SpamRepositoryService {
     return spamMessages;
   }
 
-
-  async findSome(
-    input: Partial<MessageEntity>
-  ): Promise<MessageEntity[]> {
+  async findSome(input: Partial<MessageEntity>): Promise<MessageEntity[]> {
     return await this.spamRepository.find({
       where: input,
     });

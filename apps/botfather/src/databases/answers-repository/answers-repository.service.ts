@@ -1,70 +1,123 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Repository } from "typeorm";
-import { AnswerEntity, CreateAnswerEntityInput } from "@core/types/server";
+import { In, Repository } from "typeorm";
+import {
+  AnswerEntity,
+  CreateAnswerEntityInput,
+  MessageEntity,
+  StoredAnswerEntity,
+} from "@core/types/server";
+import { MessagesRepositoryService } from "../messages-repository/messages-repository.service";
 
 @Injectable()
 export class AnswersRepositoryService {
   constructor(
-    @InjectRepository(AnswerEntity)
-    private readonly answersRepository: Repository<AnswerEntity>
+    @InjectRepository(StoredAnswerEntity)
+    private readonly answersRepository: Repository<StoredAnswerEntity>,
+    // @InjectRepository(MessageEntity)
+    private readonly messagesRepositoryService: MessagesRepositoryService
   ) {}
 
   async create({
     request,
-    response,
+    responses,
     description,
     isDmAnswer,
     isGroupAnswer,
     isChannelAnswer,
     base_probability,
-    behavior_model,
+    db_name,
   }: CreateAnswerEntityInput) {
-    const existingAnswer = await this.answersRepository.findOne({
-      where: { request },
+    // TODO: check if request already exists
+
+    const responsesMessagesIds: MessageEntity["id"][] = [];
+    // responses.forEach(async (response) => {
+    //   const res = await this.messagesRepositoryService.create(response);
+    //   responsesMessagesIds.push(res.id);
+    // });
+    const responsesPrimises = responses.map(async (response) => {
+      const res = await this.messagesRepositoryService.create(response);
+      responsesMessagesIds.push(res.id);
     });
 
-    if (existingAnswer) {
-      return {
-        error: "Answer already exists for this request: " + request,
-      };
-    }
+    await Promise.all(responsesPrimises);
+    console.log("responsesMessagesIds: ", responsesMessagesIds);
 
-    const newAnswer = this.answersRepository.save({
+    const storedAnswerInput: Omit<
+      StoredAnswerEntity,
+      "id" | "createdAt" | "updatedAt"
+    > = {
       request,
-      response,
+      responsesIds: responsesMessagesIds,
       description,
       isDmAnswer,
       isGroupAnswer,
       isChannelAnswer,
       base_probability,
-      behavior_model,
-    });
+      db_name,
+    };
+    const savedAnswer = await this.answersRepository.save(storedAnswerInput);
+    console.log("savedAnswer: ", savedAnswer);
 
-    return newAnswer;
+    return savedAnswer;
   }
 
+  async populateAnswer(answer: StoredAnswerEntity): Promise<AnswerEntity> {
+    const responses = await this.messagesRepositoryService.batchFind(
+      answer.responsesIds
+    );
+    const populatedAnswer = {
+      ...answer,
+      responses,
+    };
+    return populatedAnswer;
+  }
+  async populateAnswers(
+    answers: StoredAnswerEntity[]
+  ): Promise<AnswerEntity[]> {
+    const populatedAnswers = [];
+    for (const answer of answers) {
+      const populatedAnswer = await this.populateAnswer(answer);
+      populatedAnswers.push(populatedAnswer);
+    }
+    return populatedAnswers;
+  }
   async findAll() {
     const answers = await this.answersRepository.find();
+    console.log("findAll answers: ", answers);
+    const populatedAnswers = await this.populateAnswers(answers);
 
-    return answers;
+    return populatedAnswers;
   }
 
   async findOne(id: string): Promise<AnswerEntity> {
     const res = await this.answersRepository.findOne({ where: { id } });
-    return res;
+    const populatedAnswer = await this.populateAnswer(res);
+    return populatedAnswer;
   }
 
   async remove(id: string) {
+    const messageIds = (await this.answersRepository.findOne({ where: { id } }))
+      .responsesIds;
+    if (messageIds.length > 0)
+      await this.messagesRepositoryService.removeMany(messageIds);
+
     const { affected } = await this.answersRepository.delete(id);
     return affected;
   }
 
   async findSome(
-    input: Partial<CreateAnswerEntityInput>
+    input: Omit<Partial<CreateAnswerEntityInput>, "request" | "response">
   ): Promise<AnswerEntity[]> {
-    return await this.answersRepository.find({
+    const storedAnswers = await this.answersRepository.find({
       where: input,
     });
+
+    const populatedAnswers = await this.populateAnswers(storedAnswers);
+
+    return populatedAnswers;
+    // return await this.answersRepository.find({
+    //   where: input,
+    // });
   }
 }

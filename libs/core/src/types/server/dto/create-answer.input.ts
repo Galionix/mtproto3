@@ -1,12 +1,14 @@
 import { Field, InputType } from "@nestjs/graphql";
+import { InputMessageEntity, MessageEntity } from "../entities";
+import { CreateMessageInput } from "./create-message.input";
 
 @InputType()
 export class CreateAnswerEntityInput {
-  @Field(() => String, { description: "request" })
-  request: string;
+  @Field(() => [String], { description: "request" })
+  request: string[];
 
-  @Field(() => String, { description: "response" })
-  response: string;
+  @Field(() => [CreateMessageInput], { description: "response" })
+  responses: CreateMessageInput[];
 
   // description
   @Field(() => String, { description: "description", nullable: true })
@@ -29,6 +31,6 @@ export class CreateAnswerEntityInput {
   base_probability: string;
 
   // behavior_model
-  @Field(() => String, { description: "behavior_model" })
-  behavior_model: string;
+  @Field(() => String, { description: "db_name" })
+  db_name: string;
 }

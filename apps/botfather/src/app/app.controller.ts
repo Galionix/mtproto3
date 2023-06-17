@@ -10,7 +10,7 @@ import {
 import { FilesInterceptor } from "@nestjs/platform-express";
 import { readFile, unlink, writeFileSync } from "fs";
 import { AnswersRepositoryService } from "../databases/answers-repository/answers-repository.service";
-import { validateAnswers } from "../utils/file-upload";
+// import { validateAnswers } from "../utils/file-upload";
 import { AppService } from "./app.service";
 
 @Controller()
@@ -64,11 +64,11 @@ export class AppController {
         const data = await readFilePromise(file.path, "utf-8");
         const answers = JSON.parse(data);
 
-        const { isValid, error } = validateAnswers(answers);
+        // const { isValid, error } = validateAnswers(answers);
 
-        if (!isValid) {
-          return error;
-        }
+        // if (!isValid) {
+        //   return error;
+        // }
 
         for (const answer of answers) {
           console.log("answer: ", answer);

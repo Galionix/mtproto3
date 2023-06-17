@@ -1,4 +1,4 @@
-import { ObjectType, Field } from "@nestjs/graphql";
+import { ObjectType, Field, InputType } from "@nestjs/graphql";
 import {
   Column,
   CreateDateColumn,
@@ -88,6 +88,19 @@ export class MessageEntity {
   coefficient: string;
 
   @Field(() => String, { description: "db_name", nullable: true })
-  @Column({default: "base"})
+  @Column({ default: "base" })
   db_name: string;
+}
+
+@InputType()
+export class InputMessageEntity extends MessageEntity {
+  // this a hack to make it valid entity
+  //  essentially its duplicated code
+
+  // constructor() {
+  //   super();
+  // }
+  @Field(() => String, { description: "entity id", nullable: true })
+  @PrimaryGeneratedColumn("uuid")
+  declare id: string;
 }

@@ -1,4 +1,4 @@
-import { Field, InputType, PartialType } from "@nestjs/graphql";
+import { Field, InputType, ObjectType, PartialType } from "@nestjs/graphql";
 import { MessageEntity } from "../entities";
 import {
   Column,
@@ -8,7 +8,7 @@ import {
 } from "typeorm";
 
 @InputType()
-export class CreateSpamMessageInput {
+export class CreateMessageInput {
   @Field(() => String, { description: "entity id", nullable: true })
   @PrimaryGeneratedColumn("uuid")
   id: string;

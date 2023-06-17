@@ -48,7 +48,7 @@ async function listenForBotToRequestDB({
     const { answersRepositoryService, spamRepositoryService, l } = services;
 
     const db = await answersRepositoryService.findSome({
-      behavior_model: database,
+      db_name: database,
     });
     const spamDb = await spamRepositoryService.findSome({
       db_name: spamDBname,

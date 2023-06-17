@@ -53,34 +53,35 @@ export const validateAnswers = (
 
     //   validate responses
 
-    const responses = JSON.parse(answer.response.replace(/'/g, '"'));
+    // const responses = JSON.parse(answer.response.replace(/'/g, '"'));
 
-    const isResponsesValid = responses.every(isResponseValid);
+    // const isResponsesValid = responses.every(isResponseValid);
 
-    if (!isResponsesValid) {
-      error = "Invalid responses in the answer: " + answer.request;
-    }
+    // if (!isResponsesValid) {
+    //   error = "Invalid responses in the answer: " + answer.request;
+    // }
 
     return {
-      isValid: isResponsesValid,
+      isValid: true,
       error,
     };
   };
 
-  const isAnswersValid = answers.every((a) => isAnswerValid(a).isValid);
+  // TODO: check if it valid message
+  // const isAnswersValid = answers.every((a) => isAnswerValid(a).isValid);
 
-  if (!isAnswersValid) {
-    const invalidAnswers = answers.filter((a) => !isAnswerValid(a).isValid);
-    const invalidAnswersRequests = invalidAnswers.map((a) => a.request);
-    const error = "Invalid answers: " + invalidAnswersRequests.join(", ");
-    return {
-      isValid: false,
-      error,
-    };
-  }
+  // if (!isAnswersValid) {
+  //   const invalidAnswers = answers.filter((a) => !isAnswerValid(a).isValid);
+  //   const invalidAnswersRequests = invalidAnswers.map((a) => a.request);
+  //   const error = "Invalid answers: " + invalidAnswersRequests.join(", ");
+  //   return {
+  //     isValid: false,
+  //     error,
+  //   };
+  // }
 
   return {
-    isValid: isAnswersValid,
+    isValid: true,
     error: null,
   };
 };
