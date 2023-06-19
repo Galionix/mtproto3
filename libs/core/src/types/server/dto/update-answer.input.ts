@@ -6,7 +6,7 @@ import { Field, InputType, PartialType } from "@nestjs/graphql";
 export class UpdateAnswersRepositoryInput extends PartialType(
   CreateAnswerEntityInput
 ) {
-  @Field(() => String, { description: "entity id", nullable: true })
+  @Field(() => String, { description: "entity id" })
   @Column("uuid")
   id: string;
 }

@@ -10,7 +10,7 @@ type AnswerEntity {
   description: String
 
   """entity id"""
-  id: String
+  id: ID
   isChannelAnswer: Boolean
   isDmAnswer: Boolean
   isGroupAnswer: Boolean
@@ -19,7 +19,7 @@ type AnswerEntity {
   request: [String!]
 
   """responses"""
-  responses: [MessageEntity!]!
+  responses: [MessageEntity!]
 }
 
 type BotEntity {
@@ -122,6 +122,17 @@ input CreateBotInput {
   voice: String
 }
 
+input CreateEmptyScenarioInput {
+  """db_name"""
+  db_name: String
+
+  """notes"""
+  description: String
+
+  """maxConversationLength"""
+  maxConversationLength: Float
+}
+
 input CreateMessageInput {
   """payload of audio for message"""
   audio: String
@@ -137,9 +148,6 @@ input CreateMessageInput {
 
   """notes"""
   description: String
-
-  """entity id"""
-  id: String
 
   """payload of photo for message"""
   photo: String
@@ -160,6 +168,11 @@ input CreateMessageInput {
   video: String
 }
 
+input CreateScenarioBranchInput {
+  """notes"""
+  description: String
+}
+
 input JoinGroupsInput {
   api_ids: [Int!]!
   behavior_model: String = "default"
@@ -175,6 +188,9 @@ input LeaveGroupsInput {
 }
 
 type MessageEntity {
+  """answer"""
+  answer: AnswerEntity
+
   """payload of audio for message"""
   audio: String
 
@@ -191,7 +207,7 @@ type MessageEntity {
   description: String
 
   """entity id"""
-  id: String
+  id: ID
 
   """payload of photo for message"""
   photo: String
@@ -213,8 +229,10 @@ type MessageEntity {
 }
 
 type Mutation {
-  createAnswer(createAnswerInput: CreateAnswerEntityInput!): StoredAnswerEntity!
+  addBranchToScenario(createScenarioBranchInput: CreateScenarioBranchInput!, scenarioId: String!): ScenarioEntity!
+  createAnswer(createAnswerInput: CreateAnswerEntityInput!): AnswerEntity!
   createBot(createBotInput: CreateBotInput!): BotEntity!
+  createEmptyScenario(emptyScenarioInput: CreateEmptyScenarioInput!): ScenarioEntity!
   createManyMessages(createManyMessagesInput: [CreateMessageInput!]!): [MessageEntity!]!
   createMessage(createMessageInput: CreateMessageInput!): MessageEntity!
   createSpamMessage(createSpamMessageInput: CreateMessageInput!): MessageEntity!
@@ -223,11 +241,12 @@ type Mutation {
   removeAnswer(id: String!): Int!
   removeBot(api_id: Int!): BotEntity!
   removeMessages(ids: [String!]!): Int!
+  removeScenarioRepository(id: Int!): ScenarioEntity!
   restartBot(api_id: Int!): BotEntity!
   setUsername(api_id: Int!, username: String!): String!
   updateAnswer(updateAnswerInput: UpdateAnswersRepositoryInput!): AnswerEntity!
   updateBot(api_id: Int!, updateBotInput: UpdateBotInput!): BotEntity!
-  updateMessage(updateMessageInput: UpdateMessageInput!): MessageEntity!
+  updateMessage(id: String!, updateMessageInput: UpdateMessageInput!): MessageEntity!
 }
 
 type Query {
@@ -242,6 +261,8 @@ type Query {
   message(id: String!): MessageEntity!
   messages: [MessageEntity!]!
   reloadStates: [BotStateEntity!]!
+  scenario(id: Int!): ScenarioEntity!
+  scenarios: [ScenarioEntity!]!
   someAnswers(findSomeAnswersInput: UpdateAnswersRepositoryInput!): [AnswerEntity!]!
   spamMessages: [MessageEntity!]!
   startBot(api_id: Int!): BotEntity!
@@ -250,24 +271,28 @@ type Query {
   stopBots: [BotEntity!]!
 }
 
-type StoredAnswerEntity {
-  base_probability: String
+type ScenarioBranchEntity {
+  """notes"""
+  description: String
+
+  """entity id"""
+  id: String
+}
+
+type ScenarioEntity {
+  branches: [ScenarioBranchEntity!]!
+
+  """db_name"""
   db_name: String
 
   """notes"""
   description: String
 
   """entity id"""
-  id: String
-  isChannelAnswer: Boolean
-  isDmAnswer: Boolean
-  isGroupAnswer: Boolean
+  id: ID!
 
-  """request"""
-  request: [String!]
-
-  """responsesIds"""
-  responsesIds: [String!]
+  """maxConversationLength"""
+  maxConversationLength: Float
 }
 
 input UpdateAnswersRepositoryInput {
@@ -281,7 +306,7 @@ input UpdateAnswersRepositoryInput {
   description: String
 
   """entity id"""
-  id: String
+  id: String!
 
   """isChannelAnswer"""
   isChannelAnswer: Boolean
@@ -327,9 +352,6 @@ input UpdateMessageInput {
 
   """notes"""
   description: String
-
-  """entity id"""
-  id: String
 
   """payload of photo for message"""
   photo: String

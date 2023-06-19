@@ -1,6 +1,7 @@
 import { Field, InputType } from "@nestjs/graphql";
 import { InputMessageEntity, MessageEntity } from "../entities";
 import { CreateMessageInput } from "./create-message.input";
+import { Column } from "typeorm";
 
 @InputType()
 export class CreateAnswerEntityInput {
@@ -12,25 +13,31 @@ export class CreateAnswerEntityInput {
 
   // description
   @Field(() => String, { description: "description", nullable: true })
-  description: string;
+  @Column({ default: "" })
+  description?: string;
 
   // isDmAnswer
   @Field(() => Boolean, { description: "isDmAnswer" })
-  isDmAnswer: boolean;
+  @Column({ default: false })
+  isDmAnswer?: boolean;
 
   // isGroupAnswer
   @Field(() => Boolean, { description: "isGroupAnswer" })
-  isGroupAnswer: boolean;
+  @Column({ default: false })
+  isGroupAnswer?: boolean;
 
   // isChannelAnswer
   @Field(() => Boolean, { description: "isChannelAnswer" })
-  isChannelAnswer: boolean;
+  @Column({ default: false })
+  isChannelAnswer?: boolean;
 
   // base_probability
   @Field(() => String, { description: "base_probability" })
-  base_probability: string;
+  @Column({ default: "1" })
+  base_probability?: string;
 
   // behavior_model
   @Field(() => String, { description: "db_name" })
-  db_name: string;
+  @Column({ default: "base" })
+  db_name?: string;
 }

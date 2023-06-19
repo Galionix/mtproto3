@@ -19,7 +19,10 @@ export class MessagesRepositoryService {
   }
 
   async findOne(id: MessageEntity["id"]) {
-    return await this.messagesRepository.findOne({ where: { id } });
+    return await this.messagesRepository.findOne({
+      where: { id },
+      relations: ["answer"],
+    });
   }
 
   update(id: string, updateMessagesRepositoryInput: UpdateMessageInput) {

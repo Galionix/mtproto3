@@ -1,19 +1,21 @@
-import { ObjectType, Field, InputType } from "@nestjs/graphql";
+import { ObjectType, Field, InputType, ID } from "@nestjs/graphql";
 import {
   Column,
   CreateDateColumn,
   Entity,
+  ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
 import { EMessageType } from "../../client/entities";
+import { AnswerEntity } from "./answer.entity";
 
 export const MessageTypeValues = Object.values(EMessageType);
 
 @Entity()
 @ObjectType()
 export class MessageEntity {
-  @Field(() => String, { description: "entity id", nullable: true })
+  @Field(() => ID, { description: "entity id", nullable: true })
   @PrimaryGeneratedColumn("uuid")
   id: string;
 
@@ -90,6 +92,11 @@ export class MessageEntity {
   @Field(() => String, { description: "db_name", nullable: true })
   @Column({ default: "base" })
   db_name: string;
+
+  @Field(() => AnswerEntity, { description: "answer", nullable: true })
+  @ManyToOne(() => AnswerEntity, (answer) => answer.responses)
+  // @Column(() => AnswerEntity)
+  answer: AnswerEntity;
 }
 
 @InputType()
@@ -104,3 +111,12 @@ export class InputMessageEntity extends MessageEntity {
   @PrimaryGeneratedColumn("uuid")
   declare id: string;
 }
+
+// @Entity()
+// @ObjectType()
+// export class AnswerMessageEntity extends MessageEntity {
+//   // ManyToOne answer: string;
+
+//   @ManyToOne(() => AnswerEntity, (answer) => answer.responses)
+//   answer: AnswerEntity;
+// }

@@ -5,7 +5,7 @@ import {
   AnswerEntity,
   CreateAnswerEntityInput,
   MessageEntity,
-  StoredAnswerEntity,
+  // StoredAnswerEntity,
   UpdateAnswersRepositoryInput,
 } from "@core/types/server";
 import { MessagesRepositoryService } from "../messages-repository/messages-repository.service";
@@ -13,8 +13,8 @@ import { MessagesRepositoryService } from "../messages-repository/messages-repos
 @Injectable()
 export class AnswersRepositoryService {
   constructor(
-    @InjectRepository(StoredAnswerEntity)
-    private readonly answersRepository: Repository<StoredAnswerEntity>,
+    @InjectRepository(AnswerEntity)
+    private readonly answersRepository: Repository<AnswerEntity>,
     // @InjectRepository(MessageEntity)
     private readonly messagesRepositoryService: MessagesRepositoryService
   ) {}
@@ -31,92 +31,114 @@ export class AnswersRepositoryService {
   }: CreateAnswerEntityInput) {
     // TODO: check if request already exists
 
-    const responsesMessagesIds: MessageEntity["id"][] = [];
+    const responsesMessages: MessageEntity[] = [];
     // responses.forEach(async (response) => {
     //   const res = await this.messagesRepositoryService.create(response);
     //   responsesMessagesIds.push(res.id);
     // });
-    const responsesPrimises = responses.map(async (response) => {
+    const responsesPromises = responses.map(async (response) => {
       const res = await this.messagesRepositoryService.create(response);
-      responsesMessagesIds.push(res.id);
+      responsesMessages.push(res);
     });
 
-    await Promise.all(responsesPrimises);
-    console.log("responsesMessagesIds: ", responsesMessagesIds);
+    await Promise.all(responsesPromises);
 
-    const storedAnswerInput: Omit<
-      StoredAnswerEntity,
-      "id" | "createdAt" | "updatedAt"
-    > = {
+    const answer = this.answersRepository.create({
       request,
-      responsesIds: responsesMessagesIds,
+      responses: responsesMessages,
       description,
       isDmAnswer,
       isGroupAnswer,
       isChannelAnswer,
       base_probability,
       db_name,
-    };
-    const savedAnswer = await this.answersRepository.save(storedAnswerInput);
+    });
+
+    const savedAnswer = await this.answersRepository.save(answer);
     console.log("savedAnswer: ", savedAnswer);
 
     return savedAnswer;
+
+    // console.log("responsesMessagesIds: ", responsesMessages);
+
+    // const storedAnswerInput: Omit<
+    // AnswerEntity,
+    //   "id" | "createdAt" | "updatedAt"
+    // > = {
+    //   request,
+    //   responsesIds: responsesMessagesIds,
+    //   description,
+    //   isDmAnswer,
+    //   isGroupAnswer,
+    //   isChannelAnswer,
+    //   base_probability,
+    //   db_name,
+    // };
+    // const savedAnswer = await this.answersRepository.save(storedAnswerInput);
+    // console.log("savedAnswer: ", savedAnswer);
+
+    // const populatedAnswer = await this.populateAnswer(savedAnswer);
+    // return populatedAnswer;
   }
 
-  async populateAnswer(answer: StoredAnswerEntity): Promise<AnswerEntity> {
-    const responses = await this.messagesRepositoryService.batchFind(
-      answer.responsesIds
-    );
-    const populatedAnswer = {
-      ...answer,
-      responses,
-    };
-    return populatedAnswer;
-  }
-  async populateAnswers(
-    answers: StoredAnswerEntity[]
-  ): Promise<AnswerEntity[]> {
-    const populatedAnswers = [];
-    for (const answer of answers) {
-      const populatedAnswer = await this.populateAnswer(answer);
-      populatedAnswers.push(populatedAnswer);
-    }
-    return populatedAnswers;
-  }
+  // async populateAnswer(answer: StoredAnswerEntity): Promise<AnswerEntity> {
+  //   const responses = await this.messagesRepositoryService.batchFind(
+  //     answer.responsesIds
+  //   );
+  //   const populatedAnswer = {
+  //     ...answer,
+  //     responses,
+  //   };
+  //   return populatedAnswer;
+  // }
+  // async populateAnswers(
+  //   answers: StoredAnswerEntity[]
+  // ): Promise<AnswerEntity[]> {
+  //   const populatedAnswers = [];
+  //   for (const answer of answers) {
+  //     const populatedAnswer = await this.populateAnswer(answer);
+  //     populatedAnswers.push(populatedAnswer);
+  //   }
+  //   return populatedAnswers;
+  // }
   async findAll() {
-    const answers = await this.answersRepository.find();
-    console.log("findAll answers: ", answers);
-    const populatedAnswers = await this.populateAnswers(answers);
+    // const answers = await this.answersRepository.find();
+    // console.log("findAll answers: ", answers);
+    // const populatedAnswers = await this.populateAnswers(answers);
 
-    return populatedAnswers;
+    return await this.answersRepository.find({ relations: ["responses"] });
   }
 
-  async findOne(id: string): Promise<AnswerEntity> {
-    const res = await this.answersRepository.findOne({ where: { id } });
-    const populatedAnswer = await this.populateAnswer(res);
-    return populatedAnswer;
+  async findOne(id: string) {
+    // const res = await this.answersRepository.findOne({ where: { id } });
+    // const populatedAnswer = await this.populateAnswer(res);
+    // return "populatedAnswer";
+    return await this.answersRepository.findOne({
+      where: { id },
+      relations: ["responses", "request"],
+    });
   }
 
   async remove(id: string) {
-    const messageIds = (await this.answersRepository.findOne({ where: { id } }))
-      .responsesIds;
-    if (messageIds.length > 0)
-      await this.messagesRepositoryService.removeMany(messageIds);
+    // const messageIds = (await this.answersRepository.findOne({ where: { id } }))
+    //   .responsesIds;
+    // if (messageIds.length > 0)
+    //   await this.messagesRepositoryService.removeMany(messageIds);
 
-    const { affected } = await this.answersRepository.delete(id);
-    return affected;
+    // const { affected } = await this.answersRepository.delete(id);
+    return "affected";
   }
 
   async findSome(
     input: Omit<Partial<CreateAnswerEntityInput>, "request" | "response">
-  ): Promise<AnswerEntity[]> {
-    const storedAnswers = await this.answersRepository.find({
-      where: input,
-    });
+  ) {
+    // const storedAnswers = await this.answersRepository.find({
+    //   where: input,
+    // });
 
-    const populatedAnswers = await this.populateAnswers(storedAnswers);
+    // const populatedAnswers = await this.populateAnswers(storedAnswers);
 
-    return populatedAnswers;
+    return "populatedAnswers";
     // return await this.answersRepository.find({
     //   where: input,
     // });
@@ -124,11 +146,38 @@ export class AnswersRepositoryService {
 
   async update(updateAnswerInput: UpdateAnswersRepositoryInput) {
     const { id, ...rest } = updateAnswerInput;
-    // check if id exists
-    const answer = await this.answersRepository.findOne({ where: { id } });
-    if (!answer) throw new Error("Answer with id: " + id + " not found");
-    const res = await this.answersRepository.update(id, rest);
-    console.log("res: ", res);
-    return this.answersRepository.findOne({ where: { id } });
+
+    const answer = await this.answersRepository.findOne({
+      where: { id },
+      relations: ["responses"],
+    });
+
+    if ("responses" in rest) {
+      // this means we appending new responses
+      const responsesMessages: MessageEntity[] = [];
+      const responsesPromises = rest.responses.map(async (response) => {
+        const res = await this.messagesRepositoryService.create(response);
+        responsesMessages.push(res);
+      });
+
+      await Promise.all(responsesPromises);
+
+      answer.responses = [...answer.responses, ...responsesMessages];
+
+      delete rest.responses;
+    }
+
+    const updatedAnswer = await this.answersRepository.save({
+      ...answer,
+      ...rest,
+    });
+
+    return updatedAnswer;
+
+    // // check if id exists
+    // if (!answer) throw new Error("Answer with id: " + id + " not found");
+    // const res = await this.answersRepository.update(id, rest);
+    // console.log("res: ", res);
+    // return "this.answersRepository.findOne({ where: { id } });";
   }
 }

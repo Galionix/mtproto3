@@ -23,6 +23,7 @@ When i want to add a new bot, i want to be able to add it by providing the follo
 - [x]: register new bot trough graphql
 
 ### TODO:
+- [ ]: interactive scenarios
 - []: setup coverage testing
 
 ### FEAT:

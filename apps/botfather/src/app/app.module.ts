@@ -10,11 +10,21 @@ import { join } from "path";
 import { ApolloServerPluginCacheControl } from "apollo-server-core/dist/plugin/cacheControl";
 import responseCachePlugin from "apollo-server-plugin-response-cache";
 import { BotModule } from "../bot/bot.module";
-import { BotEntity, AnswerEntity, StatisticEntity, MessageEntity } from "@core/types/server";
+import {
+  BotEntity,
+  AnswerEntity,
+  StatisticEntity,
+  MessageEntity,
+  ScenarioEntity,
+  ScenarioBranchEntity,
+  ScenarioChoiceEntity,
+  // AnswerMessageEntity,
+} from "@core/types/server";
 import { AnswersRepositoryModule } from "../databases/answers-repository/answers-repository.module";
 import { MulterModule } from "@nestjs/platform-express";
 import { SpamMessageModule } from "../databases/spam-repository/spam-database.module";
-import { MessagesRepositoryModule } from '../databases/messages-repository/messages-repository.module';
+import { MessagesRepositoryModule } from "../databases/messages-repository/messages-repository.module";
+import { ScenarioRepositoryModule } from "../databases/scenario-repository/scenario-repository.module";
 
 @Module({
   imports: [
@@ -44,8 +54,18 @@ import { MessagesRepositoryModule } from '../databases/messages-repository/messa
         port: config.get<number>("TYPEORM_PORT"),
         username: config.get<string>("TYPEORM_USERNAME"),
         password: config.get<string>("TYPEORM_PASSWORD"),
+        // database: ":memory:",
         database: config.get<string>("TYPEORM_DATABASE"),
-        entities: [BotEntity, AnswerEntity, StatisticEntity, MessageEntity],
+        entities: [
+          BotEntity,
+          AnswerEntity,
+          // AnswerMessageEntity,
+          StatisticEntity,
+          MessageEntity,
+          ScenarioEntity,
+          ScenarioBranchEntity,
+          ScenarioChoiceEntity,
+        ],
         synchronize: true,
         // playground: true,
         // dropSchema: true,
@@ -67,6 +87,7 @@ import { MessagesRepositoryModule } from '../databases/messages-repository/messa
     MessagesRepositoryModule,
     BotModule,
     SpamMessageModule,
+    ScenarioRepositoryModule,
   ],
   controllers: [AppController],
   providers: [AppService],

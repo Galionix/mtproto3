@@ -41,11 +41,12 @@ export class MessagesRepositoryResolver {
 
   @Mutation(() => MessageEntity)
   updateMessage(
+    @Args("id", { type: () => String }) id: MessageEntity["id"],
     @Args("updateMessageInput")
     updateMessagesRepositoryInput: UpdateMessageInput
   ) {
     return this.messagesRepositoryService.update(
-      updateMessagesRepositoryInput.id,
+      id,
       updateMessagesRepositoryInput
     );
   }

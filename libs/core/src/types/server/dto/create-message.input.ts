@@ -9,10 +9,6 @@ import {
 
 @InputType()
 export class CreateMessageInput {
-  @Field(() => String, { description: "entity id", nullable: true })
-  @PrimaryGeneratedColumn("uuid")
-  id: string;
-
   @Field(() => String, { description: "notes", nullable: true })
   @Column({ default: "" })
   description?: string;
@@ -70,12 +66,6 @@ export class CreateMessageInput {
   @Column({ default: "" })
   sticker?: string;
 
-  @CreateDateColumn({ type: "timestamp" })
-  createdAt: Date;
-
-  @UpdateDateColumn({ type: "timestamp" })
-  updatedAt: Date;
-
   @Field(() => String, {
     description: "coefficient for message",
     nullable: true,
@@ -85,5 +75,5 @@ export class CreateMessageInput {
 
   @Field(() => String, { description: "db_name", nullable: true })
   @Column({ default: "base" })
-  db_name: string;
+  db_name?: string;
 }
