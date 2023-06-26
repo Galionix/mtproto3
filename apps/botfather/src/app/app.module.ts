@@ -75,7 +75,7 @@ import { ScenarioRepositoryModule } from "../databases/scenario-repository/scena
     }),
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
-      autoSchemaFile: join(process.cwd(), "src/schema.gql"),
+      autoSchemaFile: join(process.cwd(), "./apps/frontend/apollo/schema.gql"),
       sortSchema: true,
       playground: true,
       plugins: [
