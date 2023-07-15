@@ -4,34 +4,35 @@ import {
   Entity,
   ManyToOne,
   OneToMany,
+  PrimaryColumn,
   PrimaryGeneratedColumn,
 } from "typeorm";
 import { ScenarioEntity } from "./scenario.entity";
-import { ScenarioChoiceEntity } from "./scenarioChoice.entity";
+import { AnswerEntity } from "./answer.entity";
+// import { ScenarioChoiceEntity } from "./scenarioChoice.entity";
 
 @Entity()
 @ObjectType()
 export class ScenarioBranchEntity {
   // id, description, choices
   @Field(() => String, { description: "entity id", nullable: true })
-  @PrimaryGeneratedColumn("uuid")
+  @PrimaryColumn({ default: "" })
   id: string;
 
   @Field(() => String, { description: "notes", nullable: true })
   @Column({ default: "" })
   description?: string;
 
-  //   @Field(() => [String], { description: "choicesIds", nullable: true })
-  //   @Column({ default: [] })
-  //   choicesIds?: string[];
-
-  @ManyToOne(() => ScenarioEntity, (scenario) => scenario.branches)
-  // @Column()
+  @Field(() => ScenarioEntity, { description: "scenario", nullable: true })
+  @ManyToOne(() => ScenarioEntity, (scenario) => scenario.branches, {
+    onDelete: "CASCADE",
+    orphanedRowAction: "delete",
+  })
   scenario: ScenarioEntity;
 
-  @OneToMany(() => ScenarioChoiceEntity, (choice) => choice.branch, {
-    cascade: true,
+  @Field(() => [AnswerEntity], { description: "choices", nullable: true })
+  @OneToMany(() => AnswerEntity, (choice) => choice.branch, {
+    cascade: ["remove"],
   })
-  // @Column()
-  choices: ScenarioChoiceEntity[];
+  choices: AnswerEntity[];
 }

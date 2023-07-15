@@ -11,7 +11,7 @@ export class SpamRepositoryResolver {
   async createSpamMessage(
     @Args("createSpamMessageInput") createSpamMessageInput: CreateMessageInput
   ) {
-    console.log(createSpamMessageInput);
+
     validateMessageInputByType(createSpamMessageInput);
 
     return this.spamRepositoryService.create(createSpamMessageInput);

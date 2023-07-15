@@ -27,9 +27,11 @@ export class ScenarioEntity {
   @Column({ default: "" })
   description?: string;
 
+  @Field(() => Date, { description: "createdAt", nullable: true })
   @CreateDateColumn({ type: "timestamp" })
   createdAt: Date;
 
+  @Field(() => Date, { description: "updatedAt", nullable: true })
   @UpdateDateColumn({ type: "timestamp" })
   updatedAt: Date;
 
@@ -39,7 +41,7 @@ export class ScenarioEntity {
   maxConversationLength: number;
 
   @OneToMany(() => ScenarioBranchEntity, (branch) => branch.scenario, {
-    cascade: true,
+    cascade: ["remove"],
   })
   @Field(() => [ScenarioBranchEntity])
   branches: ScenarioBranchEntity[];

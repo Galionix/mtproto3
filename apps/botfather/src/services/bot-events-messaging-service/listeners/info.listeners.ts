@@ -4,7 +4,7 @@ import { TListener } from "../listeners";
 
 function listenStarted({ services, api_id }: TListenerArgs) {
   const { botStateService, l } = services;
-  // console.log("Bot started: ", api_id);
+  //
   l.log("Bot started: ", api_id);
   botStateService.updateBotState(api_id, {
     isStarted: true,
@@ -13,7 +13,7 @@ function listenStarted({ services, api_id }: TListenerArgs) {
 }
 function listenStopped({ services, api_id }: TListenerArgs) {
   const { botStateService, l } = services;
-  // console.log("Bot stopped: ", api_id);
+  //
   l.log("Bot stopped: ", api_id);
 
   botStateService.updateBotState(api_id, {

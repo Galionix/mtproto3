@@ -1,5 +1,4 @@
 import { Field, InputType } from "@nestjs/graphql";
-import { InputMessageEntity, MessageEntity } from "../entities";
 import { CreateMessageInput } from "./create-message.input";
 import { Column } from "typeorm";
 
@@ -17,27 +16,31 @@ export class CreateAnswerEntityInput {
   description?: string;
 
   // isDmAnswer
-  @Field(() => Boolean, { description: "isDmAnswer" })
+  @Field(() => Boolean, { description: "isDmAnswer", nullable: true })
   @Column({ default: false })
   isDmAnswer?: boolean;
 
   // isGroupAnswer
-  @Field(() => Boolean, { description: "isGroupAnswer" })
+  @Field(() => Boolean, { description: "isGroupAnswer", nullable: true })
   @Column({ default: false })
   isGroupAnswer?: boolean;
 
   // isChannelAnswer
-  @Field(() => Boolean, { description: "isChannelAnswer" })
+  @Field(() => Boolean, { description: "isChannelAnswer", nullable: true })
   @Column({ default: false })
   isChannelAnswer?: boolean;
 
   // base_probability
-  @Field(() => String, { description: "base_probability" })
+  @Field(() => String, { description: "base_probability", nullable: true })
   @Column({ default: "1" })
   base_probability?: string;
 
   // behavior_model
-  @Field(() => String, { description: "db_name" })
+  @Field(() => String, { description: "db_name", nullable: true })
   @Column({ default: "base" })
   db_name?: string;
+
+  @Field(() => String, { description: "next branch id" })
+  // @Column({ default: null })
+  nextBranchId: string;
 }

@@ -94,29 +94,10 @@ export class MessageEntity {
   db_name: string;
 
   @Field(() => AnswerEntity, { description: "answer", nullable: true })
-  @ManyToOne(() => AnswerEntity, (answer) => answer.responses)
+  @ManyToOne(() => AnswerEntity, (answer) => answer.responses, {
+    onDelete: "CASCADE",
+    orphanedRowAction: "delete",
+  })
   // @Column(() => AnswerEntity)
   answer: AnswerEntity;
 }
-
-@InputType()
-export class InputMessageEntity extends MessageEntity {
-  // this a hack to make it valid entity
-  //  essentially its duplicated code
-
-  // constructor() {
-  //   super();
-  // }
-  @Field(() => String, { description: "entity id", nullable: true })
-  @PrimaryGeneratedColumn("uuid")
-  declare id: string;
-}
-
-// @Entity()
-// @ObjectType()
-// export class AnswerMessageEntity extends MessageEntity {
-//   // ManyToOne answer: string;
-
-//   @ManyToOne(() => AnswerEntity, (answer) => answer.responses)
-//   answer: AnswerEntity;
-// }

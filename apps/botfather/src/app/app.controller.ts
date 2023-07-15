@@ -28,30 +28,7 @@ export class AppController {
   @Post("add-answers")
   @UseInterceptors(FilesInterceptor("files"))
   async addAnswers(@UploadedFiles() files) {
-    // let answersAdded = 0;
-    // if (files.length === 0) {
-    //   return "No files uploaded";
-    // }
-    // for (const file of files) {
-    //   console.log("file: ", file);
-    //   readFile(file.path, "utf-8", async (err, data) => {
-    //     if (err) {
-    //       console.log("err: ", err);
-    //     }
-    //     const { answers } = JSON.parse(data);
-    //     if (!validateAnswers(answers)) {
-    //       return "Invalid answers";
-    //     }
-    //     for (const answer of answers) {
-    //       answersAdded++;
-    //       console.log("answer: ", answer);
-    //       await this.databaseRepository.create(answer);
-    //     }
-    //     return {
-    //       message: `Added ${answersAdded} answers`,
-    //     };
-    //   });
-    // }
+
 
     let answersAdded = 0;
 
@@ -71,7 +48,6 @@ export class AppController {
         // }
 
         for (const answer of answers) {
-          console.log("answer: ", answer);
           const res = await this.answersRepository.create(answer);
           if ("error" in res) {
             return res;

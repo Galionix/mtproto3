@@ -17,7 +17,7 @@ import {
   MessageEntity,
   ScenarioEntity,
   ScenarioBranchEntity,
-  ScenarioChoiceEntity,
+  // ScenarioChoiceEntity,
   // AnswerMessageEntity,
 } from "@core/types/server";
 import { AnswersRepositoryModule } from "../databases/answers-repository/answers-repository.module";
@@ -64,7 +64,7 @@ import { ScenarioRepositoryModule } from "../databases/scenario-repository/scena
           MessageEntity,
           ScenarioEntity,
           ScenarioBranchEntity,
-          ScenarioChoiceEntity,
+          // ScenarioChoiceEntity,
         ],
         synchronize: true,
         // playground: true,

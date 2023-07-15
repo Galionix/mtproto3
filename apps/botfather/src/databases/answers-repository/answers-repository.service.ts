@@ -28,6 +28,7 @@ export class AnswersRepositoryService {
     isChannelAnswer,
     base_probability,
     db_name,
+    nextBranchId,
   }: CreateAnswerEntityInput) {
     // TODO: check if request already exists
 
@@ -55,11 +56,10 @@ export class AnswersRepositoryService {
     });
 
     const savedAnswer = await this.answersRepository.save(answer);
-    console.log("savedAnswer: ", savedAnswer);
 
     return savedAnswer;
 
-    // console.log("responsesMessagesIds: ", responsesMessages);
+    //
 
     // const storedAnswerInput: Omit<
     // AnswerEntity,
@@ -75,7 +75,7 @@ export class AnswersRepositoryService {
     //   db_name,
     // };
     // const savedAnswer = await this.answersRepository.save(storedAnswerInput);
-    // console.log("savedAnswer: ", savedAnswer);
+    //
 
     // const populatedAnswer = await this.populateAnswer(savedAnswer);
     // return populatedAnswer;
@@ -103,7 +103,7 @@ export class AnswersRepositoryService {
   // }
   async findAll() {
     // const answers = await this.answersRepository.find();
-    // console.log("findAll answers: ", answers);
+    //
     // const populatedAnswers = await this.populateAnswers(answers);
 
     return await this.answersRepository.find({ relations: ["responses"] });
@@ -177,7 +177,7 @@ export class AnswersRepositoryService {
     // // check if id exists
     // if (!answer) throw new Error("Answer with id: " + id + " not found");
     // const res = await this.answersRepository.update(id, rest);
-    // console.log("res: ", res);
+    //
     // return "this.answersRepository.findOne({ where: { id } });";
   }
 }

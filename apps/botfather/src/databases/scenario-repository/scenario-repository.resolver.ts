@@ -2,8 +2,10 @@ import { Resolver, Query, Mutation, Args, Int } from "@nestjs/graphql";
 import { ScenarioRepositoryService } from "./scenario-repository.service";
 
 import {
-  CreateEmptyScenarioInput,
+  CreateScenarioInput,
   CreateScenarioBranchInput,
+  CreateAnswerEntityInput,
+  ScenarioBranchEntity,
   ScenarioEntity,
 } from "@core/types/server";
 
@@ -13,12 +15,23 @@ export class ScenarioRepositoryResolver {
     private readonly scenarioRepositoryService: ScenarioRepositoryService
   ) {}
 
-  @Mutation(() => ScenarioEntity)
-  createEmptyScenario(
-    @Args("emptyScenarioInput")
-    CreateEmptyScenarioInput: CreateEmptyScenarioInput
+  /*
+
+   @Mutation(() => AnswerEntity)
+  async createAnswer(
+    @Args("createAnswerInput") createAnswerInput: CreateAnswerEntityInput
   ) {
-    return this.scenarioRepositoryService.create(CreateEmptyScenarioInput);
+    return await this.answersRepositoryService.create(createAnswerInput);
+  }
+  @Field(() => [CreateMessageInput], { description: "response" })
+  responses: CreateMessageInput[];
+  */
+  @Mutation(() => ScenarioEntity)
+  async createScenario(
+    @Args("scenarioInput")
+    createScenarioInput: CreateScenarioInput
+  ) {
+    return await this.scenarioRepositoryService.create(createScenarioInput);
   }
 
   @Query(() => [ScenarioEntity], { name: "scenarios" })
@@ -42,11 +55,6 @@ export class ScenarioRepositoryResolver {
   //   );
   // }
 
-  @Mutation(() => ScenarioEntity)
-  removeScenarioRepository(@Args("id", { type: () => Int }) id: number) {
-    return this.scenarioRepositoryService.remove(id);
-  }
-
   // add branch to scenario
   @Mutation(() => ScenarioEntity)
   addBranchToScenario(
@@ -58,5 +66,24 @@ export class ScenarioRepositoryResolver {
       scenarioId,
       createBranchInput
     );
+  }
+
+  @Mutation(() => ScenarioBranchEntity)
+  async addChoiceToBranch(
+    @Args("scenarioBranchId", { type: () => String }) scenarioBranchId: string,
+    @Args("createScenarioBranchInput", {
+      type: () => CreateAnswerEntityInput,
+    })
+    createBranchInput: CreateAnswerEntityInput
+  ) {
+    return this.scenarioRepositoryService.addChoiceToBranchById(
+      scenarioBranchId,
+      createBranchInput
+    );
+  }
+  // remove scenario
+  @Mutation(() => String)
+  removeScenario(@Args("id", { type: () => String }) id: string) {
+    return this.scenarioRepositoryService.remove(id);
   }
 }

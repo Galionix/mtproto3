@@ -3,11 +3,13 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
 import { MessageEntity } from "./message.entity";
+import { ScenarioBranchEntity } from "./scenarioBranch.entity";
 
 // @Entity()
 // @ObjectType()
@@ -65,9 +67,13 @@ export class AnswerEntity {
   @PrimaryGeneratedColumn("uuid")
   id: string;
 
-  @Field(() => String, { description: "notes", nullable: true })
-  @Column()
-  description: string;
+  @Field(() => String, {
+    description: "notes",
+    nullable: true,
+    defaultValue: "",
+  })
+  @Column({ default: "" })
+  description?: string;
 
   @Field(() => [String], { description: "request", nullable: true })
   @Column("varchar", { array: true, default: [] })
@@ -79,7 +85,7 @@ export class AnswerEntity {
     defaultValue: [],
   })
   @OneToMany(() => MessageEntity, (message) => message.answer, {
-    cascade: true,
+    cascade: ["remove"],
   })
   responses: MessageEntity[];
 
@@ -89,23 +95,43 @@ export class AnswerEntity {
   @UpdateDateColumn({ type: "timestamp" })
   updatedAt: Date;
 
-  @Field(() => Boolean, { nullable: true })
-  @Column()
-  isDmAnswer: boolean;
+  @Field(() => Boolean, { nullable: true, defaultValue: false })
+  @Column({ default: false })
+  isDmAnswer?: boolean;
 
-  @Field(() => Boolean, { nullable: true })
-  @Column()
-  isGroupAnswer: boolean;
+  @Field(() => Boolean, { nullable: true, defaultValue: false })
+  @Column({ default: false })
+  isGroupAnswer?: boolean;
 
-  @Field(() => Boolean, { nullable: true })
-  @Column()
-  isChannelAnswer: boolean;
+  @Field(() => Boolean, { nullable: true, defaultValue: false })
+  @Column({ default: false })
+  isChannelAnswer?: boolean;
 
   @Field(() => String, { nullable: true })
-  @Column()
+  @Column({ default: "1" })
   base_probability: string;
 
   @Field(() => String, { nullable: true })
-  @Column()
+  @Column({ default: "base" })
   db_name: string;
+
+  @Field(() => String, {
+    description: "next scenario branch id",
+    nullable: true,
+  })
+  @Column({ default: null })
+  nextBranchId?: string;
+
+  @Field(() => ScenarioBranchEntity, {
+    description: "scenario branch relation",
+    nullable: true,
+    defaultValue: null,
+  })
+  @ManyToOne(() => ScenarioBranchEntity, (branch) => branch.choices, {
+    nullable: true,
+    onDelete: "CASCADE",
+    orphanedRowAction: "delete",
+  })
+  // @Column({ nullable: true, default: null })
+  branch: ScenarioBranchEntity;
 }
