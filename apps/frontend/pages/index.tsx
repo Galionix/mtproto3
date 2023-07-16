@@ -1,16 +1,17 @@
 import { useQuery } from "@apollo/client";
 import styles from "./index.module.scss";
-import TEST_QUERY, { TestQuery } from "./testquery";
+import { getBotsQuery } from "./testquery";
+import { Layout } from "../src/shared/Layout/Layout";
 
 export function Index() {
-  const {data} = useQuery<TestQuery>(TEST_QUERY)
-  console.log(data)
+  const { data } = useQuery(getBotsQuery);
+  console.log(data);
   return (
-    <div className={styles.page}>
-      <div className="flex">
-      test nextjs
+    <Layout>
+      <div className={styles.page}>
+        <div className="flex">test nextjs</div>
       </div>
-    </div>
+    </Layout>
   );
 }
 

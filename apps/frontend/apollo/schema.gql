@@ -4,6 +4,9 @@
 
 type AnswerEntity {
   base_probability: String
+
+  """scenario branch relation"""
+  branch: ScenarioBranchEntity
   db_name: String
 
   """notes"""
@@ -14,6 +17,9 @@ type AnswerEntity {
   isChannelAnswer: Boolean
   isDmAnswer: Boolean
   isGroupAnswer: Boolean
+
+  """next scenario branch id"""
+  nextBranchId: String
 
   """request"""
   request: [String!]
@@ -80,22 +86,25 @@ type ChildProcessEntity {
 
 input CreateAnswerEntityInput {
   """base_probability"""
-  base_probability: String!
+  base_probability: String
 
   """db_name"""
-  db_name: String!
+  db_name: String
 
   """description"""
   description: String
 
   """isChannelAnswer"""
-  isChannelAnswer: Boolean!
+  isChannelAnswer: Boolean
 
   """isDmAnswer"""
-  isDmAnswer: Boolean!
+  isDmAnswer: Boolean
 
   """isGroupAnswer"""
-  isGroupAnswer: Boolean!
+  isGroupAnswer: Boolean
+
+  """next branch id"""
+  nextBranchId: String!
 
   """request"""
   request: [String!]!
@@ -122,56 +131,70 @@ input CreateBotInput {
   voice: String
 }
 
-input CreateEmptyScenarioInput {
-  """db_name"""
-  db_name: String
-
-  """notes"""
-  description: String
-
-  """maxConversationLength"""
-  maxConversationLength: Float
-}
-
 input CreateMessageInput {
   """payload of audio for message"""
-  audio: String
+  audio: String = ""
 
   """payload of caption for message"""
-  caption: String
+  caption: String = ""
 
   """coefficient for message"""
-  coefficient: String
+  coefficient: String = "1"
 
   """db_name"""
-  db_name: String
+  db_name: String = "base"
 
   """notes"""
-  description: String
+  description: String = ""
 
   """payload of photo for message"""
-  photo: String
+  photo: String = ""
 
   """payload of reaction for message"""
-  reaction: String
+  reaction: String = ""
 
   """payload of sticker for message"""
-  sticker: String
+  sticker: String = ""
 
   """payload of text for message"""
-  text: String
+  text: String = ""
 
   """value of EMessageType"""
-  type: String
+  type: String = "TEXT"
 
   """payload of video for message"""
-  video: String
+  video: String = ""
 }
 
 input CreateScenarioBranchInput {
+  """choices"""
+  choices: [CreateAnswerEntityInput!]
+
   """notes"""
   description: String
+
+  """id"""
+  id: String
 }
+
+input CreateScenarioInput {
+  """branches"""
+  branches: [CreateScenarioBranchInput!]
+
+  """db_name"""
+  db_name: String = "base"
+
+  """notes"""
+  description: String = ""
+
+  """maxConversationLength"""
+  maxConversationLength: Float = 0
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
 
 input JoinGroupsInput {
   api_ids: [Int!]!
@@ -230,18 +253,19 @@ type MessageEntity {
 
 type Mutation {
   addBranchToScenario(createScenarioBranchInput: CreateScenarioBranchInput!, scenarioId: String!): ScenarioEntity!
+  addChoiceToBranch(createScenarioBranchInput: CreateAnswerEntityInput!, scenarioBranchId: String!): ScenarioBranchEntity!
   createAnswer(createAnswerInput: CreateAnswerEntityInput!): AnswerEntity!
   createBot(createBotInput: CreateBotInput!): BotEntity!
-  createEmptyScenario(emptyScenarioInput: CreateEmptyScenarioInput!): ScenarioEntity!
   createManyMessages(createManyMessagesInput: [CreateMessageInput!]!): [MessageEntity!]!
   createMessage(createMessageInput: CreateMessageInput!): MessageEntity!
+  createScenario(scenarioInput: CreateScenarioInput!): ScenarioEntity!
   createSpamMessage(createSpamMessageInput: CreateMessageInput!): MessageEntity!
   joinGroups(JoinGroupsInput: JoinGroupsInput!): [BotStateEntity!]!
   leaveGroups(input: LeaveGroupsInput!): [BotStateEntity!]!
   removeAnswer(id: String!): Int!
   removeBot(api_id: Int!): BotEntity!
   removeMessages(ids: [String!]!): Int!
-  removeScenarioRepository(id: Int!): ScenarioEntity!
+  removeScenario(id: String!): String!
   restartBot(api_id: Int!): BotEntity!
   setUsername(api_id: Int!, username: String!): String!
   updateAnswer(updateAnswerInput: UpdateAnswersRepositoryInput!): AnswerEntity!
@@ -261,7 +285,7 @@ type Query {
   message(id: String!): MessageEntity!
   messages: [MessageEntity!]!
   reloadStates: [BotStateEntity!]!
-  scenario(id: Int!): ScenarioEntity!
+  scenario(id: String!): ScenarioEntity!
   scenarios: [ScenarioEntity!]!
   someAnswers(findSomeAnswersInput: UpdateAnswersRepositoryInput!): [AnswerEntity!]!
   spamMessages: [MessageEntity!]!
@@ -272,15 +296,24 @@ type Query {
 }
 
 type ScenarioBranchEntity {
+  """choices"""
+  choices: [AnswerEntity!]
+
   """notes"""
   description: String
 
   """entity id"""
   id: String
+
+  """scenario"""
+  scenario: ScenarioEntity
 }
 
 type ScenarioEntity {
   branches: [ScenarioBranchEntity!]!
+
+  """createdAt"""
+  createdAt: DateTime
 
   """db_name"""
   db_name: String
@@ -293,6 +326,9 @@ type ScenarioEntity {
 
   """maxConversationLength"""
   maxConversationLength: Float
+
+  """updatedAt"""
+  updatedAt: DateTime
 }
 
 input UpdateAnswersRepositoryInput {
@@ -317,6 +353,9 @@ input UpdateAnswersRepositoryInput {
   """isGroupAnswer"""
   isGroupAnswer: Boolean
 
+  """next branch id"""
+  nextBranchId: String
+
   """request"""
   request: [String!]
 
@@ -339,35 +378,35 @@ input UpdateBotInput {
 
 input UpdateMessageInput {
   """payload of audio for message"""
-  audio: String
+  audio: String = ""
 
   """payload of caption for message"""
-  caption: String
+  caption: String = ""
 
   """coefficient for message"""
-  coefficient: String
+  coefficient: String = "1"
 
   """db_name"""
-  db_name: String
+  db_name: String = "base"
 
   """notes"""
-  description: String
+  description: String = ""
 
   """payload of photo for message"""
-  photo: String
+  photo: String = ""
 
   """payload of reaction for message"""
-  reaction: String
+  reaction: String = ""
 
   """payload of sticker for message"""
-  sticker: String
+  sticker: String = ""
 
   """payload of text for message"""
-  text: String
+  text: String = ""
 
   """value of EMessageType"""
-  type: String
+  type: String = "TEXT"
 
   """payload of video for message"""
-  video: String
+  video: String = ""
 }

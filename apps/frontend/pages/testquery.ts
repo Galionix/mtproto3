@@ -1,15 +1,16 @@
 import { gql } from "@apollo/client";
+import { graphql } from "../apollo/codegen";
 
 export interface TestQuery {
-    api_id: string;
+  api_id: string;
 }
 
-const TEST_QUERY = gql`
+export const getBotsQuery = graphql(`
   query getBots {
     bots {
       api_id
     }
   }
-`;
+`);
 
-export default TEST_QUERY;
+

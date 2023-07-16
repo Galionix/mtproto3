@@ -40,7 +40,7 @@ export class ScenarioRepositoryResolver {
   }
 
   @Query(() => ScenarioEntity, { name: "scenario" })
-  findOne(@Args("id", { type: () => Int }) id: number) {
+  scenario(@Args("id", { type: () => String }) id: string) {
     return this.scenarioRepositoryService.findOne(id);
   }
 

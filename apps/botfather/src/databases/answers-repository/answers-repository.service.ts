@@ -53,6 +53,7 @@ export class AnswersRepositoryService {
       isChannelAnswer,
       base_probability,
       db_name,
+      nextBranchId,
     });
 
     const savedAnswer = await this.answersRepository.save(answer);

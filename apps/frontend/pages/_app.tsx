@@ -3,9 +3,10 @@ import { SchemaLink } from '@apollo/client/link/schema';
 import { AppProps } from "next/app";
 import Head from "next/head";
 import "../styles/tailwind-output.css";
+import { Header } from "../src/Header";
 
 const client = new ApolloClient({
-  uri: 'http://localhost:3002/graphql',
+  uri: "http://localhost:3002/graphql",
   cache: new InMemoryCache(),
 });
 

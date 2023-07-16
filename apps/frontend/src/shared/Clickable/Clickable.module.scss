@@ -1,0 +1,42 @@
+
+
+.link{
+    display: flex;
+    align-items: center;
+    padding: .05rem .125rem;
+    border: 1px solid transparent;
+    border-radius: 2px;
+
+    width: fit-content;
+
+    cursor: pointer;
+    text-decoration: none;
+    color: #000;
+    &:hover{
+        // text-decoration: underline;
+        border: 1px solid rgb(148, 205, 255);
+        color: rgb(46, 158, 255);
+        background-color: rgb(148, 205, 255, .1);
+    }
+}
+
+.button{
+    display: flex;
+    align-items: center;
+    padding: .25rem;
+    border-radius: 5px;
+    cursor: pointer;
+    color: white;
+    svg{
+        color: white;
+    }
+    background-color: rgb(148, 205, 255);
+    &:hover{
+        background-color: rgb(91, 178, 255);
+    }
+}
+
+.gap{
+    gap: .5rem;
+
+}

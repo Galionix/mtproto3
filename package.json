@@ -12,7 +12,10 @@
     "bot-client:build:watch": "nodemon",
     "bot-client:test": "nx test bot-client --coverage",
     "bot-client:test:watch": "nx test bot-client --watch --verbose",
-    "frontend:dev": "concurrently \"nx serve frontend\" \"npx tailwindcss -i ./apps/frontend/pages/styles.css -o ./apps/frontend/styles/tailwind-output.css --watch\""
+    "frontend:dev": "nx serve frontend",
+    "compileTailwind": "npx tailwindcss -i ./apps/frontend/pages/styles.css -o ./apps/frontend/styles/tailwind-output.css --watch",
+    "graphql:init": "graphql-codegen init",
+    "codegen": "graphql-codegen --config codegen.ts --watch"
   },
   "private": true,
   "dependencies": {
@@ -38,15 +41,20 @@
     "pg": "^8.9.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "react-icons": "^4.10.1",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.0.0",
     "telegram": "^2.15.10",
     "tslib": "^2.3.0",
     "typeorm": "^0.3.12",
-    "uuidv4": "^6.2.13"
+    "uuidv4": "^6.2.13",
+    "zustand": "^4.3.9"
   },
   "devDependencies": {
     "@babel/preset-react": "^7.14.5",
+    "@graphql-codegen/cli": "4.0.1",
+    "@graphql-codegen/client-preset": "4.0.1",
+    "@graphql-codegen/introspection": "4.0.0",
     "@nestjs/schematics": "^9.0.0",
     "@nestjs/testing": "^9.0.0",
     "@nrwl/cypress": "15.8.3",

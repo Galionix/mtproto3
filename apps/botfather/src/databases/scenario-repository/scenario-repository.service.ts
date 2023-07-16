@@ -62,8 +62,11 @@ export class ScenarioRepositoryService {
     });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} scenarioRepository`;
+  findOne(id: string) {
+    return this.scenarioRepository.findOne({
+      where: { id },
+      relations: ["branches", "branches.choices", "branches.choices.responses"],
+    });
   }
 
   // update(
@@ -129,8 +132,6 @@ export class ScenarioRepositoryService {
 
     if (choices && choices.length > 0) {
       const choicesPromises = choices.map((choice) => {
-        console.log("choice: ", choice);
-
         return this.addChoiceToBranch(branch, choice);
       });
 

@@ -1,0 +1,531 @@
+/* eslint-disable */
+import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/core';
+export type Maybe<T> = T | null;
+export type InputMaybe<T> = Maybe<T>;
+export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
+export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
+export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
+export type MakeEmpty<T extends { [key: string]: unknown }, K extends keyof T> = { [_ in K]?: never };
+export type Incremental<T> = T | { [P in keyof T]?: P extends ' $fragmentName' | '__typename' ? T[P] : never };
+/** All built-in and custom scalars, mapped to their actual values */
+export type Scalars = {
+  ID: { input: string; output: string; }
+  String: { input: string; output: string; }
+  Boolean: { input: boolean; output: boolean; }
+  Int: { input: number; output: number; }
+  Float: { input: number; output: number; }
+  /** A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format. */
+  DateTime: { input: any; output: any; }
+};
+
+export type AnswerEntity = {
+  __typename?: 'AnswerEntity';
+  base_probability?: Maybe<Scalars['String']['output']>;
+  /** scenario branch relation */
+  branch?: Maybe<ScenarioBranchEntity>;
+  db_name?: Maybe<Scalars['String']['output']>;
+  /** notes */
+  description?: Maybe<Scalars['String']['output']>;
+  /** entity id */
+  id?: Maybe<Scalars['ID']['output']>;
+  isChannelAnswer?: Maybe<Scalars['Boolean']['output']>;
+  isDmAnswer?: Maybe<Scalars['Boolean']['output']>;
+  isGroupAnswer?: Maybe<Scalars['Boolean']['output']>;
+  /** next scenario branch id */
+  nextBranchId?: Maybe<Scalars['String']['output']>;
+  /** request */
+  request?: Maybe<Array<Scalars['String']['output']>>;
+  /** responses */
+  responses?: Maybe<Array<MessageEntity>>;
+};
+
+export type BotEntity = {
+  __typename?: 'BotEntity';
+  afterTaskDelay?: Maybe<Scalars['Int']['output']>;
+  afterTaskIdleTime?: Maybe<Scalars['Int']['output']>;
+  answersDb?: Maybe<Scalars['String']['output']>;
+  api_hash?: Maybe<Scalars['String']['output']>;
+  api_id?: Maybe<Scalars['String']['output']>;
+  behaviorModel?: Maybe<Scalars['String']['output']>;
+  botName?: Maybe<Scalars['String']['output']>;
+  clientState?: Maybe<Scalars['String']['output']>;
+  clientStateUpdateTime?: Maybe<Scalars['String']['output']>;
+  copyFrom?: Maybe<Scalars['Int']['output']>;
+  readDelay?: Maybe<Scalars['Int']['output']>;
+  replacements?: Maybe<Scalars['String']['output']>;
+  scenario?: Maybe<Scalars['String']['output']>;
+  sessionString?: Maybe<Scalars['String']['output']>;
+  spamDBname?: Maybe<Scalars['String']['output']>;
+  taskOrder?: Maybe<Scalars['String']['output']>;
+  typeDelayMultiplier?: Maybe<Scalars['String']['output']>;
+  voice?: Maybe<Scalars['String']['output']>;
+};
+
+export type BotEvent = {
+  __typename?: 'BotEvent';
+  event_date?: Maybe<Scalars['Float']['output']>;
+  event_message?: Maybe<Scalars['String']['output']>;
+  log_event?: Maybe<Scalars['String']['output']>;
+};
+
+export type BotStateEntity = {
+  __typename?: 'BotStateEntity';
+  bot?: Maybe<BotEntity>;
+  childProcess?: Maybe<ChildProcessEntity>;
+  error?: Maybe<Scalars['String']['output']>;
+  eventLogs?: Maybe<Array<BotEvent>>;
+  isErrored?: Maybe<Scalars['Boolean']['output']>;
+  isRunning?: Maybe<Scalars['Boolean']['output']>;
+  isStarted?: Maybe<Scalars['Boolean']['output']>;
+  isStopped?: Maybe<Scalars['Boolean']['output']>;
+  joining_groups?: Maybe<Scalars['Boolean']['output']>;
+  joining_groups_chat_ids?: Maybe<Array<Scalars['String']['output']>>;
+  lastMessage?: Maybe<Scalars['String']['output']>;
+  lastUpdate?: Maybe<Scalars['Float']['output']>;
+  leaving_groups?: Maybe<Scalars['Boolean']['output']>;
+  leaving_groups_chat_ids?: Maybe<Array<Scalars['String']['output']>>;
+  startedDate?: Maybe<Scalars['Float']['output']>;
+  stoppedDate?: Maybe<Scalars['Float']['output']>;
+};
+
+export type ChildProcessEntity = {
+  __typename?: 'ChildProcessEntity';
+  connected?: Maybe<Scalars['Boolean']['output']>;
+  exitCode?: Maybe<Scalars['Float']['output']>;
+  id?: Maybe<Scalars['Int']['output']>;
+  killed?: Maybe<Scalars['Boolean']['output']>;
+  pid?: Maybe<Scalars['Float']['output']>;
+  signalCode?: Maybe<Scalars['String']['output']>;
+  spawnfile?: Maybe<Scalars['String']['output']>;
+};
+
+export type CreateAnswerEntityInput = {
+  /** base_probability */
+  base_probability?: InputMaybe<Scalars['String']['input']>;
+  /** db_name */
+  db_name?: InputMaybe<Scalars['String']['input']>;
+  /** description */
+  description?: InputMaybe<Scalars['String']['input']>;
+  /** isChannelAnswer */
+  isChannelAnswer?: InputMaybe<Scalars['Boolean']['input']>;
+  /** isDmAnswer */
+  isDmAnswer?: InputMaybe<Scalars['Boolean']['input']>;
+  /** isGroupAnswer */
+  isGroupAnswer?: InputMaybe<Scalars['Boolean']['input']>;
+  /** next branch id */
+  nextBranchId: Scalars['String']['input'];
+  /** request */
+  request: Array<Scalars['String']['input']>;
+  /** response */
+  responses: Array<CreateMessageInput>;
+};
+
+export type CreateBotInput = {
+  afterTaskDelay?: InputMaybe<Scalars['Int']['input']>;
+  afterTaskIdleTime?: InputMaybe<Scalars['Int']['input']>;
+  answersDb?: InputMaybe<Scalars['String']['input']>;
+  api_hash?: InputMaybe<Scalars['String']['input']>;
+  api_id?: InputMaybe<Scalars['Int']['input']>;
+  behaviorModel?: InputMaybe<Scalars['String']['input']>;
+  botName?: InputMaybe<Scalars['String']['input']>;
+  copyFrom?: InputMaybe<Scalars['Int']['input']>;
+  readDelay?: InputMaybe<Scalars['Int']['input']>;
+  replacements?: InputMaybe<Scalars['String']['input']>;
+  scenario?: InputMaybe<Scalars['String']['input']>;
+  sessionString?: InputMaybe<Scalars['String']['input']>;
+  taskOrder?: InputMaybe<Scalars['String']['input']>;
+  typeDelayMultiplier?: InputMaybe<Scalars['Int']['input']>;
+  voice?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type CreateMessageInput = {
+  /** payload of audio for message */
+  audio?: InputMaybe<Scalars['String']['input']>;
+  /** payload of caption for message */
+  caption?: InputMaybe<Scalars['String']['input']>;
+  /** coefficient for message */
+  coefficient?: InputMaybe<Scalars['String']['input']>;
+  /** db_name */
+  db_name?: InputMaybe<Scalars['String']['input']>;
+  /** notes */
+  description?: InputMaybe<Scalars['String']['input']>;
+  /** payload of photo for message */
+  photo?: InputMaybe<Scalars['String']['input']>;
+  /** payload of reaction for message */
+  reaction?: InputMaybe<Scalars['String']['input']>;
+  /** payload of sticker for message */
+  sticker?: InputMaybe<Scalars['String']['input']>;
+  /** payload of text for message */
+  text?: InputMaybe<Scalars['String']['input']>;
+  /** value of EMessageType */
+  type?: InputMaybe<Scalars['String']['input']>;
+  /** payload of video for message */
+  video?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type CreateScenarioBranchInput = {
+  /** choices */
+  choices?: InputMaybe<Array<CreateAnswerEntityInput>>;
+  /** notes */
+  description?: InputMaybe<Scalars['String']['input']>;
+  /** id */
+  id?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type CreateScenarioInput = {
+  /** branches */
+  branches?: InputMaybe<Array<CreateScenarioBranchInput>>;
+  /** db_name */
+  db_name?: InputMaybe<Scalars['String']['input']>;
+  /** notes */
+  description?: InputMaybe<Scalars['String']['input']>;
+  /** maxConversationLength */
+  maxConversationLength?: InputMaybe<Scalars['Float']['input']>;
+};
+
+export type JoinGroupsInput = {
+  api_ids: Array<Scalars['Int']['input']>;
+  behavior_model?: InputMaybe<Scalars['String']['input']>;
+  chatNames: Array<Scalars['String']['input']>;
+  join_delay?: InputMaybe<Scalars['Int']['input']>;
+  processing_enabled?: InputMaybe<Scalars['Boolean']['input']>;
+  spam_frequency?: InputMaybe<Scalars['Int']['input']>;
+};
+
+export type LeaveGroupsInput = {
+  api_ids: Array<Scalars['Int']['input']>;
+  chatNames: Array<Scalars['String']['input']>;
+};
+
+export type MessageEntity = {
+  __typename?: 'MessageEntity';
+  /** answer */
+  answer?: Maybe<AnswerEntity>;
+  /** payload of audio for message */
+  audio?: Maybe<Scalars['String']['output']>;
+  /** payload of caption for message */
+  caption?: Maybe<Scalars['String']['output']>;
+  /** coefficient for message */
+  coefficient?: Maybe<Scalars['String']['output']>;
+  /** db_name */
+  db_name?: Maybe<Scalars['String']['output']>;
+  /** notes */
+  description?: Maybe<Scalars['String']['output']>;
+  /** entity id */
+  id?: Maybe<Scalars['ID']['output']>;
+  /** payload of photo for message */
+  photo?: Maybe<Scalars['String']['output']>;
+  /** payload of reaction for message */
+  reaction?: Maybe<Scalars['String']['output']>;
+  /** payload of sticker for message */
+  sticker?: Maybe<Scalars['String']['output']>;
+  /** payload of text for message */
+  text?: Maybe<Scalars['String']['output']>;
+  /** value of EMessageType */
+  type?: Maybe<Scalars['String']['output']>;
+  /** payload of video for message */
+  video?: Maybe<Scalars['String']['output']>;
+};
+
+export type Mutation = {
+  __typename?: 'Mutation';
+  addBranchToScenario: ScenarioEntity;
+  addChoiceToBranch: ScenarioBranchEntity;
+  createAnswer: AnswerEntity;
+  createBot: BotEntity;
+  createManyMessages: Array<MessageEntity>;
+  createMessage: MessageEntity;
+  createScenario: ScenarioEntity;
+  createSpamMessage: MessageEntity;
+  joinGroups: Array<BotStateEntity>;
+  leaveGroups: Array<BotStateEntity>;
+  removeAnswer: Scalars['Int']['output'];
+  removeBot: BotEntity;
+  removeMessages: Scalars['Int']['output'];
+  removeScenario: Scalars['String']['output'];
+  restartBot: BotEntity;
+  setUsername: Scalars['String']['output'];
+  updateAnswer: AnswerEntity;
+  updateBot: BotEntity;
+  updateMessage: MessageEntity;
+};
+
+
+export type MutationAddBranchToScenarioArgs = {
+  createScenarioBranchInput: CreateScenarioBranchInput;
+  scenarioId: Scalars['String']['input'];
+};
+
+
+export type MutationAddChoiceToBranchArgs = {
+  createScenarioBranchInput: CreateAnswerEntityInput;
+  scenarioBranchId: Scalars['String']['input'];
+};
+
+
+export type MutationCreateAnswerArgs = {
+  createAnswerInput: CreateAnswerEntityInput;
+};
+
+
+export type MutationCreateBotArgs = {
+  createBotInput: CreateBotInput;
+};
+
+
+export type MutationCreateManyMessagesArgs = {
+  createManyMessagesInput: Array<CreateMessageInput>;
+};
+
+
+export type MutationCreateMessageArgs = {
+  createMessageInput: CreateMessageInput;
+};
+
+
+export type MutationCreateScenarioArgs = {
+  scenarioInput: CreateScenarioInput;
+};
+
+
+export type MutationCreateSpamMessageArgs = {
+  createSpamMessageInput: CreateMessageInput;
+};
+
+
+export type MutationJoinGroupsArgs = {
+  JoinGroupsInput: JoinGroupsInput;
+};
+
+
+export type MutationLeaveGroupsArgs = {
+  input: LeaveGroupsInput;
+};
+
+
+export type MutationRemoveAnswerArgs = {
+  id: Scalars['String']['input'];
+};
+
+
+export type MutationRemoveBotArgs = {
+  api_id: Scalars['Int']['input'];
+};
+
+
+export type MutationRemoveMessagesArgs = {
+  ids: Array<Scalars['String']['input']>;
+};
+
+
+export type MutationRemoveScenarioArgs = {
+  id: Scalars['String']['input'];
+};
+
+
+export type MutationRestartBotArgs = {
+  api_id: Scalars['Int']['input'];
+};
+
+
+export type MutationSetUsernameArgs = {
+  api_id: Scalars['Int']['input'];
+  username: Scalars['String']['input'];
+};
+
+
+export type MutationUpdateAnswerArgs = {
+  updateAnswerInput: UpdateAnswersRepositoryInput;
+};
+
+
+export type MutationUpdateBotArgs = {
+  api_id: Scalars['Int']['input'];
+  updateBotInput: UpdateBotInput;
+};
+
+
+export type MutationUpdateMessageArgs = {
+  id: Scalars['String']['input'];
+  updateMessageInput: UpdateMessageInput;
+};
+
+export type Query = {
+  __typename?: 'Query';
+  answer?: Maybe<AnswerEntity>;
+  answers: Array<AnswerEntity>;
+  batchFind: Array<MessageEntity>;
+  bot: BotEntity;
+  bots: Array<BotEntity>;
+  getBotState: BotStateEntity;
+  getBotStates: Array<BotStateEntity>;
+  getProcessesCount: Scalars['Int']['output'];
+  message: MessageEntity;
+  messages: Array<MessageEntity>;
+  reloadStates: Array<BotStateEntity>;
+  scenario: ScenarioEntity;
+  scenarios: Array<ScenarioEntity>;
+  someAnswers: Array<AnswerEntity>;
+  spamMessages: Array<MessageEntity>;
+  startBot: BotEntity;
+  startBots: Array<BotEntity>;
+  stopBot: BotStateEntity;
+  stopBots: Array<BotEntity>;
+};
+
+
+export type QueryAnswerArgs = {
+  id: Scalars['String']['input'];
+};
+
+
+export type QueryBatchFindArgs = {
+  ids: Array<Scalars['String']['input']>;
+};
+
+
+export type QueryBotArgs = {
+  api_id: Scalars['Int']['input'];
+};
+
+
+export type QueryGetBotStateArgs = {
+  id: Scalars['Int']['input'];
+};
+
+
+export type QueryMessageArgs = {
+  id: Scalars['String']['input'];
+};
+
+
+export type QueryScenarioArgs = {
+  id: Scalars['String']['input'];
+};
+
+
+export type QuerySomeAnswersArgs = {
+  findSomeAnswersInput: UpdateAnswersRepositoryInput;
+};
+
+
+export type QueryStartBotArgs = {
+  api_id: Scalars['Int']['input'];
+};
+
+
+export type QueryStopBotArgs = {
+  api_id: Scalars['Int']['input'];
+};
+
+export type ScenarioBranchEntity = {
+  __typename?: 'ScenarioBranchEntity';
+  /** choices */
+  choices?: Maybe<Array<AnswerEntity>>;
+  /** notes */
+  description?: Maybe<Scalars['String']['output']>;
+  /** entity id */
+  id?: Maybe<Scalars['String']['output']>;
+  /** scenario */
+  scenario?: Maybe<ScenarioEntity>;
+};
+
+export type ScenarioEntity = {
+  __typename?: 'ScenarioEntity';
+  branches: Array<ScenarioBranchEntity>;
+  /** createdAt */
+  createdAt?: Maybe<Scalars['DateTime']['output']>;
+  /** db_name */
+  db_name?: Maybe<Scalars['String']['output']>;
+  /** notes */
+  description?: Maybe<Scalars['String']['output']>;
+  /** entity id */
+  id: Scalars['ID']['output'];
+  /** maxConversationLength */
+  maxConversationLength?: Maybe<Scalars['Float']['output']>;
+  /** updatedAt */
+  updatedAt?: Maybe<Scalars['DateTime']['output']>;
+};
+
+export type UpdateAnswersRepositoryInput = {
+  /** base_probability */
+  base_probability?: InputMaybe<Scalars['String']['input']>;
+  /** db_name */
+  db_name?: InputMaybe<Scalars['String']['input']>;
+  /** description */
+  description?: InputMaybe<Scalars['String']['input']>;
+  /** entity id */
+  id: Scalars['String']['input'];
+  /** isChannelAnswer */
+  isChannelAnswer?: InputMaybe<Scalars['Boolean']['input']>;
+  /** isDmAnswer */
+  isDmAnswer?: InputMaybe<Scalars['Boolean']['input']>;
+  /** isGroupAnswer */
+  isGroupAnswer?: InputMaybe<Scalars['Boolean']['input']>;
+  /** next branch id */
+  nextBranchId?: InputMaybe<Scalars['String']['input']>;
+  /** request */
+  request?: InputMaybe<Array<Scalars['String']['input']>>;
+  /** response */
+  responses?: InputMaybe<Array<CreateMessageInput>>;
+};
+
+export type UpdateBotInput = {
+  afterTaskDelay?: InputMaybe<Scalars['Int']['input']>;
+  afterTaskIdleTime?: InputMaybe<Scalars['Int']['input']>;
+  answersDb?: InputMaybe<Scalars['String']['input']>;
+  behaviorModel?: InputMaybe<Scalars['String']['input']>;
+  readDelay?: InputMaybe<Scalars['Int']['input']>;
+  replacements?: InputMaybe<Scalars['String']['input']>;
+  scenario?: InputMaybe<Scalars['String']['input']>;
+  taskOrder?: InputMaybe<Scalars['String']['input']>;
+  typeDelayMultiplier?: InputMaybe<Scalars['String']['input']>;
+  voice?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type UpdateMessageInput = {
+  /** payload of audio for message */
+  audio?: InputMaybe<Scalars['String']['input']>;
+  /** payload of caption for message */
+  caption?: InputMaybe<Scalars['String']['input']>;
+  /** coefficient for message */
+  coefficient?: InputMaybe<Scalars['String']['input']>;
+  /** db_name */
+  db_name?: InputMaybe<Scalars['String']['input']>;
+  /** notes */
+  description?: InputMaybe<Scalars['String']['input']>;
+  /** payload of photo for message */
+  photo?: InputMaybe<Scalars['String']['input']>;
+  /** payload of reaction for message */
+  reaction?: InputMaybe<Scalars['String']['input']>;
+  /** payload of sticker for message */
+  sticker?: InputMaybe<Scalars['String']['input']>;
+  /** payload of text for message */
+  text?: InputMaybe<Scalars['String']['input']>;
+  /** value of EMessageType */
+  type?: InputMaybe<Scalars['String']['input']>;
+  /** payload of video for message */
+  video?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type ScenariosQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type ScenariosQuery = { __typename?: 'Query', scenarios: Array<{ __typename?: 'ScenarioEntity', id: string, description?: string | null, createdAt?: any | null, branches: Array<{ __typename?: 'ScenarioBranchEntity', id?: string | null, choices?: Array<{ __typename?: 'AnswerEntity', id?: string | null, request?: Array<string> | null, responses?: Array<{ __typename?: 'MessageEntity', text?: string | null }> | null }> | null }> }> };
+
+export type ScenarioQueryVariables = Exact<{
+  id: Scalars['String']['input'];
+}>;
+
+
+export type ScenarioQuery = { __typename?: 'Query', scenario: { __typename?: 'ScenarioEntity', id: string, description?: string | null, createdAt?: any | null, branches: Array<{ __typename?: 'ScenarioBranchEntity', id?: string | null, choices?: Array<{ __typename?: 'AnswerEntity', id?: string | null, request?: Array<string> | null, nextBranchId?: string | null, responses?: Array<{ __typename?: 'MessageEntity', id?: string | null, text?: string | null, type?: string | null }> | null }> | null }> } };
+
+export type GetBotsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetBotsQuery = { __typename?: 'Query', bots: Array<{ __typename?: 'BotEntity', api_id?: string | null }> };
+
+
+export const ScenariosDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"scenarios"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"scenarios"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"branches"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"choices"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"request"}},{"kind":"Field","name":{"kind":"Name","value":"responses"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"text"}}]}}]}}]}}]}}]}}]} as unknown as DocumentNode<ScenariosQuery, ScenariosQueryVariables>;
+export const ScenarioDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"scenario"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"scenario"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"branches"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"choices"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"request"}},{"kind":"Field","name":{"kind":"Name","value":"nextBranchId"}},{"kind":"Field","name":{"kind":"Name","value":"responses"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"text"}},{"kind":"Field","name":{"kind":"Name","value":"type"}}]}}]}}]}}]}}]}}]} as unknown as DocumentNode<ScenarioQuery, ScenarioQueryVariables>;
+export const GetBotsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"getBots"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"bots"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"api_id"}}]}}]}}]} as unknown as DocumentNode<GetBotsQuery, GetBotsQueryVariables>;
