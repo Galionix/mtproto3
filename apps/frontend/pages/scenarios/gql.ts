@@ -42,3 +42,10 @@ export const getScenarioQuery = graphql(`
     }
   }
 `);
+
+
+export const removeScenarioMutation = graphql(`
+  mutation removeScenario($id: String!) {
+    removeScenario(id: $id)
+  }
+`);
