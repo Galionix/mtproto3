@@ -47,7 +47,7 @@ const TestScenarioPage = () => {
         <span>{id}</span>
         <p>{data?.scenario?.description}</p>
       </div>
-      <div className="grid grid-cols-3 gap-4">
+      <div className="grid grid-cols-3 gap-4 pt-1">
         <div>
           <h1>Scenario Data</h1>
           <div>
@@ -100,7 +100,10 @@ export default TestScenarioPage;
 
 const BranchRenderer = ({ branch, index, active }) => (
   <div
-    className={"grid items-center gap-1 px-1" + (active ? " bg-teal-500" : "")}
+    className={
+      "grid items-center gap-1 px-1 border-teal-400" +
+      (active ? " bg-teal-500" : "")
+    }
     key={index}
   >
     <span>

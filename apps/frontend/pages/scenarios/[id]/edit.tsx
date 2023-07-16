@@ -5,12 +5,13 @@ import { Modal } from "../../../src/Modal/Modal";
 
 import { FaTrash } from "react-icons/fa";
 import { useMutation } from "@apollo/client";
-import { removeScenarioMutation } from "../gql";
+import { getBasicScenariosDetailsQuery, removeScenarioMutation } from "../gql";
 const EditScenarioPage = () => {
   const router = useRouter();
   const [removeScenario, { data, loading, error }] = useMutation(
     removeScenarioMutation
   );
+  // const client = useApolloClient();
   const { id } = router.query;
 
   return (
@@ -18,6 +19,7 @@ const EditScenarioPage = () => {
       <h1>Edit Scenario</h1>
       <span>{id}</span>
       <Clickable
+        danger
         onClick={() => {
           const modal = document.getElementById(
             "delete-scenario-modal"
@@ -29,14 +31,19 @@ const EditScenarioPage = () => {
       />
       <Modal
         danger={true}
-        // isOpen={deleteModalOpen}
         id="delete-scenario-modal"
         onSubmit={async () => {
           await removeScenario({
             variables: {
               id: id as string,
             },
+            refetchQueries: [
+              {
+                query: getBasicScenariosDetailsQuery,
+              },
+            ],
           });
+
           router.push("/scenarios");
         }}
       >

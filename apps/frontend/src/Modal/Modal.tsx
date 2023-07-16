@@ -1,5 +1,6 @@
 import { useRef } from "react";
-
+import s from "./Modal.module.scss";
+import { Clickable } from "../shared/Clickable/Clickable";
 type TModalProps = {
   id: string;
   children: React.ReactNode;
@@ -16,27 +17,27 @@ export const Modal = ({
 }: TModalProps) => {
   const ref = useRef(null);
   return (
-    <dialog ref={ref} id={id}>
-      <div className="flex flex-col gap-2">
+    <dialog ref={ref} id={id} className={s.modal}>
+      <div className={s.modalContent}>
         {children}
-        <div className="flex flex-row gap-2">
-          <button
+        <div className={s.modalFooter}>
+          <Clickable
             onClick={() => {
               onCancel && onCancel();
               ref.current.close();
             }}
           >
             Cancel
-          </button>
-          <button
-            className={danger ? "bg-red-500" : "bg-emerald-500"}
+          </Clickable>
+          <Clickable
             onClick={() => {
               onSubmit && onSubmit();
               ref.current.close();
             }}
+            danger
           >
             Submit
-          </button>
+          </Clickable>
         </div>
       </div>
     </dialog>

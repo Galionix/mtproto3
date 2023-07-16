@@ -24,6 +24,7 @@ const ScenariosIndexPage = () => {
               {index + 1}. {scenario.description}
             </span>
             <Clickable
+              primary
               //   onClick={() => {
               //     navigate(`/scenarios/${scenario.id}/edit`);
               //   }}
@@ -32,6 +33,7 @@ const ScenariosIndexPage = () => {
               title="edit"
             />
             <Clickable
+              primary
               //   onClick={() => {
               //     navigate(`/scenarios/${scenario.id}/test`);
               //   }}
