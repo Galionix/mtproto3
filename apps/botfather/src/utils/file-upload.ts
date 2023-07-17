@@ -1,26 +1,25 @@
-import { TResponsesData } from "@core/types/client";
 import { AnswerEntity, CreateAnswerEntityInput } from "@core/types/server";
 
 const isKeyPresent = (key: string, keys: string[]): boolean => {
   return keys.includes(key);
 };
 
-const isResponseValid = (response: TResponsesData): boolean => {
-  const keys = Object.keys(response);
-  const requiredKeys = ["a", "p"];
+// const isResponseValid = (response: TResponsesData): boolean => {
+//   const keys = Object.keys(response);
+//   const requiredKeys = ["a", "p"];
 
-  const isKeyPresent = (key: string): boolean => {
-    return keys.includes(key);
-  };
+//   const isKeyPresent = (key: string): boolean => {
+//     return keys.includes(key);
+//   };
 
-  const isAllKeysPresent = requiredKeys.every(isKeyPresent);
+//   const isAllKeysPresent = requiredKeys.every(isKeyPresent);
 
-  if (!isAllKeysPresent) {
-    return false;
-  }
+//   if (!isAllKeysPresent) {
+//     return false;
+//   }
 
-  return true;
-};
+//   return true;
+// };
 
 export const validateAnswers = (
   answers: AnswerEntity[]

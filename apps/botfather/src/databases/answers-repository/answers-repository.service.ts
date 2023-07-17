@@ -145,6 +145,13 @@ export class AnswersRepositoryService {
     // });
   }
 
+  async findByDbName(db_name: string) {
+    return await this.answersRepository.find({
+      where: { db_name },
+      relations: ["responses", "request"],
+    });
+  }
+
   async update(updateAnswerInput: UpdateAnswersRepositoryInput) {
     const { id, ...rest } = updateAnswerInput;
 

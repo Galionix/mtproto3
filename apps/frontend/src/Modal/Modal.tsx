@@ -1,26 +1,30 @@
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import s from "./Modal.module.scss";
 import { Clickable } from "../shared/Clickable/Clickable";
 
-type TModalProps = {
+type TModalProps<T = null> = {
   id: string;
-  children: React.ReactNode;
+  children: (args?: T) => React.ReactNode;
   onCancel?: () => void;
-  onSubmit?: () => void;
+  onSubmit?: (args?: T) => void;
   danger?: boolean;
+  actionProps?: T;
 };
-export const Modal = ({
+export function Modal<T = null>({
   id,
   children,
   onCancel,
   onSubmit,
+  actionProps = null,
   danger = false,
-}: TModalProps) => {
+}: TModalProps<T>) {
   const ref = useRef(null);
+
+  const ChildrenElement = children(actionProps);
   return (
     <dialog ref={ref} id={id} className={s.modal}>
       <div className={s.modalContent}>
-        {children}
+        {ChildrenElement}
         <div className={s.modalFooter}>
           <Clickable
             onClick={() => {
@@ -32,10 +36,10 @@ export const Modal = ({
           </Clickable>
           <Clickable
             onClick={() => {
-              onSubmit && onSubmit();
+              onSubmit && onSubmit(actionProps);
               ref.current.close();
             }}
-            danger
+            danger={danger}
           >
             Submit
           </Clickable>
@@ -43,18 +47,36 @@ export const Modal = ({
       </div>
     </dialog>
   );
-};
+}
 
-export const useModal = (
-  props: TModalProps
-): [modal: JSX.Element, showModal: () => void, hideModal: () => void] => {
+export function useModal<T>(
+  props: TModalProps<T> & {
+    actionPropsDefault?: T;
+  }
+): [
+  modal: JSX.Element,
+  options: {
+    showModal: (props?: T) => void;
+    hideModal: () => void;
+    setActionProps: (args: T) => void;
+  }
+] {
+  const [actionProps, setActionProps] = useState<T>(props.actionPropsDefault); // [id, ...args
+  console.log("actionProps: ", actionProps);
   const { id, children, onCancel, onSubmit, danger } = props;
   const modal = (
-    <Modal id={id} onCancel={onCancel} onSubmit={onSubmit} danger={danger}>
+    <Modal
+      id={id}
+      onCancel={onCancel}
+      onSubmit={onSubmit}
+      danger={danger}
+      actionProps={actionProps}
+    >
       {children}
     </Modal>
   );
-  const showModal = () => {
+  const showModal = (props: T) => {
+    setActionProps(props);
     const dialog = document.getElementById(id) as HTMLDialogElement;
     dialog?.showModal();
   };
@@ -62,6 +84,12 @@ export const useModal = (
     const dialog = document.getElementById(id) as HTMLDialogElement;
     dialog?.close();
   };
-  return [modal, showModal, hideModal];
-};
-
+  return [
+    modal,
+    {
+      showModal,
+      hideModal,
+      setActionProps,
+    },
+  ];
+}

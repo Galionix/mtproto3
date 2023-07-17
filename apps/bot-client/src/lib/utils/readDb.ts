@@ -5,9 +5,9 @@ import { AnswerEntity } from "@core/types/server";
 import { logEvent } from "../processApi/logEventTostate";
 import { state } from "../state";
 
-const temporaryJsonBracketInverter = (json: string): string => {
-  return json.replace(/'/g, '"');
-};
+// const temporaryJsonBracketInverter = (json: string): string => {
+//   return json.replace(/'/g, '"');
+// };
 
 export function readDb(db: AnswerEntity[]): {
   dmDb: TAnswer[];
@@ -19,31 +19,13 @@ export function readDb(db: AnswerEntity[]): {
   const channelDb: TAnswer[] = [];
   db.forEach((answer) => {
     if (answer.isDmAnswer) {
-      dmDb.push({
-        description: answer.description,
-        request: answer.request,
-        response: JSON.parse(temporaryJsonBracketInverter(answer.response)),
-        base_probability: answer.base_probability,
-        behavior_model: answer.behavior_model,
-      });
+      dmDb.push(answer);
     }
     if (answer.isGroupAnswer) {
-      groupDb.push({
-        description: answer.description,
-        request: answer.request,
-        response: JSON.parse(temporaryJsonBracketInverter(answer.response)),
-        base_probability: answer.base_probability,
-        behavior_model: answer.behavior_model,
-      });
+      groupDb.push(answer);
     }
     if (answer.isChannelAnswer) {
-      channelDb.push({
-        description: answer.description,
-        request: answer.request,
-        response: JSON.parse(temporaryJsonBracketInverter(answer.response)),
-        base_probability: answer.base_probability,
-        behavior_model: answer.behavior_model,
-      });
+      channelDb.push(answer);
     }
   });
   return { dmDb, groupDb, channelDb };

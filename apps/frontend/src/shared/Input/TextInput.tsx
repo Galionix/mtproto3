@@ -15,7 +15,7 @@ type TTextInputProps = {
   onChange: (value: string) => void;
   className?: string;
   placeholder?: string;
-  type?: "text" | "password";
+  type?: "text" | "password" | "number";
   disabled?: boolean;
   required?: boolean;
   showClear?: boolean;

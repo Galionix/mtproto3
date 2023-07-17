@@ -17,19 +17,19 @@ export class BotRepositoryService {
     const existingBot = await this.botRepository.findOne({
       where: { api_id: createBotInput.api_id },
     });
-    
+
     if (existingBot) {
       return existingBot;
     }
-    
+
     let copyFromBot: BotEntity;
-    
-    if(createBotInput.copyFrom) {
+
+    if (createBotInput.copyFrom) {
       copyFromBot = await this.botRepository.findOne({
         where: { api_id: createBotInput.copyFrom },
       });
     }
-    
+
     const newBot: BotEntity = {
       ...defaultValues,
       ...copyFromBot,
@@ -52,7 +52,9 @@ export class BotRepositoryService {
   }
 
   async findOneByName(botName: string): Promise<BotEntity> {
+    console.log('botName: ', botName);
     const res = await this.botRepository.findOne({ where: { botName } });
+    console.log('res: ', res);
     return res;
   }
 

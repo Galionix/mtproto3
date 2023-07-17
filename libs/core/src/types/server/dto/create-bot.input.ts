@@ -17,7 +17,6 @@ export class CreateBotInput {
   @Field(() => String, { nullable: true })
   @Column()
   sessionString: string;
-  
 
   @Field(() => String, { nullable: true })
   @Column()
@@ -77,6 +76,5 @@ export class CreateBotInput {
   copyFrom?: number;
 
   @Field(() => String, { nullable: true })
-  @Column()
   botName: string;
 }

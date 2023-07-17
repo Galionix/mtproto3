@@ -14,9 +14,9 @@ const EditScenarioPage = () => {
   // const client = useApolloClient();
   const { id } = router.query;
 
-  const [Modal, showModal] = useModal({
+  const [Modal, { showModal }] = useModal({
     id: "delete-scenario-modal",
-    children: <span>Are you sure you want to delete this scenario?</span>,
+    children: () => <span>Are you sure you want to delete this scenario?</span>,
     danger: true,
     onSubmit: async () => {
       await removeScenario({

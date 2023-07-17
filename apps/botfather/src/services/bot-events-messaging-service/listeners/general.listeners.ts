@@ -47,12 +47,8 @@ async function listenForBotToRequestDB({
   try {
     const { answersRepositoryService, spamRepositoryService, l } = services;
 
-    const db = await answersRepositoryService.findSome({
-      db_name: database,
-    });
-    const spamDb = await spamRepositoryService.findSome({
-      db_name: spamDBname,
-    });
+    const db = await answersRepositoryService.findByDbName(database);
+    const spamDb = await spamRepositoryService.findByDbName(spamDBname);
 
     // TODO: query spamdb repos by spamDBname
     l.log("bot requested db", api_id, message);
