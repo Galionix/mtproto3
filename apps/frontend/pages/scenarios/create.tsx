@@ -14,6 +14,7 @@ import {
   CreateAnswerEntityInput,
   CreateMessageInput,
   CreateScenarioBranchInput,
+  CreateScenarioInput,
 } from "@core/types/server";
 import { v4 as uuidv4 } from "uuid";
 import { FaTrash } from "react-icons/fa";
@@ -39,10 +40,14 @@ type TBranch = Omit<CreateScenarioBranchInput, "choices"> & {
 type TFormData = {
   description: string;
   branches: TBranch[];
+  maxConversationLength: string;
+  db_name: string;
 };
 const initialState: TFormData = {
   description: "",
   branches: [],
+  maxConversationLength: "100",
+  db_name: "",
 };
 
 const CreateScenarioPage = () => {
@@ -55,6 +60,8 @@ const CreateScenarioPage = () => {
   const [fullyVisibleResponses, setFullyVisibleResponses] = useState<string[]>(
     []
   );
+
+  const [showRawData, setShowRawData] = useState(false);
 
   const [createScenario, { data, loading, error }] = useMutation(
     createScenarioMutation
@@ -116,20 +123,7 @@ const CreateScenarioPage = () => {
               disabled={!unsavedChanges}
               text="Save"
               onClick={async () => {
-                const preparedFormData = {
-                  ...formData,
-                  branches: formData.branches.map(({ key, ...branch }) => ({
-                    ...branch,
-                    choices: branch.choices.map(({ key, ...choice }) => ({
-                      ...choice,
-                      responses: choice.responses.map(
-                        ({ key, ...response }) => ({
-                          ...response,
-                        })
-                      ),
-                    })),
-                  })),
-                };
+                const preparedFormData = getPreparedData(formData);
 
                 await createScenario({
                   variables: {
@@ -157,6 +151,23 @@ const CreateScenarioPage = () => {
               value={formData.description}
               onChange={(value) => {
                 dispatch({ description: value });
+              }}
+            />
+            <TextInput
+              label="Scenario Database Name"
+              required
+              value={formData.db_name}
+              onChange={(value) => {
+                dispatch({ db_name: value });
+              }}
+            />
+
+            <TextInput
+              label="Max Conversation Length"
+              required
+              value={formData.maxConversationLength}
+              onChange={(value) => {
+                dispatch({ maxConversationLength: value });
               }}
             />
           </div>
@@ -352,7 +363,8 @@ const CreateScenarioPage = () => {
                                         choices={AScenarioElementType}
                                         required
                                         label="Response Type"
-                                        value={response.type}
+                                        value={EScenarioElementType.TEXT}
+                                        defaultValue={"TEXT"}
                                         onChange={updateResponseType(
                                           dispatch,
                                           formData,
@@ -500,6 +512,7 @@ const CreateScenarioPage = () => {
           </div>
           <Clickable
             primary
+            className="mr-auto"
             icon={BsFillPlusCircleFill}
             text="Add Branch"
             onClick={() => {
@@ -511,6 +524,18 @@ const CreateScenarioPage = () => {
               });
             }}
           />
+          <Clickable
+            className="ml-auto"
+            text="Show Raw Data"
+            onClick={() => {
+              setShowRawData(!showRawData);
+            }}
+          />
+          {showRawData && (
+            <div className="border-2 border-black p-2 border-4 border-teal-300 m-1 rounded">
+              <pre>{JSON.stringify(getPreparedData(formData), null, 2)}</pre>
+            </div>
+          )}
         </div>
         {testScenario && <TestScenario scenario={formData as any} />}
       </div>
@@ -849,7 +874,7 @@ function updateBranchId(
     dispatch({
       branches: [
         ...formData.branches.slice(0, index),
-        { ...branch, id: value },
+        { ...branch, id: value, description: value },
         ...formData.branches.slice(index + 1),
       ],
     });
@@ -946,5 +971,21 @@ function deleteChoice(
         ...formData.branches.slice(index + 1),
       ],
     });
+  };
+}
+
+function getPreparedData(formData: TFormData): CreateScenarioInput {
+  return {
+    ...formData,
+    maxConversationLength: parseInt(formData.maxConversationLength) || 0,
+    branches: formData.branches.map(({ key, ...branch }) => ({
+      ...branch,
+      choices: branch.choices.map(({ key, ...choice }) => ({
+        ...choice,
+        responses: choice.responses.map(({ key, ...response }) => ({
+          ...response,
+        })),
+      })),
+    })),
   };
 }

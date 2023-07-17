@@ -19,6 +19,7 @@ type TTextInputProps = {
   disabled?: boolean;
   required?: boolean;
   showClear?: boolean;
+  defaultValue?: string;
 };
 export const TextInput = ({
   label,
@@ -31,7 +32,12 @@ export const TextInput = ({
   required = false,
   showClear = true,
   fullWidth = false,
+  defaultValue = "",
 }: TTextInputProps) => {
+  useEffect(() => {
+    onChange(defaultValue);
+  }, [defaultValue]); // eslint-disable-line react-hooks/exhaustive-deps
+
   const onChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     onChange(e.target.value);
   };
