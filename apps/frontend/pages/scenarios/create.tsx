@@ -23,6 +23,7 @@ import { AiFillEyeInvisible, AiFillEye } from "react-icons/ai";
 import { TestScenario } from "./components/TestScenario";
 import { useMutation } from "@apollo/client";
 import { createScenarioMutation, getBasicScenariosDetailsQuery } from "./gql";
+import { VscDebugStart } from "react-icons/Vsc";
 
 type TResponse = CreateMessageInput & {
   key: string;
@@ -80,37 +81,39 @@ const CreateScenarioPage = () => {
 
   const branchIds = formData.branches.map((branch) => branch.id);
 
-  const warningText =
-    "You have unsaved changes - are you sure you wish to leave this page?";
+  //   const warningText =
+  //     "You have unsaved changes - are you sure you wish to leave this page?";
 
-  useEffect(() => {
-    const handleWindowClose = (e) => {
-      if (!unsavedChanges) return;
-      e.preventDefault();
-      return (e.returnValue = warningText);
-    };
-    const handleBrowseAway = () => {
-      if (!unsavedChanges) return;
-      if (window.confirm(warningText)) return;
-      router.events.emit("routeChangeError");
-      throw "routeChange aborted.";
-    };
-    window.addEventListener("beforeunload", handleWindowClose);
-    router.events.on("routeChangeStart", handleBrowseAway);
-    return () => {
-      window.removeEventListener("beforeunload", handleWindowClose);
-      router.events.off("routeChangeStart", handleBrowseAway);
-    };
-  }, [router.events, unsavedChanges]);
+  //   useEffect(() => {
+  //     const handleWindowClose = (e) => {
+  //       if (!unsavedChanges) return;
+  //       e.preventDefault();
+  //       return (e.returnValue = warningText);
+  //     };
+  //     const handleBrowseAway = () => {
+  //       if (!unsavedChanges) return;
+  //       if (window.confirm(warningText)) return;
+  //       router.events.emit("routeChangeError");
+  //       throw "routeChange aborted.";
+  //     };
+  //     window.addEventListener("beforeunload", handleWindowClose);
+  //     router.events.on("routeChangeStart", handleBrowseAway);
+  //     return () => {
+  //       window.removeEventListener("beforeunload", handleWindowClose);
+  //       router.events.off("routeChangeStart", handleBrowseAway);
+  //     };
+  //   }, [router.events, unsavedChanges]);
 
   return (
     <Layout>
       <div className="flex flex-row gap-2">
         <div className="flex flex-col gap-2 w-full">
-          <div className="flex justify-between flex-row items-center">
+          <div className="flex justify-between gap-2 flex-row items-center">
             <h1>Create Scenario Page</h1>
             {/* test */}
             <Clickable
+              className="ml-auto"
+              icon={VscDebugStart}
               text="Test Scenario"
               onClick={() => {
                 setTestScenario(!testScenario);

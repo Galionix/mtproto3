@@ -95,7 +95,7 @@ export function getBotResponses(
       (branch) => branch.id === currentChoice?.nextBranchId
     );
 
-    responses.push(...(currentChoice.responses as any));
+    responses.push(...(currentChoice ? currentChoice.responses : ([] as any)));
   }
 
   return responses;

@@ -21,13 +21,17 @@ const ScenariosIndexPage = () => {
         />
       </div>
 
-      <div className="flex flex-col">
+      <div className="flex flex-col w-full divide-y divide-solid divide-neutral-300">
         {data?.scenarios?.map((scenario, index) => (
-          <div className="flex flex-row items-center gap-1" key={scenario.id}>
+          <div
+            className="flex flex-row items-center gap-1 p-2 "
+            key={scenario.id}
+          >
             <span>
               {index + 1}. {scenario.description}
             </span>
             <Clickable
+              className="ml-auto"
               primary
               //   onClick={() => {
               //     navigate(`/scenarios/${scenario.id}/edit`);

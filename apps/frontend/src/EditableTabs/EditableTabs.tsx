@@ -50,6 +50,7 @@ export const EditableTabs = ({
       </div>
       <div className="flex flex-row">
         <textarea
+          className="p-1"
           wrap="soft"
           rows={10}
           cols={40}
