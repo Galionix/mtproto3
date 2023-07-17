@@ -9,6 +9,7 @@ export enum EScenarioElementType {
   ANIMATION = "ANIMATION",
   CONTACT = "CONTACT",
 }
+export const AScenarioElementType = Object.values(EScenarioElementType);
 
 export type TAnyScenarioElementType = keyof typeof EScenarioElementType;
 

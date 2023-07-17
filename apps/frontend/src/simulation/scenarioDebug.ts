@@ -47,6 +47,7 @@ export function getNextBranchId(
 ) {
   if (!scenarioData) return null;
   let currentBranch = scenarioData.branches[0];
+  if (!currentBranch) return null;
   let currentChoice = currentBranch.choices[0];
 
   for (const userRequest of userRequests) {
@@ -59,13 +60,12 @@ export function getNextBranchId(
         checkIfRequestMatches(choice.request, userRequest)
       ) ?? currentBranch.choices[0];
 
-    console.log("currentChoice.nextBranchId: ", currentChoice.nextBranchId);
     currentBranch = scenarioData.branches.find(
-      (branch) => branch.id === currentChoice.nextBranchId
+      (branch) => branch.id === currentChoice?.nextBranchId
     );
   }
 
-  return currentChoice.nextBranchId;
+  return currentChoice?.nextBranchId;
 }
 
 // this function is exactly the same, but accumulates all responses from bot, not just the last one
@@ -74,8 +74,10 @@ export function getBotResponses(
   userRequests: string[]
 ) {
   if (!scenarioData) return null;
-  let currentBranch = scenarioData.branches[0];
-  let currentChoice = currentBranch.choices[0];
+  let currentBranch = scenarioData?.branches[0];
+  if (!currentBranch) return null;
+  let currentChoice = currentBranch?.choices[0];
+  if (!currentChoice) return null;
   // const responses: Omit<MessageEntity,'createdAt' | 'updatedAt' | 'id'>[] = [];
   const responses: AnswerEntity["responses"] = [];
 
@@ -90,7 +92,7 @@ export function getBotResponses(
       ) ?? currentBranch.choices[0];
 
     currentBranch = scenarioData.branches.find(
-      (branch) => branch.id === currentChoice.nextBranchId
+      (branch) => branch.id === currentChoice?.nextBranchId
     );
 
     responses.push(...(currentChoice.responses as any));

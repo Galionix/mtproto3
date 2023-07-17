@@ -49,3 +49,18 @@ export const removeScenarioMutation = graphql(`
     removeScenario(id: $id)
   }
 `);
+
+export const createScenarioMutation = graphql(`
+  mutation createScenario($createScenarioInput: CreateScenarioInput!) {
+    createScenario(scenarioInput: $createScenarioInput) {
+      id
+      branches {
+        id
+        description
+        choices {
+          id
+        }
+      }
+    }
+  }
+`);

@@ -1,6 +1,7 @@
 import { useRef } from "react";
 import s from "./Modal.module.scss";
 import { Clickable } from "../shared/Clickable/Clickable";
+
 type TModalProps = {
   id: string;
   children: React.ReactNode;
@@ -43,3 +44,24 @@ export const Modal = ({
     </dialog>
   );
 };
+
+export const useModal = (
+  props: TModalProps
+): [modal: JSX.Element, showModal: () => void, hideModal: () => void] => {
+  const { id, children, onCancel, onSubmit, danger } = props;
+  const modal = (
+    <Modal id={id} onCancel={onCancel} onSubmit={onSubmit} danger={danger}>
+      {children}
+    </Modal>
+  );
+  const showModal = () => {
+    const dialog = document.getElementById(id) as HTMLDialogElement;
+    dialog?.showModal();
+  };
+  const hideModal = () => {
+    const dialog = document.getElementById(id) as HTMLDialogElement;
+    dialog?.close();
+  };
+  return [modal, showModal, hideModal];
+};
+

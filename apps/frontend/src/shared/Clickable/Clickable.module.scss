@@ -84,3 +84,16 @@
 
 }
 
+.disabled{
+    cursor: not-allowed;
+    color: rgb(211, 211, 211);
+    svg{
+        color: rgb(211, 211, 211);
+    }
+    span{
+        color: rgb(211, 211, 211);
+    }
+    &:hover{
+        background-color: transparent;
+    }
+}

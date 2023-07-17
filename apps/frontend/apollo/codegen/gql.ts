@@ -16,6 +16,7 @@ const documents = {
     "\n  query scenarios {\n    scenarios {\n      id\n      description\n      createdAt\n      branches {\n        id\n        choices {\n          id\n          request\n          responses {\n            text\n          }\n        }\n      }\n    }\n  }\n": types.ScenariosDocument,
     "\n  query scenario($id: String!) {\n    scenario(id: $id) {\n      id\n      description\n      createdAt\n      branches {\n        id\n        choices {\n          id\n          request\n          nextBranchId\n          responses {\n            id\n            text\n            type\n          }\n        }\n      }\n    }\n  }\n": types.ScenarioDocument,
     "\n  mutation removeScenario($id: String!) {\n    removeScenario(id: $id)\n  }\n": types.RemoveScenarioDocument,
+    "\n  mutation createScenario($createScenarioInput: CreateScenarioInput!) {\n    createScenario(scenarioInput: $createScenarioInput) {\n      id\n      branches {\n        id\n        description\n        choices {\n          id\n        }\n      }\n    }\n  }\n": types.CreateScenarioDocument,
     "\n  query getBots {\n    bots {\n      api_id\n    }\n  }\n": types.GetBotsDocument,
 };
 
@@ -45,6 +46,10 @@ export function graphql(source: "\n  query scenario($id: String!) {\n    scenari
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(source: "\n  mutation removeScenario($id: String!) {\n    removeScenario(id: $id)\n  }\n"): (typeof documents)["\n  mutation removeScenario($id: String!) {\n    removeScenario(id: $id)\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  mutation createScenario($createScenarioInput: CreateScenarioInput!) {\n    createScenario(scenarioInput: $createScenarioInput) {\n      id\n      branches {\n        id\n        description\n        choices {\n          id\n        }\n      }\n    }\n  }\n"): (typeof documents)["\n  mutation createScenario($createScenarioInput: CreateScenarioInput!) {\n    createScenario(scenarioInput: $createScenarioInput) {\n      id\n      branches {\n        id\n        description\n        choices {\n          id\n        }\n      }\n    }\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

@@ -3,9 +3,11 @@ import styles from "./Clickable.module.scss";
 import { IconType } from "react-icons/lib";
 import { useRouter } from "next/router";
 import classNames from "classnames/bind";
+import { useEffect, useRef, useState } from "react";
+import { flushSync } from "react-dom";
 
 const cx = classNames.bind(styles);
-export type TClickeableProps = {
+export type TClickableProps = {
   children?: React.ReactNode;
   onClick?: () => void;
 
@@ -19,6 +21,7 @@ export type TClickeableProps = {
   title?: string;
   danger?: boolean;
   primary?: boolean;
+  disabled?: boolean;
 };
 
 export const Clickable = ({
@@ -32,11 +35,21 @@ export const Clickable = ({
   icon,
   danger,
   primary,
+  disabled,
   title,
-}: TClickeableProps) => {
+}: TClickableProps) => {
   const Component = comp === "link" ? Link : "button";
   // const gapStyle = icon && text !== "" ? styles.gap : "";
   const IconComponent = icon || (() => null);
+  const classNames = cx({
+    button: comp === "button",
+    link: comp === "link",
+    danger,
+    primary,
+    gap: icon && text,
+    disabled,
+  });
+  const [classes, setClasses] = useState(null);
 
   const router = useRouter();
   const onClickHandler = href
@@ -45,13 +58,20 @@ export const Clickable = ({
       }
     : onClick;
 
-  const classNames = cx({
-    button: comp === "button",
-    link: comp === "link",
-    danger,
-    primary,
-    gap: icon && text,
-  });
+  useEffect(() => {
+    if (
+      "startViewTransition" in document &&
+      document.startViewTransition instanceof Function
+    ) {
+      document.startViewTransition(() => {
+        flushSync(() => {
+          setClasses(classNames);
+        });
+      });
+    } else {
+      setClasses(classNames);
+    }
+  }, [classNames]);
 
   return (
     <Component
@@ -59,7 +79,8 @@ export const Clickable = ({
       href={href}
       target={target}
       onClick={onClickHandler}
-      className={`${classNames} ${className}`}
+      className={`${classes} ${className}`}
+      disabled={disabled}
     >
       {<IconComponent />}
       <span>{text}</span>

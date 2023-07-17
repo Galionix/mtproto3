@@ -4,18 +4,22 @@ import { getBasicScenariosDetailsQuery } from "./gql";
 import { Clickable } from "../../src/shared/Clickable/Clickable";
 import { CiEdit } from "react-icons/ci";
 import { VscDebugStart } from "react-icons/Vsc";
-import { useRouter } from "next/router";
+import { AiOutlinePlus } from "react-icons/ai";
 
 const ScenariosIndexPage = () => {
-  //   const router = useRouter();
-  //   const navigate = (path: string) => {
-  //     router.push(path);
-  //   };
   const { data, loading } = useQuery(getBasicScenariosDetailsQuery);
-  console.log("scenarios: ", data);
+
   return (
     <Layout loading={loading}>
-      <h1>Scenarios</h1>
+      <div className="flex justify-between flex-row items-center">
+        <h1>Scenarios</h1>
+        <Clickable
+          icon={AiOutlinePlus}
+          primary
+          text="Create new scenario"
+          href="/scenarios/create"
+        />
+      </div>
 
       <div className="flex flex-col">
         {data?.scenarios?.map((scenario, index) => (
