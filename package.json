@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
+    "watch.botclient": "nodemon --config watch-client-nodemon-config.json client-dist.test.ts",
     "botfather:serve": "nx serve botfather",
     "botfather:test:watch": "nx test botfather --watch --verbose",
     "botfather:e2e": "nx e2e botfather-e2e",
