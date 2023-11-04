@@ -12,6 +12,7 @@ import {
   getBotsQuery,
   removeBotMutation,
   restartBotMutation,
+  stopBotMutation,
 } from "./gql";
 import { BsStopCircle } from "react-icons/bs";
 import { VscDebugStart } from "react-icons/Vsc";
@@ -24,6 +25,7 @@ const BotsPage: NextPage = () => {
 
   const [restartBot, { data: restartBotData }] =
     useMutation(restartBotMutation);
+  const [stopBot, { data: stopBotData }] = useMutation(stopBotMutation);
 
   const [removeBot, { data: removeBotData, loading, error }] =
     useMutation(removeBotMutation);
@@ -81,7 +83,17 @@ const BotsPage: NextPage = () => {
             title={bot.botState?.isRunning ? "stop" : "start"}
             onClick={() => {
               if (bot.botState?.isRunning) {
-                console.log("stop bot");
+                stopBot({
+                  variables: {
+                    api_id: parseInt(bot.api_id),
+                  },
+                  refetchQueries: [
+                    {
+                      query: getBotStatesQuery,
+                    },
+                  ],
+                });
+                // console.log("stop bot");
               } else {
                 restartBot({
                   variables: {

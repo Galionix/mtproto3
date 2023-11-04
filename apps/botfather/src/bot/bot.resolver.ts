@@ -29,8 +29,10 @@ export class BotResolver {
     console.log("createBotInput: ", createBotInput);
 
     // if bot with this name already exists - throw error
-    const isExistBotName = await this.botRepositoryService.findOneByName(createBotInput.botName);
-    if(isExistBotName) throw new Error("Bot with this name already exists");
+    const isExistBotName = await this.botRepositoryService.findOneByName(
+      createBotInput.botName
+    );
+    if (isExistBotName) throw new Error("Bot with this name already exists");
 
     // bot successfully creating
     const botEntity = await this.botRepositoryService.create(createBotInput);
@@ -91,7 +93,7 @@ export class BotResolver {
     return this.botStateService.getBotStates();
   }
 
-  @Query(() => BotStateEntity, { name: "stopBot" })
+  @Mutation(() => BotStateEntity, { name: "stopBot" })
   stopBot(@Args("api_id", { type: () => Int }) api_id: number) {
     return this.botProcessService.stopBot(api_id);
   }

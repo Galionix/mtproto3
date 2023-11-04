@@ -88,3 +88,11 @@ export const restartBotMutation = graphql(`
     }
   }
 `);
+
+export const stopBotMutation = graphql(`
+  mutation stopBot($api_id: Int!) {
+    stopBot(api_id: $api_id) {
+      isRunning
+    }
+  }
+`);

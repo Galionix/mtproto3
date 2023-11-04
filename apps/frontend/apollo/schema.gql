@@ -268,6 +268,7 @@ type Mutation {
   removeScenario(id: String!): String!
   restartBot(api_id: Int!): BotEntity!
   setUsername(api_id: Int!, username: String!): String!
+  stopBot(api_id: Int!): BotStateEntity!
   updateAnswer(updateAnswerInput: UpdateAnswersRepositoryInput!): AnswerEntity!
   updateBot(api_id: Int!, updateBotInput: UpdateBotInput!): BotEntity!
   updateMessage(id: String!, updateMessageInput: UpdateMessageInput!): MessageEntity!
@@ -291,7 +292,6 @@ type Query {
   spamMessages: [MessageEntity!]!
   startBot(api_id: Int!): BotEntity!
   startBots: [BotEntity!]!
-  stopBot(api_id: Int!): BotStateEntity!
   stopBots: [BotEntity!]!
 }
 
