@@ -87,6 +87,7 @@ const [
   replacements,
   spamDBname,
 ] = process.argv.slice(2);
+// console.log("process.argvs2: ", process.argv);
 
 state.replacements = JSON.parse(replacements);
 
@@ -104,9 +105,9 @@ state.read_delay = parseInt(read_delay);
 state.type_delay_multiplier = parseInt(type_delay_multiplier);
 state.scenario = JSON.parse(scenario);
 state.spamDbName = spamDBname;
-
-const { readDelay, typeDelay, waitAfterTaskDelay, waitAfterTaskIdleTime } =
-  delayFactory();
+// throw new Error("stop");
+// sffsdsss
+const { waitAfterTaskDelay, waitAfterTaskIdleTime } = delayFactory();
 
 (async () => {
   await readDbSequence({

@@ -8,11 +8,14 @@ import {
   TStatisticsEvent,
 } from "@core/types/client";
 import {
+  AnswerEntity,
   EGetDatabaseResponseTypes,
+  MessageEntity,
   TGetDatabaseResponse,
 } from "@core/types/server";
 import { TListenerArgs } from "../bot-events.service";
-import { messageTranformer } from "./utils";
+import { messageTransformer } from "@core/functions";
+// import { messageTransformer } from "./utils";
 const { BOT_EVENT_LOG_MAX_SIZE } = process.env;
 
 const MAX_LOG_SIZE = parseInt(BOT_EVENT_LOG_MAX_SIZE);
@@ -56,7 +59,7 @@ async function listenForBotToRequestDB({
     return {
       event_type: EGetDatabaseResponseTypes.DB_GET_SUCCESS,
       db,
-      spamDb: messageTranformer(spamDb),
+      spamDb: messageTransformer(spamDb),
     };
   } catch (error) {
     return {
@@ -109,7 +112,6 @@ async function listenBotSyncState({
 //     error: "bot not found"
 //   }
 // }
-
 
 export const generalListeners = [
   {

@@ -58,7 +58,7 @@ export async function readDbSequence({
 
     try {
       const { db, spamDb } = res;
-      console.log("spamDb: ", spamDb);
+      // console.log("spamDb: ", spamDb);
 
       const { dmDb, groupDb, channelDb } = readDb(db);
 

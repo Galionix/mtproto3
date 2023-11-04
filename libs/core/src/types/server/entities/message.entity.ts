@@ -9,12 +9,33 @@ import {
 } from "typeorm";
 import { EMessageType } from "../../client/entities";
 import { AnswerEntity } from "./answer.entity";
+import { Injectable } from "@nestjs/common";
+// import { AnswerEntity } from "./answer.entity";
 
 export const MessageTypeValues = Object.values(EMessageType);
 
+export type TMessageEntity = {
+  id: string;
+  description?: string;
+  type: string;
+  text?: string;
+  reaction?: string;
+  photo?: string;
+  video?: string;
+  audio?: string;
+  caption?: string;
+  sticker?: string;
+  createdAt: Date;
+  updatedAt: Date;
+  coefficient: string;
+  db_name: string;
+  answer: AnswerEntity;
+};
+
 @Entity()
 @ObjectType()
-export class MessageEntity {
+@Injectable()
+export class MessageEntity implements TMessageEntity {
   @Field(() => ID, { description: "entity id", nullable: true })
   @PrimaryGeneratedColumn("uuid")
   id: string;
@@ -93,11 +114,26 @@ export class MessageEntity {
   @Column({ default: "base" })
   db_name: string;
 
-  @Field(() => AnswerEntity, { description: "answer", nullable: true })
-  @ManyToOne(() => AnswerEntity, (answer) => answer.responses, {
-    onDelete: "CASCADE",
-    orphanedRowAction: "delete",
-  })
+  // @Field(() => AnswerEntity, { description: "answer", nullable: true })
+  // @ManyToOne(() => AnswerEntity, (answer) => answer.responses, {
+  //   onDelete: "CASCADE",
+  //   orphanedRowAction: "delete",
+  // })
+  // // @Column(() => AnswerEntity)
+  // answer: AnswerEntity;
+
+  // @Field(() => AnswerEntity, { description: "answer", nullable: true })
+  @Field({ description: "answer", nullable: true })
+  @ManyToOne(
+    // () => AnswerEntity, (answer) => answer.responses
+    "AnswerEntity",
+    "responses",
+    {
+      onDelete: "CASCADE",
+      orphanedRowAction: "delete",
+    }
+  )
   // @Column(() => AnswerEntity)
   answer: AnswerEntity;
 }
+

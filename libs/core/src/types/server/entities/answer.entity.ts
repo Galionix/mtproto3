@@ -10,6 +10,7 @@ import {
 } from "typeorm";
 import { MessageEntity } from "./message.entity";
 import { ScenarioBranchEntity } from "./scenarioBranch.entity";
+import { Inject, Injectable, forwardRef } from "@nestjs/common";
 
 // @Entity()
 // @ObjectType()
@@ -59,10 +60,32 @@ import { ScenarioBranchEntity } from "./scenarioBranch.entity";
 //   @Column()
 //   db_name: string;
 // }
+export type TAnswerEntity = {
+  id: string;
+  description?: string;
+  request: string[];
+  responses: MessageEntity[];
+  createdAt: Date;
+  updatedAt: Date;
+  isDmAnswer?: boolean;
+  isGroupAnswer?: boolean;
+  isChannelAnswer?: boolean;
+  base_probability: string;
+  db_name: string;
+  nextBranchId?: string;
+  branch: ScenarioBranchEntity;
+};
 
 @Entity()
 @ObjectType()
-export class AnswerEntity {
+// @Injectable()
+export class AnswerEntity implements TAnswerEntity {
+  // constructor(
+  //   @Inject(forwardRef(() => MessageEntity))
+  //   private readonly messageEntity: MessageEntity,
+  //   @Inject(forwardRef(() => ScenarioBranchEntity))
+  //   private readonly scenarioBranchEntity: ScenarioBranchEntity
+  // ) {}
   @Field(() => ID, { description: "entity id", nullable: true })
   @PrimaryGeneratedColumn("uuid")
   id: string;
@@ -79,16 +102,29 @@ export class AnswerEntity {
   @Column("varchar", { array: true, default: [] })
   request: string[];
 
-  @Field(() => [MessageEntity], {
-    description: "responses",
-    nullable: true,
-    defaultValue: [],
-  })
-  @OneToMany(() => MessageEntity, (message) => message.answer, {
-    cascade: ["remove"],
-  })
+  @Field(
+    // () => [MessageEntity],
+    // "MessageEntity",
+    // () => [MessageEntity],
+    {
+      description: "responses",
+      nullable: true,
+      defaultValue: [],
+    }
+  )
+  // @OneToMany(() => MessageEntity, (message) => message.answer, {
+  //   cascade: ["remove"],
+  // })
+  // responses: MessageEntity[];
+  @OneToMany(
+    // () => MessageEntity, (message) => message.answer,
+    "MessageEntity",
+    "answer",
+    {
+      cascade: ["remove"],
+    }
+  )
   responses: MessageEntity[];
-
   @CreateDateColumn({ type: "timestamp" })
   createdAt: Date;
 
@@ -122,16 +158,22 @@ export class AnswerEntity {
   @Column({ default: null })
   nextBranchId?: string;
 
-  @Field(() => ScenarioBranchEntity, {
+  @Field({
     description: "scenario branch relation",
     nullable: true,
     defaultValue: null,
   })
-  @ManyToOne(() => ScenarioBranchEntity, (branch) => branch.choices, {
-    nullable: true,
-    onDelete: "CASCADE",
-    orphanedRowAction: "delete",
-  })
+  @ManyToOne(
+    // () => ScenarioBranchEntity, (branch) => branch.choices
+    "ScenarioBranchEntity",
+    "choices",
+    {
+      nullable: true,
+      onDelete: "CASCADE",
+      orphanedRowAction: "delete",
+    }
+  )
   // @Column({ nullable: true, default: null })
   branch: ScenarioBranchEntity;
 }
+
