@@ -6,9 +6,10 @@ import {
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
+  Relation,
   UpdateDateColumn,
 } from "typeorm";
-import { MessageEntity } from "./message.entity";
+import { MessageEntity, TMessageEntity } from "./message.entity";
 import { ScenarioBranchEntity } from "./scenarioBranch.entity";
 import { Inject, Injectable, forwardRef } from "@nestjs/common";
 
@@ -105,26 +106,28 @@ export class AnswerEntity implements TAnswerEntity {
   @Field(
     // () => [MessageEntity],
     // "MessageEntity",
-    // () => [MessageEntity],
+    () => [MessageEntity],
     {
+      // name: "MessageEntity",
       description: "responses",
       nullable: true,
       defaultValue: [],
     }
   )
-  // @OneToMany(() => MessageEntity, (message) => message.answer, {
-  //   cascade: ["remove"],
-  // })
+  @OneToMany(() => MessageEntity, (message) => message.answer, {
+    cascade: ["remove"],
+  })
   // responses: MessageEntity[];
-  @OneToMany(
-    // () => MessageEntity, (message) => message.answer,
-    "MessageEntity",
-    "answer",
-    {
-      cascade: ["remove"],
-    }
-  )
-  responses: MessageEntity[];
+  // @OneToMany(
+  //   () => TMessageEntity,
+  //   (message) => message.answer,
+  //   // "MessageEntity",
+  //   // "answer",
+  //   {
+  //     cascade: ["remove"],
+  //   }
+  // )
+  responses: Relation<MessageEntity[]>;
   @CreateDateColumn({ type: "timestamp" })
   createdAt: Date;
 

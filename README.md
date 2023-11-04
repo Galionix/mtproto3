@@ -106,3 +106,7 @@ Mobile app will be written in React Native. It will be used for managing the bot
 ### "bot-client:build:watch": "nodemon"
 - This command will restart building the bot-client app when changes are made. Configured in nodemon.json
 
+
+
+curcular dependencies in entities:
+https://github.com/typeorm/typeorm/issues/4526#issuecomment-1076462998

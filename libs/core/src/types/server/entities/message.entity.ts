@@ -5,6 +5,7 @@ import {
   Entity,
   ManyToOne,
   PrimaryGeneratedColumn,
+  Relation,
   UpdateDateColumn,
 } from "typeorm";
 import { EMessageType } from "../../client/entities";
@@ -123,17 +124,18 @@ export class MessageEntity implements TMessageEntity {
   // answer: AnswerEntity;
 
   // @Field(() => AnswerEntity, { description: "answer", nullable: true })
-  @Field({ description: "answer", nullable: true })
+  @Field(() => AnswerEntity, { description: "answer", nullable: true })
   @ManyToOne(
-    // () => AnswerEntity, (answer) => answer.responses
-    "AnswerEntity",
-    "responses",
+    () => AnswerEntity,
+    (answer) => answer.responses,
+    // "AnswerEntity",
+    // "responses",
     {
       onDelete: "CASCADE",
       orphanedRowAction: "delete",
     }
   )
   // @Column(() => AnswerEntity)
-  answer: AnswerEntity;
+  answer: Relation<AnswerEntity>;
 }
 
