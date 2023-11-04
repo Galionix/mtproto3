@@ -100,7 +100,8 @@ export class AnswerEntity implements TAnswerEntity {
   description?: string;
 
   @Field(() => [String], { description: "request", nullable: true })
-  @Column("varchar", { array: true, default: [] })
+  @Column("text", { array: true, default: [] })
+  // @Column({ array: true, default: [] })
   request: string[];
 
   @Field(

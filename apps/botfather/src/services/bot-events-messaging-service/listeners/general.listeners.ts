@@ -46,6 +46,7 @@ async function listenForBotToRequestDB({
   api_id,
 }: TListenerArgs<TGetDatabase>): Promise<TGetDatabaseResponse> {
   const { database, spamDBname } = message;
+  console.log("database, spamDBname: ", database, spamDBname);
 
   try {
     const { answersRepositoryService, spamRepositoryService, l } = services;
@@ -62,6 +63,7 @@ async function listenForBotToRequestDB({
       spamDb: messageTransformer(spamDb),
     };
   } catch (error) {
+    console.log("error: ", error);
     return {
       event_type: EGetDatabaseResponseTypes.DB_GET_ERROR,
       error,

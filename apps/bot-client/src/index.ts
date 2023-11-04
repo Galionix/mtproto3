@@ -87,8 +87,8 @@ const [
   replacements,
   spamDBname,
 ] = process.argv.slice(2);
-// console.log("process.argvs2: ", process.argv);
 
+console.log("replacements: ", replacements);
 state.replacements = JSON.parse(replacements);
 
 state.taskOrder = taskOrder.split(",") as TTaskOrder;
@@ -103,17 +103,23 @@ state.behavior_model = behavior_model;
 state.answers_db = answers_db;
 state.read_delay = parseInt(read_delay);
 state.type_delay_multiplier = parseInt(type_delay_multiplier);
+console.log("scenariof: ", scenario);
 state.scenario = JSON.parse(scenario);
 state.spamDbName = spamDBname;
 // throw new Error("stop");
 // sffsdsss
 const { waitAfterTaskDelay, waitAfterTaskIdleTime } = delayFactory();
 
+console.log("launching main thread");
+
 (async () => {
+  console.log("answers_db: ", answers_db);
+  console.log("spamDBname: ", spamDBname);
   await readDbSequence({
     answers_db,
     spamDBname,
   });
+  console.log("readDbSequence finished");
 
   let isRunning = false;
   // let tasksDisplay = [];
@@ -219,6 +225,7 @@ const { waitAfterTaskDelay, waitAfterTaskIdleTime } = delayFactory();
 
     setInterval(() => runTasks(client), state.afterTaskDelay);
   } catch (error) {
+    console.log("error: ", error);
     logEvent(BotEventTypes.ERROR, error.message);
   }
 })();

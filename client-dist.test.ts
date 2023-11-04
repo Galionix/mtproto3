@@ -301,8 +301,8 @@ const botTestConfig = {
   api_hash: "ea63ef37b59ee0dd36acfcf571630c59",
   sessionString:
     "1BQANOTEuMTA4LjU2LjE4MQG7P3JfvGdQ+SINVbE5XDm4NpKgmv7RSVwh45T1GfNod8EaDlqWj4iPGcAWbYJ2oY2svoD4IYy/iFylQeW1sj91C7CCBsOVJnl7WdcVUbAdWW9+uwAXhLtkEzqsEohK1wv+Hl//PdCqRH0usoKNaRSGPTgs/+e5FdQYDMc8N5W6A/ewnyUCbimOmuxWsvpuhKBYa6YnHuhsWZp60sLSipHk0kaHshrbCGvMB2ElH94iMyrc9tGVLQpCI9NDhYbNfDOvdtQO0QR2jNSIVosGw0UGYpcQXMe8RFAz44h9OUiHjVHaagVT/K0mrCOA34Dg1riDy0aBj90F7YFrwjR/hgHvVA==",
-  behaviorModel: "",
-  answersDb: "",
+  behaviorModel: "base",
+  answersDb: "base",
   readDelay: 1000,
   afterTaskDelay: 1000,
   afterTaskIdleTime: 1000,
@@ -311,7 +311,7 @@ const botTestConfig = {
   scenario: JSON.stringify(temporaryScenario),
   voice: "",
   replacements: JSON.stringify(temporaryReplacements),
-  spamDBname: "",
+  spamDBname: "base",
 };
 // const client = require("./dist/apps/bot-client/main.js").default;
 const testf = async () => {

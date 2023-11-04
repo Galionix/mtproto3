@@ -59,6 +59,23 @@ export class BotProcessService {
     if (botState.isStarted) {
       return bot;
     }
+    console.log([
+      bot.api_id.toString(),
+      bot.api_hash,
+      bot.sessionString,
+      bot.behaviorModel,
+      bot.answersDb,
+      bot.readDelay.toString(),
+      bot.typeDelayMultiplier.toString(),
+      bot.taskOrder,
+      bot.afterTaskDelay.toString(),
+      bot.afterTaskIdleTime.toString(),
+      bot.scenario,
+      bot.voice,
+      bot.replacements,
+      bot.spamDBname,
+      // bot.id,
+    ]);
 
     const childProcess = fork("dist" +sep+ "apps" +sep+ "bot-client" +sep+ "main.js", [
       bot.api_id.toString(),

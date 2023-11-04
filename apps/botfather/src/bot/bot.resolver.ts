@@ -34,6 +34,8 @@ export class BotResolver {
 
     // bot successfully creating
     const botEntity = await this.botRepositoryService.create(createBotInput);
+
+    console.log("saved botEntity: ", botEntity);
     this.botStateService.addBotState(botEntity);
     return botEntity;
   }

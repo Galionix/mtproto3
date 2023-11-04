@@ -50,7 +50,8 @@ export async function readDbSequence({
 
   if (res.event_type === EGetDatabaseResponseTypes.DB_GET_ERROR) {
     logEvent(BotEventTypes.ERROR, "db response error");
-    process.exit(1);
+    // throw new Error("db response error");
+    // process.exit(1);
   }
 
   if (res.event_type === EGetDatabaseResponseTypes.DB_GET_SUCCESS) {
