@@ -12,6 +12,7 @@
     "bot-client:build": "nx build bot-client",
     "bot-client:build:watch": "nodemon",
     "bot-client:test": "nx test bot-client --coverage",
+    "bot-client:e2e:watch": "nx e2e bot-client-e2e --coverage --watch --verbose",
     "bot-client:test:watch": "nx test bot-client --watch --verbose",
     "frontend:dev": "nx serve frontend",
     "compileTailwind": "npx tailwindcss -i ./apps/frontend/pages/styles.css -o ./apps/frontend/styles/tailwind-output.css --watch",

@@ -86,6 +86,7 @@ const [
   voice,
   replacements,
   spamDBname,
+  isTest,
 ] = process.argv.slice(2);
 
 console.log("replacements: ", replacements);

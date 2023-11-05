@@ -135,3 +135,4 @@ const BotsPage: NextPage = () => {
 export default dynamic(() => Promise.resolve(BotsPage), {
   ssr: false,
 });
+
