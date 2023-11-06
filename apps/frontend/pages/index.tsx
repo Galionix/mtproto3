@@ -68,7 +68,7 @@ const SectionRenderer = ({
         <label className="cursor-pointer text-xs" htmlFor="">
           In header
         </label>
-        <input type="checkbox" checked={inHeader} />
+        <input type="checkbox" defaultChecked={inHeader} />
       </div>
     </article>
   );
