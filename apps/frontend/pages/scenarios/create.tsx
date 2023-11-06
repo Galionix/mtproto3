@@ -84,11 +84,13 @@ const CreateScenarioPage = () => {
   const [fullyVisibleResponses, setFullyVisibleResponses] = useState<string[]>(
     []
   );
-  const [invalidBranchIds, setInvalidBranchIds] = useState<string[]>([]);
-  console.log("invalidBranchIds: ", invalidBranchIds);
+  const [invalidIds, setInvalidIds] = useState<string[]>([]);
+  const incorrectChoisesIds = invalidIds.filter((id) => id.includes("choice_"));
+
   const [arbitraryRawData, setArbitraryRawData] = useState<any>({} as any);
 
   const [showRawData, setShowRawData] = useState(false);
+  const [incorrectBranchIds, setIncorrectBranchIds] = useState<string[]>([]);
 
   const [createScenario, { data, loading, error }] = useMutation(
     createScenarioMutation
@@ -108,6 +110,12 @@ const CreateScenarioPage = () => {
     },
     scenario
   );
+
+  const choices = formData.branches.flatMap((branch) => branch.choices);
+
+  const incorrectChoisesValues = choices
+    .filter((choice) => incorrectChoisesIds.includes("choice_" + choice.key))
+    .map((choice) => choice.nextBranchId);
 
   const branchIds = formData.branches.map((branch) => branch.id);
 
@@ -135,7 +143,31 @@ const CreateScenarioPage = () => {
   //   }, [router.events, unsavedChanges]);
 
   return (
-    <Layout>
+    <Layout
+      outside={
+        <>
+          <div
+            className={cx(
+              "fixed border-2 border-black p-2 border-4  m-1 rounded top-20 bg-gray-100 left-0 z-10"
+            )}
+          >
+            <p>Icorrect branch ids:</p>
+            <ul>
+              {incorrectChoisesValues.map((id) => (
+                <li
+                  key={id}
+                  // className={cx({
+                  //   "text-red-500": incorrectBranchIds.includes(id),
+                  // })}
+                >
+                  {id}
+                </li>
+              ))}
+            </ul>
+          </div>
+        </>
+      }
+    >
       <div className="flex flex-row gap-2">
         <div className="flex flex-col gap-2 w-full">
           <div className="flex justify-between gap-2 flex-row items-center">
@@ -220,7 +252,7 @@ const CreateScenarioPage = () => {
 
           <div>
             {formData.branches?.map((branch, index) => {
-              const branchInvalid = invalidBranchIds.includes(branch.id);
+              const branchInvalid = invalidIds.includes(branch.id);
               const choicesHidden = hiddenBranches.includes(branch.key);
               return (
                 <div
@@ -318,8 +350,12 @@ const CreateScenarioPage = () => {
                             className={cx(
                               "border-2 border-black p-2 border-4  m-1 rounded",
                               {
-                                "border-red-500": branchInvalid,
-                                "border-sky-300": !branchInvalid,
+                                "border-red-500": invalidIds.includes(
+                                  "choice_" + choice.key
+                                ),
+                                "border-sky-300": !invalidIds.includes(
+                                  "choice_" + choice.key
+                                ),
                               }
                             )}
                             key={choice.key}
@@ -341,29 +377,43 @@ const CreateScenarioPage = () => {
                                 }}
                               />
                             </div>
-
                             <TextInputWithChoicesList
                               required
                               label="Next Branch Id"
                               value={choice.nextBranchId}
-                              onChange={updateNextBranchId(
-                                dispatch,
+                              onChange={(val) => {
+                                updateNextBranchId(
+                                  dispatch,
 
-                                formData,
-                                index,
-                                branch,
-                                choiceIndex,
-                                choice
-                              )}
+                                  formData,
+                                  index,
+                                  branch,
+                                  choiceIndex,
+                                  choice
+                                )(val);
+                              }}
                               onError={() => {
-                                setInvalidBranchIds([
-                                  ...invalidBranchIds,
+                                setInvalidIds([
+                                  ...invalidIds,
                                   branch.id,
+                                  "choice_" + choice.key,
                                 ]);
                               }}
+                              onClearError={
+                                invalidIds.includes(branch.id)
+                                  ? () => {
+                                      setInvalidIds(
+                                        invalidIds.filter(
+                                          (id) =>
+                                            id !== branch.id &&
+                                            id !== "choice_" + choice.key
+                                        )
+                                      );
+                                    }
+                                  : undefined
+                              }
                               choices={branchIds}
                             />
-                            {/* requests */}
                             <TextInput
                               required
                               label="Request"
@@ -378,7 +428,6 @@ const CreateScenarioPage = () => {
                                 choice
                               )}
                             />
-                            {/* responses */}
                             <div>
                               <div className="flex flex-col gap-1 justify-center">
                                 <h1>Responses</h1>
@@ -392,11 +441,104 @@ const CreateScenarioPage = () => {
 
                                   return (
                                     <div
-                                      className="border-2 border-black p-2 border-4 border-teal-300 m-1 rounded"
+                                      className="flex flex-row gap-2 border-2 border-black p-2 border-4 border-teal-300 m-1 rounded"
                                       key={responseIndex}
                                     >
+                                      <section className="w-full ">
+                                        <TextInput
+                                          className="w-full !max-w-full"
+                                          required={
+                                            response.type ===
+                                            EScenarioElementType.TEXT
+                                          }
+                                          label="Response Text"
+                                          value={response.text}
+                                          onChange={updateResponseText(
+                                            dispatch,
+                                            formData,
+                                            index,
+                                            branch,
+                                            choiceIndex,
+                                            choice,
+                                            responseIndex,
+                                            response
+                                          )}
+                                        />
+                                        {responseHidden && (
+                                          <>
+                                            <TextInputWithChoicesList
+                                              choices={AScenarioElementType}
+                                              required
+                                              className="w-full"
+                                              label="Response Type"
+                                              value={response.type}
+                                              defaultValue={
+                                                EScenarioElementType.TEXT
+                                              }
+                                              onChange={updateResponseType(
+                                                dispatch,
+                                                formData,
+                                                index,
+                                                branch,
+                                                choiceIndex,
+                                                choice,
+                                                responseIndex,
+                                                response
+                                              )}
+                                            />
+                                            <TextInput
+                                              className="w-full"
+                                              label="Response Description"
+                                              value={response.description}
+                                              onChange={updateResponseDescription(
+                                                dispatch,
+                                                formData,
+                                                index,
+                                                choiceIndex,
+                                                responseIndex
+                                              )}
+                                            />
+                                            <TextInput
+                                              className="w-full"
+                                              label="Response Caption"
+                                              value={response.caption}
+                                              onChange={updateResponseCaption(
+                                                dispatch,
+                                                formData,
+                                                index,
+                                                choiceIndex,
+                                                responseIndex
+                                              )}
+                                            />
+                                            <TextInput
+                                              className="w-full"
+                                              label="Response DB Name"
+                                              value={response.db_name}
+                                              onChange={updateResponseDbName(
+                                                dispatch,
+                                                formData,
+                                                index,
+                                                choiceIndex,
+                                                responseIndex
+                                              )}
+                                            />
+                                            <TextInput
+                                              className="w-full"
+                                              label="Response Coefficient"
+                                              value={response.coefficient}
+                                              onChange={updateResponseCoefficient(
+                                                dispatch,
+                                                formData,
+                                                index,
+                                                choiceIndex,
+                                                responseIndex
+                                              )}
+                                            />
+                                          </>
+                                        )}
+                                      </section>
                                       <Clickable
-                                        className="mt-3 ml-auto"
+                                        className="ml-auto !w-full max-w-fit"
                                         //   primary={responseHidden}
                                         icon={
                                           responseHidden
@@ -419,101 +561,8 @@ const CreateScenarioPage = () => {
                                           }
                                         }}
                                       />
-                                      {/*
-                                  description,
-                                  caption,
-                                  dbName
-                                  coefficient
-                                  */}
-
-                                      <TextInput
-                                        required={
-                                          response.type ===
-                                          EScenarioElementType.TEXT
-                                        }
-                                        label="Response Text"
-                                        value={response.text}
-                                        onChange={updateResponseText(
-                                          dispatch,
-                                          formData,
-                                          index,
-                                          branch,
-                                          choiceIndex,
-                                          choice,
-                                          responseIndex,
-                                          response
-                                        )}
-                                      />
-
-                                      {responseHidden && (
-                                        <>
-                                          <TextInputWithChoicesList
-                                            choices={AScenarioElementType}
-                                            required
-                                            label="Response Type"
-                                            value={response.type}
-                                            defaultValue={
-                                              EScenarioElementType.TEXT
-                                            }
-                                            onChange={updateResponseType(
-                                              dispatch,
-                                              formData,
-                                              index,
-                                              branch,
-                                              choiceIndex,
-                                              choice,
-                                              responseIndex,
-                                              response
-                                            )}
-                                          />
-                                          <TextInput
-                                            label="Response Description"
-                                            value={response.description}
-                                            onChange={updateResponseDescription(
-                                              dispatch,
-                                              formData,
-                                              index,
-                                              choiceIndex,
-                                              responseIndex
-                                            )}
-                                          />
-                                          <TextInput
-                                            label="Response Caption"
-                                            value={response.caption}
-                                            onChange={updateResponseCaption(
-                                              dispatch,
-                                              formData,
-                                              index,
-                                              choiceIndex,
-                                              responseIndex
-                                            )}
-                                          />
-                                          <TextInput
-                                            label="Response DB Name"
-                                            value={response.db_name}
-                                            onChange={updateResponseDbName(
-                                              dispatch,
-                                              formData,
-                                              index,
-                                              choiceIndex,
-                                              responseIndex
-                                            )}
-                                          />
-                                          <TextInput
-                                            label="Response Coefficient"
-                                            value={response.coefficient}
-                                            onChange={updateResponseCoefficient(
-                                              dispatch,
-                                              formData,
-                                              index,
-                                              choiceIndex,
-                                              responseIndex
-                                            )}
-                                          />
-                                        </>
-                                      )}
                                       <Clickable
-                                        className={`ml-auto`}
+                                        className={`ml-3`}
                                         title="Delete Response"
                                         danger
                                         icon={FaTrash}
@@ -588,7 +637,14 @@ const CreateScenarioPage = () => {
               dispatch({
                 branches: [
                   ...formData.branches,
-                  { key: uuidv4(), id: uuidv4(), choices: [] },
+                  {
+                    key: uuidv4(),
+                    id:
+                      incorrectChoisesValues.length > 0
+                        ? incorrectChoisesValues[0]
+                        : uuidv4(),
+                    choices: [],
+                  },
                 ],
               });
             }}

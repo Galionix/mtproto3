@@ -12,7 +12,9 @@ export const RenderMessage = ({
     return (
       <span
         className={
-          sender === "bot" ? "text-blue-500" : "ml-auto text-green-500"
+          sender === "bot"
+            ? "text-blue-500 w-fit"
+            : "ml-auto w-fit text-green-500"
         }
       >
         {message.text}

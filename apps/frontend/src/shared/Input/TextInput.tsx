@@ -34,11 +34,18 @@ export const TextInput = ({
   fullWidth = false,
   defaultValue = "",
 }: TTextInputProps) => {
-  const onChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const Component = value?.length > 30 ? "textarea" : "input";
+  // useEffect(() => {
+  //   if (value?.length > 30 && value?.length < 31) {
+  //     inputRef.current?.focus();
+  //   }
+  // }, [value?.length]);
+
+  const onChangeHandler = (e) => {
     onChange(e.target.value);
   };
 
-  const inputRef = useRef<HTMLInputElement>(null);
+  const inputRef = useRef<any>(null);
   const classNames = cx({
     textInput: true,
     disabled,
@@ -49,7 +56,7 @@ export const TextInput = ({
   return (
     <div className={cx(classNames, className)}>
       <label>{label}</label>
-      <input
+      <Component
         ref={inputRef}
         type={type}
         value={value}
@@ -80,11 +87,13 @@ export const TextInput = ({
 type TTextInputWithChoicesProps = {
   choices: string[];
   onError?: (error?: string) => void;
+  onClearError?: () => void;
 } & TTextInputProps;
 
 export const TextInputWithChoicesList = ({
   choices,
   onError,
+  onClearError,
   ...props
 }: TTextInputWithChoicesProps) => {
   const { defaultValue } = props;
@@ -101,6 +110,7 @@ export const TextInputWithChoicesList = ({
   useEffect(() => {
     setOpen(invalid);
     onError?.(invalid ? "Invalid choice!" : undefined);
+    !invalid && onClearError?.();
   }, [invalid]);
 
   const classNames = cx({

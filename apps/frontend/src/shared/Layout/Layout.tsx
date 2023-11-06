@@ -6,17 +6,22 @@ import s from "./Layout.module.scss";
 export const Layout = ({
   children,
   loading = false,
+  outside = <></>,
 }: {
   children: React.ReactNode;
   loading?: boolean;
+  outside?: React.ReactNode;
 }) => {
   return (
-    <div className={s.layout}>
-      <Header />
-      <div className={`${s.content} ${loading ? s.loading : ""}`}>
-        {children}
+    <>
+      <div className={s.layout}>
+        <Header />
+        <div className={`${s.content} ${loading ? s.loading : ""}`}>
+          {children}
+        </div>
+        <Footer />
       </div>
-      <Footer />
-    </div>
+      {outside}
+    </>
   );
 };

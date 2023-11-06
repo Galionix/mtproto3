@@ -73,16 +73,17 @@ export function getBotResponses(
   scenarioData: ScenarioEntity,
   userRequests: string[]
 ) {
+  console.log("-------------------------------");
   if (!scenarioData) return null;
   let currentBranch = scenarioData?.branches[0];
+  const responses: AnswerEntity["responses"] = [];
   if (!currentBranch) return null;
+
   let currentChoice = currentBranch?.choices[0];
   if (!currentChoice) return null;
-  // const responses: Omit<MessageEntity,'createdAt' | 'updatedAt' | 'id'>[] = [];
-  const responses: AnswerEntity["responses"] = [];
   for (const userRequest of userRequests) {
     if (!currentBranch) {
-      return null;
+      return responses;
     }
 
     currentChoice =
@@ -93,11 +94,15 @@ export function getBotResponses(
     currentBranch = scenarioData.branches.find(
       (branch) => branch.id === currentChoice?.nextBranchId
     );
-    responses.push(
-      currentChoice.responses[
-        getRandomInt(currentChoice.responses.length)
-      ] as AnswerEntity["responses"][0]
-    );
+
+    const intValue = getRandomInt(currentChoice?.responses?.length || 0);
+    console.log("intValue: ", intValue);
+    const choiceText = currentChoice
+      ? (currentChoice.responses[intValue] as AnswerEntity["responses"][0])
+      : null;
+
+    console.log("choiceText: ", choiceText);
+    responses.push(choiceText);
   }
 
   return responses;

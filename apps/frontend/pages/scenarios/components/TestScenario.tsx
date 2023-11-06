@@ -17,6 +17,7 @@ export const TestScenario = ({ scenario }: { scenario: ScenarioEntity }) => {
   const userInput = selectedTab?.content ? selectedTab.content.split("\n") : [];
 
   const botResponse = getBotResponses(scenario, userInput) || [];
+  console.log("botResponse: ", botResponse);
 
   const botMessages = botResponse.map((message) => ({
     sender: "bot",
