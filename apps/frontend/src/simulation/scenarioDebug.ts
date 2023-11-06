@@ -4,6 +4,7 @@ import {
   ScenarioBranchEntity,
 } from "@core/types/server";
 import { ScenarioEntity } from "../../apollo/codegen/graphql";
+import { getRandomInt } from "@core/functions";
 
 function checkIfRequestMatches(request: string[], userRequest: string) {
   for (const requestItem of request) {
@@ -33,13 +34,12 @@ export function getBotResponse(
         checkIfRequestMatches(choice.request, userRequest)
       ) ?? currentBranch.choices[0];
 
-    console.log("currentChoice.nextBranchId: ", currentChoice.nextBranchId);
     currentBranch = scenarioData.branches.find(
       (branch) => branch.id === currentChoice.nextBranchId
     );
   }
 
-  return currentChoice.responses;
+  return currentChoice.responses[getRandomInt(currentChoice.responses.length)];
 }
 export function getNextBranchId(
   scenarioData: ScenarioEntity,
@@ -80,7 +80,6 @@ export function getBotResponses(
   if (!currentChoice) return null;
   // const responses: Omit<MessageEntity,'createdAt' | 'updatedAt' | 'id'>[] = [];
   const responses: AnswerEntity["responses"] = [];
-
   for (const userRequest of userRequests) {
     if (!currentBranch) {
       return null;
@@ -94,8 +93,11 @@ export function getBotResponses(
     currentBranch = scenarioData.branches.find(
       (branch) => branch.id === currentChoice?.nextBranchId
     );
-
-    responses.push(...(currentChoice ? currentChoice.responses : ([] as any)));
+    responses.push(
+      currentChoice.responses[
+        getRandomInt(currentChoice.responses.length)
+      ] as AnswerEntity["responses"][0]
+    );
   }
 
   return responses;

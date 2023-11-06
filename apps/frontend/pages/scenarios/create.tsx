@@ -9,7 +9,7 @@ import {
   TextInputWithChoicesList,
 } from "../../src/shared/Input/TextInput";
 import { isEqual } from "lodash";
-import { BsFillPlusCircleFill } from "react-icons/bs";
+import { BsFillPlusCircleFill, BsTrashFill } from "react-icons/bs";
 import {
   CreateAnswerEntityInput,
   CreateMessageInput,
@@ -24,32 +24,55 @@ import { TestScenario } from "./components/TestScenario";
 import { useMutation } from "@apollo/client";
 import { createScenarioMutation, getBasicScenariosDetailsQuery } from "./gql";
 import { VscDebugStart } from "react-icons/Vsc";
-
-type TResponse = CreateMessageInput & {
+import {
+  getPreparedData,
+  updateBranchId,
+  updateBranchDescription,
+  deleteBranch,
+  updateNextBranchId,
+  updateRequest,
+  updateResponseType,
+  updateResponseText,
+  updateResponseDescription,
+  updateResponseCaption,
+  updateResponseDbName,
+  updateResponseCoefficient,
+  deleteResponse,
+  addResponseToChoice,
+  deleteChoice,
+  addChoiceToBranch,
+} from "./createUtils";
+// import { tempScenario } from "./temp";
+import {
+  createScenarioInitialData,
+  useCreateScenarioStore,
+} from "./createScenarioStore";
+import cx from "classnames";
+export type TResponse = CreateMessageInput & {
   key: string;
 };
 
-type TChoice = {
+export type TChoice = {
   key: string;
   responses: TResponse[];
 } & Omit<CreateAnswerEntityInput, "responses">;
-type TBranch = Omit<CreateScenarioBranchInput, "choices"> & {
+export type TBranch = Omit<CreateScenarioBranchInput, "choices"> & {
   key?: string;
   choices: TChoice[];
 };
 
-type TFormData = {
+export type TCreateScenarioFormData = {
   description: string;
   branches: TBranch[];
   maxConversationLength: string;
   db_name: string;
 };
-const initialState: TFormData = {
-  description: "",
-  branches: [],
-  maxConversationLength: "100",
-  db_name: "",
-};
+// const initialState: TCreateScenarioFormData = {
+//   description: "",
+//   branches: [],
+//   maxConversationLength: "100",
+//   db_name: "",
+// };
 
 const CreateScenarioPage = () => {
   // const
@@ -61,22 +84,29 @@ const CreateScenarioPage = () => {
   const [fullyVisibleResponses, setFullyVisibleResponses] = useState<string[]>(
     []
   );
+  const [invalidBranchIds, setInvalidBranchIds] = useState<string[]>([]);
+  console.log("invalidBranchIds: ", invalidBranchIds);
+  const [arbitraryRawData, setArbitraryRawData] = useState<any>({} as any);
 
   const [showRawData, setShowRawData] = useState(false);
 
   const [createScenario, { data, loading, error }] = useMutation(
     createScenarioMutation
   );
+  const { scenario, setScenario, clearScenario } = useCreateScenarioStore();
 
   const [formData, dispatch] = useReducer(
-    (state: TFormData, newState: Partial<TFormData>) => {
+    (
+      state: TCreateScenarioFormData,
+      newState: Partial<TCreateScenarioFormData>
+    ) => {
       const result = { ...state, ...newState };
 
-      setUnsavedChanges(!isEqual(result, initialState));
-
+      setUnsavedChanges(!isEqual(result, scenario));
+      setScenario(result);
       return result;
     },
-    initialState
+    scenario
   );
 
   const branchIds = formData.branches.map((branch) => branch.id);
@@ -110,7 +140,19 @@ const CreateScenarioPage = () => {
         <div className="flex flex-col gap-2 w-full">
           <div className="flex justify-between gap-2 flex-row items-center">
             <h1>Create Scenario Page</h1>
-            {/* test */}
+            {/* clear scenario */}
+            <Clickable
+              danger
+              primary={unsavedChanges}
+              disabled={!unsavedChanges}
+              className="ml-auto"
+              icon={BsTrashFill}
+              text="Clear Scenario"
+              onClick={() => {
+                clearScenario();
+                dispatch(createScenarioInitialData);
+              }}
+            />
             <Clickable
               className="ml-auto"
               icon={VscDebugStart}
@@ -140,7 +182,8 @@ const CreateScenarioPage = () => {
                 });
 
                 if (!error) {
-                  dispatch(initialState);
+                  dispatch(createScenarioInitialData);
+                  clearScenario();
                   setUnsavedChanges(false);
                   router.push("/scenarios");
                 }
@@ -177,10 +220,17 @@ const CreateScenarioPage = () => {
 
           <div>
             {formData.branches?.map((branch, index) => {
+              const branchInvalid = invalidBranchIds.includes(branch.id);
               const choicesHidden = hiddenBranches.includes(branch.key);
               return (
                 <div
-                  className="border-2 border-black p-2 border-4 border-indigo-500 m-1 rounded"
+                  className={cx(
+                    "border-2 border-black p-2 border-4  m-1 rounded",
+                    {
+                      "border-red-500": branchInvalid,
+                      "border-indigo-500": !branchInvalid,
+                    }
+                  )}
                   key={branch.key}
                 >
                   <div className="flex flex-row gap-1 items-center justify-between">
@@ -264,7 +314,14 @@ const CreateScenarioPage = () => {
 
                         return (
                           <div
-                            className="border-2 border-black p-2 border-4 border-sky-300 m-1 rounded"
+                            // className="border-2 border-black p-2 border-4 border-sky-300 m-1 rounded"
+                            className={cx(
+                              "border-2 border-black p-2 border-4  m-1 rounded",
+                              {
+                                "border-red-500": branchInvalid,
+                                "border-sky-300": !branchInvalid,
+                              }
+                            )}
                             key={choice.key}
                           >
                             <div className="flex gap-1">
@@ -298,6 +355,12 @@ const CreateScenarioPage = () => {
                                 choiceIndex,
                                 choice
                               )}
+                              onError={() => {
+                                setInvalidBranchIds([
+                                  ...invalidBranchIds,
+                                  branch.id,
+                                ]);
+                              }}
                               choices={branchIds}
                             />
                             {/* requests */}
@@ -362,23 +425,7 @@ const CreateScenarioPage = () => {
                                   dbName
                                   coefficient
                                   */}
-                                      <TextInputWithChoicesList
-                                        choices={AScenarioElementType}
-                                        required
-                                        label="Response Type"
-                                        value={EScenarioElementType.TEXT}
-                                        defaultValue={"TEXT"}
-                                        onChange={updateResponseType(
-                                          dispatch,
-                                          formData,
-                                          index,
-                                          branch,
-                                          choiceIndex,
-                                          choice,
-                                          responseIndex,
-                                          response
-                                        )}
-                                      />
+
                                       <TextInput
                                         required={
                                           response.type ===
@@ -400,6 +447,25 @@ const CreateScenarioPage = () => {
 
                                       {responseHidden && (
                                         <>
+                                          <TextInputWithChoicesList
+                                            choices={AScenarioElementType}
+                                            required
+                                            label="Response Type"
+                                            value={response.type}
+                                            defaultValue={
+                                              EScenarioElementType.TEXT
+                                            }
+                                            onChange={updateResponseType(
+                                              dispatch,
+                                              formData,
+                                              index,
+                                              branch,
+                                              choiceIndex,
+                                              choice,
+                                              responseIndex,
+                                              response
+                                            )}
+                                          />
                                           <TextInput
                                             label="Response Description"
                                             value={response.description}
@@ -537,6 +603,26 @@ const CreateScenarioPage = () => {
           {showRawData && (
             <div className="border-2 border-black p-2 border-4 border-teal-300 m-1 rounded">
               <pre>{JSON.stringify(getPreparedData(formData), null, 2)}</pre>
+              <p>Set arbitrary raw data</p>
+
+              <textarea
+                name=""
+                id=""
+                cols={30}
+                rows={10}
+                value={arbitraryRawData}
+                onChange={(e) => {
+                  setArbitraryRawData(e.target.value);
+                }}
+              ></textarea>
+              {/* apply arbitrary raw data */}
+              <Clickable
+                primary
+                text="Apply"
+                onClick={() => {
+                  dispatch(JSON.parse(arbitraryRawData));
+                }}
+              />
             </div>
           )}
         </div>
@@ -547,448 +633,3 @@ const CreateScenarioPage = () => {
 };
 
 export default CreateScenarioPage;
-
-function updateResponseDescription(
-  dispatch: Dispatch<Partial<TFormData>>,
-  formData: { description: string; branches: TBranch[] },
-  index: number,
-  choiceIndex: number,
-  responseIndex: number
-): (value: string) => void {
-  return (value) => {
-    dispatch({
-      branches: formData.branches.map((b, i) => {
-        if (i !== index) return b;
-        return {
-          ...b,
-          choices: b.choices.map((c, ci) => {
-            if (ci !== choiceIndex) return c;
-            return {
-              ...c,
-              responses: c.responses.map((r, ri) => {
-                if (ri !== responseIndex) return r;
-                return {
-                  ...r,
-                  description: value,
-                };
-              }),
-            };
-          }),
-        };
-      }),
-    });
-  };
-}
-
-function updateResponseCaption(
-  dispatch: Dispatch<Partial<TFormData>>,
-  formData: { description: string; branches: TBranch[] },
-  index: number,
-  choiceIndex: number,
-  responseIndex: number
-): (value: string) => void {
-  return (value) => {
-    dispatch({
-      branches: formData.branches.map((b, i) => {
-        if (i !== index) return b;
-        return {
-          ...b,
-          choices: b.choices.map((c, ci) => {
-            if (ci !== choiceIndex) return c;
-            return {
-              ...c,
-              responses: c.responses.map((r, ri) => {
-                if (ri !== responseIndex) return r;
-                return {
-                  ...r,
-                  caption: value,
-                };
-              }),
-            };
-          }),
-        };
-      }),
-    });
-  };
-}
-
-function updateResponseCoefficient(
-  dispatch: Dispatch<Partial<TFormData>>,
-  formData: { description: string; branches: TBranch[] },
-  index: number,
-  choiceIndex: number,
-  responseIndex: number
-): (value: string) => void {
-  return (value) => {
-    dispatch({
-      branches: formData.branches.map((b, i) => {
-        if (i !== index) return b;
-        return {
-          ...b,
-          choices: b.choices.map((c, ci) => {
-            if (ci !== choiceIndex) return c;
-            return {
-              ...c,
-              responses: c.responses.map((r, ri) => {
-                if (ri !== responseIndex) return r;
-                return {
-                  ...r,
-                  coefficient: value,
-                };
-              }),
-            };
-          }),
-        };
-      }),
-    });
-  };
-}
-
-function updateResponseDbName(
-  dispatch: Dispatch<Partial<TFormData>>,
-  formData: { description: string; branches: TBranch[] },
-  index: number,
-  choiceIndex: number,
-  responseIndex: number
-): (value: string) => void {
-  return (value) => {
-    dispatch({
-      branches: formData.branches.map((b, i) => {
-        if (i !== index) return b;
-        return {
-          ...b,
-          choices: b.choices.map((c, ci) => {
-            if (ci !== choiceIndex) return c;
-            return {
-              ...c,
-              responses: c.responses.map((r, ri) => {
-                if (ri !== responseIndex) return r;
-                return {
-                  ...r,
-                  db_name: value,
-                };
-              }),
-            };
-          }),
-        };
-      }),
-    });
-  };
-}
-
-function updateRequest(
-  dispatch: Dispatch<Partial<TFormData>>,
-  formData: { description: string; branches: TBranch[] },
-  index: number,
-  branch: TBranch,
-  choiceIndex: number,
-  choice: TChoice
-): (value: string) => void {
-  return (value) => {
-    dispatch({
-      branches: [
-        ...formData.branches.slice(0, index),
-        {
-          ...branch,
-          choices: [
-            ...branch.choices.slice(0, choiceIndex),
-            {
-              ...choice,
-              request: value.split(","),
-            },
-            ...branch.choices.slice(choiceIndex + 1),
-          ],
-        },
-        ...formData.branches.slice(index + 1),
-      ],
-    });
-  };
-}
-
-function updateResponseType(
-  dispatch: Dispatch<Partial<TFormData>>,
-  formData: { description: string; branches: TBranch[] },
-  index: number,
-  branch: TBranch,
-  choiceIndex: number,
-  choice: TChoice,
-  responseIndex: number,
-  response: TResponse
-): (value: string) => void {
-  return (value) => {
-    dispatch({
-      branches: [
-        ...formData.branches.slice(0, index),
-        {
-          ...branch,
-          choices: [
-            ...branch.choices.slice(0, choiceIndex),
-            {
-              ...choice,
-              responses: [
-                ...choice.responses.slice(0, responseIndex),
-                {
-                  ...response,
-                  type: value,
-                },
-                ...choice.responses.slice(responseIndex + 1),
-              ],
-            },
-            ...branch.choices.slice(choiceIndex + 1),
-          ],
-        },
-        ...formData.branches.slice(index + 1),
-      ],
-    });
-  };
-}
-
-function updateResponseText(
-  dispatch: Dispatch<Partial<TFormData>>,
-  formData: { description: string; branches: TBranch[] },
-  index: number,
-  branch: TBranch,
-  choiceIndex: number,
-  choice: TChoice,
-  responseIndex: number,
-  response: TResponse
-): (value: string) => void {
-  return (value) => {
-    dispatch({
-      branches: [
-        ...formData.branches.slice(0, index),
-        {
-          ...branch,
-          choices: [
-            ...branch.choices.slice(0, choiceIndex),
-            {
-              ...choice,
-              responses: [
-                ...choice.responses.slice(0, responseIndex),
-                {
-                  ...response,
-                  text: value,
-                },
-                ...choice.responses.slice(responseIndex + 1),
-              ],
-            },
-            ...branch.choices.slice(choiceIndex + 1),
-          ],
-        },
-        ...formData.branches.slice(index + 1),
-      ],
-    });
-  };
-}
-
-function deleteResponse(
-  dispatch: Dispatch<Partial<TFormData>>,
-  formData: { description: string; branches: TBranch[] },
-  index: number,
-  branch: TBranch,
-  choiceIndex: number,
-  choice: TChoice,
-  responseIndex: number
-): () => void {
-  return () => {
-    dispatch({
-      branches: [
-        ...formData.branches.slice(0, index),
-        {
-          ...branch,
-          choices: [
-            ...branch.choices.slice(0, choiceIndex),
-            {
-              ...choice,
-              responses: [
-                ...choice.responses.slice(0, responseIndex),
-                ...choice.responses.slice(responseIndex + 1),
-              ],
-            },
-            ...branch.choices.slice(choiceIndex + 1),
-          ],
-        },
-        ...formData.branches.slice(index + 1),
-      ],
-    });
-  };
-}
-
-function addResponseToChoice(
-  dispatch: Dispatch<Partial<TFormData>>,
-  formData: { description: string; branches: TBranch[] },
-  index: number,
-  branch: TBranch,
-  choiceIndex: number,
-  choice: TChoice
-): () => void {
-  return () => {
-    dispatch({
-      branches: [
-        ...formData.branches.slice(0, index),
-        {
-          ...branch,
-          choices: [
-            ...branch.choices.slice(0, choiceIndex),
-            {
-              ...choice,
-              responses: [
-                ...choice.responses,
-                {
-                  type: "",
-                  text: "",
-                  key: uuidv4(),
-                },
-              ],
-            },
-            ...branch.choices.slice(choiceIndex + 1),
-          ],
-        },
-        ...formData.branches.slice(index + 1),
-      ],
-    });
-  };
-}
-
-function updateBranchDescription(
-  dispatch: Dispatch<Partial<TFormData>>,
-  formData: { description: string; branches: TBranch[] },
-  index: number,
-  branch: TBranch
-): (value: string) => void {
-  return (value) => {
-    dispatch({
-      branches: [
-        ...formData.branches.slice(0, index),
-        { ...branch, description: value },
-        ...formData.branches.slice(index + 1),
-      ],
-    });
-  };
-}
-
-function updateBranchId(
-  dispatch: Dispatch<Partial<TFormData>>,
-  formData: { description: string; branches: TBranch[] },
-  index: number,
-  branch: TBranch
-): (value: string) => void {
-  return (value) => {
-    dispatch({
-      branches: [
-        ...formData.branches.slice(0, index),
-        { ...branch, id: value, description: value },
-        ...formData.branches.slice(index + 1),
-      ],
-    });
-  };
-}
-
-function deleteBranch(
-  dispatch: Dispatch<Partial<TFormData>>,
-  formData: { description: string; branches: TBranch[] },
-  index: number
-): () => void {
-  return () => {
-    dispatch({
-      branches: [
-        ...formData.branches.slice(0, index),
-        ...formData.branches.slice(index + 1),
-      ],
-    });
-  };
-}
-
-function addChoiceToBranch(
-  dispatch: Dispatch<Partial<TFormData>>,
-  formData: { description: string; branches: TBranch[] },
-  index: number,
-  branch: TBranch
-): () => void {
-  return () => {
-    dispatch({
-      branches: [
-        ...formData.branches.slice(0, index),
-        {
-          ...branch,
-          choices: [
-            ...branch.choices,
-            {
-              key: uuidv4(),
-              request: [],
-              responses: [],
-              nextBranchId: "",
-            },
-          ],
-        },
-        ...formData.branches.slice(index + 1),
-      ],
-    });
-  };
-}
-
-function updateNextBranchId(
-  dispatch: Dispatch<Partial<TFormData>>,
-  formData: { description: string; branches: TBranch[] },
-  index: number,
-  branch: TBranch,
-  choiceIndex: number,
-  choice: TChoice
-): (value: string) => void {
-  return (value) => {
-    dispatch({
-      branches: [
-        ...formData.branches.slice(0, index),
-        {
-          ...branch,
-          choices: [
-            ...branch.choices.slice(0, choiceIndex),
-            { ...choice, nextBranchId: value },
-            ...branch.choices.slice(choiceIndex + 1),
-          ],
-        },
-        ...formData.branches.slice(index + 1),
-      ],
-    });
-  };
-}
-
-function deleteChoice(
-  dispatch: Dispatch<Partial<TFormData>>,
-  formData: { description: string; branches: TBranch[] },
-  index: number,
-  branch: TBranch,
-  choiceIndex: number
-): () => void {
-  return () => {
-    dispatch({
-      branches: [
-        ...formData.branches.slice(0, index),
-        {
-          ...branch,
-          choices: [
-            ...branch.choices.slice(0, choiceIndex),
-            ...branch.choices.slice(choiceIndex + 1),
-          ],
-        },
-        ...formData.branches.slice(index + 1),
-      ],
-    });
-  };
-}
-
-function getPreparedData(formData: TFormData): CreateScenarioInput {
-  return {
-    ...formData,
-    maxConversationLength: parseInt(formData.maxConversationLength) || 0,
-    branches: formData.branches.map(({ key, ...branch }) => ({
-      ...branch,
-      choices: branch.choices.map(({ key, ...choice }) => ({
-        ...choice,
-        responses: choice.responses.map(({ key, ...response }) => ({
-          ...response,
-        })),
-      })),
-    })),
-  };
-}

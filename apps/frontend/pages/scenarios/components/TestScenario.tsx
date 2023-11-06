@@ -38,7 +38,7 @@ export const TestScenario = ({ scenario }: { scenario: ScenarioEntity }) => {
         <h1>Test Scenario</h1>
         <p>{scenario?.description}</p>
       </div>
-      <div className="grid grid-cols-3 gap-4 pt-1">
+      <div className="grid grid-cols-3 gap-4 pt-1 h-full">
         <div>
           <h1>Scenario Data</h1>
           <div>

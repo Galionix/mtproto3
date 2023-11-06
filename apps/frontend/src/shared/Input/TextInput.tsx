@@ -3,7 +3,7 @@ import s from "./TextInput.module.scss";
 import { FaStarOfLife } from "react-icons/fa";
 import { GiCancel } from "react-icons/gi";
 import { ImCancelCircle } from "react-icons/im";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { AiOutlineArrowDown, AiOutlineArrowUp } from "react-icons/ai";
 
 const cx = classNames.bind(s);
@@ -34,10 +34,6 @@ export const TextInput = ({
   fullWidth = false,
   defaultValue = "",
 }: TTextInputProps) => {
-  useEffect(() => {
-    onChange(defaultValue);
-  }, [defaultValue]); // eslint-disable-line react-hooks/exhaustive-deps
-
   const onChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     onChange(e.target.value);
   };
@@ -83,18 +79,28 @@ export const TextInput = ({
 
 type TTextInputWithChoicesProps = {
   choices: string[];
+  onError?: (error?: string) => void;
 } & TTextInputProps;
 
 export const TextInputWithChoicesList = ({
   choices,
+  onError,
   ...props
 }: TTextInputWithChoicesProps) => {
+  const { defaultValue } = props;
   const invalid = props.value !== "" && !choices.includes(props.value);
 
+  useEffect(() => {
+    if (defaultValue !== "") {
+      props.onChange(defaultValue);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [defaultValue]);
   const [open, setOpen] = useState(invalid);
 
   useEffect(() => {
     setOpen(invalid);
+    onError?.(invalid ? "Invalid choice!" : undefined);
   }, [invalid]);
 
   const classNames = cx({
@@ -119,10 +125,7 @@ export const TextInputWithChoicesList = ({
             <li
               key={choice}
               onClick={() => {
-                // console.log("choice: ", choice);
                 props.onChange(choice);
-                // console.log("props.onChange: ", props.onChange);
-                // props.value = choice;
                 setOpen(false);
               }}
             >
