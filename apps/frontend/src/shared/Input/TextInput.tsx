@@ -12,7 +12,7 @@ type TTextInputProps = {
   label: string;
   fullWidth?: boolean;
   value: string;
-  onChange: (value: string) => void;
+  onChange?: (value: string) => void;
   className?: string;
   placeholder?: string;
   type?: "text" | "password" | "number";
@@ -42,6 +42,7 @@ export const TextInput = ({
   // }, [value?.length]);
 
   const onChangeHandler = (e) => {
+    if (!onChange) return;
     onChange(e.target.value);
   };
 
@@ -65,10 +66,11 @@ export const TextInput = ({
         disabled={disabled}
         required={required}
       />
-      {showClear && value !== "" && (
+      {showClear && !disabled && value !== "" && (
         <ImCancelCircle
           className={s.clearIcon}
           onClick={() => {
+            if (!onChange) return;
             onChange("");
             inputRef.current?.focus();
           }}
@@ -101,6 +103,7 @@ export const TextInputWithChoicesList = ({
 
   useEffect(() => {
     if (defaultValue !== "") {
+      if (!props.onChange) return;
       props.onChange(defaultValue);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -135,6 +138,7 @@ export const TextInputWithChoicesList = ({
             <li
               key={choice}
               onClick={() => {
+                if (!props.onChange) return;
                 props.onChange(choice);
                 setOpen(false);
               }}

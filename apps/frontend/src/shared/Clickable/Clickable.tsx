@@ -75,6 +75,7 @@ export const Clickable = ({
 
   return (
     <Component
+      suppressHydrationWarning={true}
       title={title || text}
       href={href}
       target={target}
@@ -83,7 +84,7 @@ export const Clickable = ({
       disabled={disabled}
     >
       {<IconComponent />}
-      <span>{text}</span>
+      <span suppressHydrationWarning={true}>{text}</span>
       {children}
     </Component>
   );
