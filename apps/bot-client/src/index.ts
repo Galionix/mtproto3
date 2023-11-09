@@ -3,13 +3,19 @@ import {
   EDMMessageStep,
   EScenarioElementType,
   ETaskType,
+  EregistrationMessagesTypes,
   TPhoneCode,
   TPhoneNumber,
   TReplacement,
   TScenarioElement,
   TTaskOrder,
 } from "@core/types/client";
-import { ServerEvents } from "@core/types/server";
+import {
+  ERegistrationServerMessagesTypes,
+  ServerEvents,
+  TPhoneCodeProvided,
+  TPhoneNumberProvided,
+} from "@core/types/server";
 import { Api, TelegramClient } from "telegram";
 import { NewMessage, NewMessageEvent } from "telegram/events";
 import { StringSession } from "telegram/sessions";
@@ -88,25 +94,30 @@ const [
   spamDBname,
   isTest,
 ] = process.argv.slice(2);
+const isTestMode = Boolean(isTest);
+const initState = () => {
+  console.log("replacements: ", replacements);
+  state.replacements = JSON.parse(replacements);
 
-console.log("replacements: ", replacements);
-state.replacements = JSON.parse(replacements);
+  state.taskOrder = taskOrder.split(",") as TTaskOrder;
+  state.voice = voice;
 
-state.taskOrder = taskOrder.split(",") as TTaskOrder;
-state.voice = voice;
-
-state.afterTaskDelay = parseInt(afterTaskDelay);
-state.afterTaskIdleTime = parseInt(afterTaskIdleTime);
-state.apiId = parseInt(apiId);
-state.apiHash = apiHash;
-state.stringSession = stringSession;
-state.behavior_model = behavior_model;
-state.answers_db = answers_db;
-state.read_delay = parseInt(read_delay);
-state.type_delay_multiplier = parseInt(type_delay_multiplier);
-console.log("scenariof: ", scenario);
-state.scenario = JSON.parse(scenario);
-state.spamDbName = spamDBname;
+  state.afterTaskDelay = parseInt(afterTaskDelay);
+  state.afterTaskIdleTime = parseInt(afterTaskIdleTime);
+  state.apiId = parseInt(apiId);
+  state.apiHash = apiHash;
+  state.stringSession = stringSession;
+  state.behavior_model = behavior_model;
+  state.answers_db = answers_db;
+  state.read_delay = parseInt(read_delay);
+  state.type_delay_multiplier = parseInt(type_delay_multiplier);
+  console.log("scenariof: ", scenario);
+  state.scenario = JSON.parse(scenario);
+  state.spamDbName = spamDBname;
+};
+if (!isTestMode) {
+  initState();
+}
 // throw new Error("stop");
 // sffsdsss
 const { waitAfterTaskDelay, waitAfterTaskIdleTime } = delayFactory();
@@ -164,20 +175,24 @@ console.log("launching main thread");
       phoneCode: async () => {
         process.send({ event_type: BotEventTypes.PHONE_CODE });
         return new Promise((resolve) => {
-          process.on("message", (message: TPhoneCode) => {
-            // TODO: refactor to use event_type
-            if (message.event_type === "PHONE_CODE") {
+          process.on("message", (message: TPhoneCodeProvided) => {
+            if (
+              message.event_type ===
+              ERegistrationServerMessagesTypes.PHONE_CODE_PROVIDED
+            ) {
               resolve(message.code);
             }
           });
         });
       },
       phoneNumber: async () => {
-        process.send({ event_type: "PHONE_NUMBER_REQUIRED" });
+        process.send({ event_type: EregistrationMessagesTypes.PHONE_NUMBER });
         return new Promise((resolve) => {
-          process.on("message", (message: TPhoneNumber) => {
-            // TODO: refactor to use event_type
-            if (message.event_type === "PHONE_NUMBER") {
+          process.on("message", (message: TPhoneNumberProvided) => {
+            if (
+              message.event_type ===
+              ERegistrationServerMessagesTypes.PHONE_NUMBER_PROVIDED
+            ) {
               resolve(message.number);
             }
           });

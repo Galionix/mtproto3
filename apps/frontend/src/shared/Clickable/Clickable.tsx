@@ -41,7 +41,7 @@ export const Clickable = ({
   const Component = comp === "link" ? Link : "button";
   // const gapStyle = icon && text !== "" ? styles.gap : "";
   const IconComponent = icon || (() => null);
-  const classNames = cx("h-fit", {
+  const classNames = cx("h-fit w-fit", {
     button: comp === "button",
     link: comp === "link",
     danger,

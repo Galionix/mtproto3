@@ -295,12 +295,7 @@ const temporaryReplacements = {
   botName: "monika",
 };
 
-// import { sep } from "path";
-const botTestConfig = {
-  api_id: 23331061,
-  api_hash: "ea63ef37b59ee0dd36acfcf571630c59",
-  sessionString:
-    "1BQANOTEuMTA4LjU2LjE4MQG7P3JfvGdQ+SINVbE5XDm4NpKgmv7RSVwh45T1GfNod8EaDlqWj4iPGcAWbYJ2oY2svoD4IYy/iFylQeW1sj91C7CCBsOVJnl7WdcVUbAdWW9+uwAXhLtkEzqsEohK1wv+Hl//PdCqRH0usoKNaRSGPTgs/+e5FdQYDMc8N5W6A/ewnyUCbimOmuxWsvpuhKBYa6YnHuhsWZp60sLSipHk0kaHshrbCGvMB2ElH94iMyrc9tGVLQpCI9NDhYbNfDOvdtQO0QR2jNSIVosGw0UGYpcQXMe8RFAz44h9OUiHjVHaagVT/K0mrCOA34Dg1riDy0aBj90F7YFrwjR/hgHvVA==",
+const baseConfig = {
   behaviorModel: "base",
   answersDb: "base",
   readDelay: 1000,
@@ -314,6 +309,23 @@ const botTestConfig = {
   spamDBname: "base",
   isTest: true,
 };
+// import { sep } from "path";
+const botTestConfig1 = {
+  api_id: 23331061,
+  api_hash: "ea63ef37b59ee0dd36acfcf571630c59",
+  sessionString:
+    "1BQANOTEuMTA4LjU2LjE4MQG7P3JfvGdQ+SINVbE5XDm4NpKgmv7RSVwh45T1GfNod8EaDlqWj4iPGcAWbYJ2oY2svoD4IYy/iFylQeW1sj91C7CCBsOVJnl7WdcVUbAdWW9+uwAXhLtkEzqsEohK1wv+Hl//PdCqRH0usoKNaRSGPTgs/+e5FdQYDMc8N5W6A/ewnyUCbimOmuxWsvpuhKBYa6YnHuhsWZp60sLSipHk0kaHshrbCGvMB2ElH94iMyrc9tGVLQpCI9NDhYbNfDOvdtQO0QR2jNSIVosGw0UGYpcQXMe8RFAz44h9OUiHjVHaagVT/K0mrCOA34Dg1riDy0aBj90F7YFrwjR/hgHvVA==",
+  ...baseConfig,
+};
+const botTestConfig2 = {
+  api_id: 26411752,
+  api_hash: "848d6968bf2786c0ebd73be6b2d3279e",
+  sessionString: "",
+  ...baseConfig,
+};
+
+const testConfig = botTestConfig2;
+
 // const client = require("./dist/apps/bot-client/main.js").default;
 const testf = async () => {
   //   const clientf = await client;
@@ -325,21 +337,24 @@ const testf = async () => {
   const childProcess = fork(
     "dist" + sep + "apps" + sep + "bot-client" + sep + "main.js",
     [
-      botTestConfig.api_id.toString(),
-      botTestConfig.api_hash,
-      botTestConfig.sessionString,
-      botTestConfig.behaviorModel,
-      botTestConfig.answersDb,
-      botTestConfig.readDelay.toString(),
-      botTestConfig.typeDelayMultiplier.toString(),
-      botTestConfig.taskOrder,
-      botTestConfig.afterTaskDelay.toString(),
-      botTestConfig.afterTaskIdleTime.toString(),
-      botTestConfig.scenario,
-      botTestConfig.voice,
-      botTestConfig.replacements,
-      botTestConfig.spamDBname,
-      botTestConfig.isTest.toString(),
+      // "",
+      // "",
+      // "",
+      testConfig.api_id.toString(),
+      testConfig.api_hash,
+      testConfig.sessionString,
+      testConfig.behaviorModel,
+      testConfig.answersDb,
+      testConfig.readDelay.toString(),
+      testConfig.typeDelayMultiplier.toString(),
+      testConfig.taskOrder,
+      testConfig.afterTaskDelay.toString(),
+      testConfig.afterTaskIdleTime.toString(),
+      testConfig.scenario,
+      testConfig.voice,
+      testConfig.replacements,
+      testConfig.spamDBname,
+      testConfig.isTest.toString(),
 
       // bot.id,
     ]
@@ -408,6 +423,14 @@ const testf = async () => {
     [BotEventTypes.STARTED]: (message) => {
       //   console.log("message: ", message);
       console.log("started called");
+    },
+    [BotEventTypes.PHONE_NUMBER]: () => {
+      console.log("phone number called");
+      const res = {
+        event_type: "PHONE_NUMBER_PROVIDED",
+        number: "+27 68 456 0656",
+      };
+      childProcess.send(res);
     },
   };
 

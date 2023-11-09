@@ -16,7 +16,7 @@ import {
   CreateScenarioBranchInput,
   CreateScenarioInput,
 } from "@core/types/server";
-import { v4 as uuidv4 } from "uuid";
+import { v3 as uuidv3 } from "uuid";
 import { FaTrash } from "react-icons/fa";
 import { AScenarioElementType, EScenarioElementType } from "@core/types/client";
 import { AiFillEyeInvisible, AiFillEye } from "react-icons/ai";
@@ -57,7 +57,7 @@ export type TChoice = {
   responses: TResponse[];
 } & Omit<CreateAnswerEntityInput, "responses">;
 export type TBranch = Omit<CreateScenarioBranchInput, "choices"> & {
-  key?: string;
+  key: string;
   choices: TChoice[];
 };
 
@@ -85,17 +85,46 @@ const CreateScenarioPage = () => {
     []
   );
   const [invalidIds, setInvalidIds] = useState<string[]>([]);
-  const incorrectChoisesIds = invalidIds.filter((id) => id.includes("choice_"));
+  // const incorrectChoisesIds = invalidIds.filter((id) => id.includes("choice_"));
 
   const [arbitraryRawData, setArbitraryRawData] = useState<any>({} as any);
 
   const [showRawData, setShowRawData] = useState(false);
-  const [incorrectBranchIds, setIncorrectBranchIds] = useState<string[]>([]);
+  // const [incorrectBranchIds, setIncorrectBranchIds] = useState<string[]>([]);
 
   const [createScenario, { data, loading, error }] = useMutation(
     createScenarioMutation
   );
   const { scenario, setScenario, clearScenario } = useCreateScenarioStore();
+  const preparedData = {
+    ...scenario,
+    branches: scenario.branches.map((branch) => {
+      const choices = branch.choices.map((choice) => {
+        const responses = choice.responses.map((response) => {
+          return {
+            ...response,
+            key: uuidv3(response.text || JSON.stringify(response), uuidv3.URL),
+          };
+        });
+        return {
+          ...choice,
+          key: uuidv3(
+            choice.request.join(",") || JSON.stringify(choice),
+            uuidv3.URL
+          ),
+          responses,
+        };
+      });
+      return {
+        ...branch,
+        key: uuidv3(
+          branch.id + branch.description || JSON.stringify(branch),
+          uuidv3.URL
+        ),
+        choices,
+      };
+    }),
+  };
 
   const [formData, dispatch] = useReducer(
     (
@@ -108,68 +137,26 @@ const CreateScenarioPage = () => {
       setScenario(result);
       return result;
     },
-    scenario
+    preparedData
   );
 
-  const choices = formData.branches.flatMap((branch) => branch.choices);
+  // const choices = formData.branches.flatMap((branch) => branch.choices);
 
-  const incorrectChoisesValues = choices
-    .filter((choice) => incorrectChoisesIds.includes("choice_" + choice.key))
-    .map((choice) => choice.nextBranchId);
+  // const incorrectChoisesValues = choices
+  //   .filter((choice) => incorrectChoisesIds.includes("choice_" + choice.key))
+  //   .map((choice) => choice.nextBranchId);
 
   const branchIds = formData.branches.map((branch) => branch.id);
 
-  //   const warningText =
-  //     "You have unsaved changes - are you sure you wish to leave this page?";
-
-  //   useEffect(() => {
-  //     const handleWindowClose = (e) => {
-  //       if (!unsavedChanges) return;
-  //       e.preventDefault();
-  //       return (e.returnValue = warningText);
-  //     };
-  //     const handleBrowseAway = () => {
-  //       if (!unsavedChanges) return;
-  //       if (window.confirm(warningText)) return;
-  //       router.events.emit("routeChangeError");
-  //       throw "routeChange aborted.";
-  //     };
-  //     window.addEventListener("beforeunload", handleWindowClose);
-  //     router.events.on("routeChangeStart", handleBrowseAway);
-  //     return () => {
-  //       window.removeEventListener("beforeunload", handleWindowClose);
-  //       router.events.off("routeChangeStart", handleBrowseAway);
-  //     };
-  //   }, [router.events, unsavedChanges]);
-
   return (
-    <Layout
-      outside={
-        <>
-          <div
-            className={cx(
-              "fixed border-2 border-black p-2 border-4  m-1 rounded top-20 bg-gray-100 left-0 z-10"
-            )}
-          >
-            <p>Icorrect branch ids:</p>
-            <ul>
-              {incorrectChoisesValues.map((id) => (
-                <li
-                  key={id}
-                  // className={cx({
-                  //   "text-red-500": incorrectBranchIds.includes(id),
-                  // })}
-                >
-                  {id}
-                </li>
-              ))}
-            </ul>
-          </div>
-        </>
-      }
-    >
+    <Layout>
       <div className="flex flex-row gap-2">
-        <div className="flex flex-col gap-2 w-full">
+        <div
+          className={cx("flex flex-col gap-2", {
+            "w-1/2": testScenario,
+            "w-full": !testScenario,
+          })}
+        >
           <div className="flex justify-between gap-2 flex-row items-center">
             <h1>Create Scenario Page</h1>
             {/* clear scenario */}
@@ -254,8 +241,17 @@ const CreateScenarioPage = () => {
             {formData.branches?.map((branch, index) => {
               const branchInvalid = invalidIds.includes(branch.id);
               const choicesHidden = hiddenBranches.includes(branch.key);
+              const allChoices = branch.choices.map((choice) => choice);
+              const choicesRequests = allChoices
+                .map((choice) =>
+                  choice.request.map((r) => r.slice(0, 10)).join(";")
+                )
+                .join(";");
+              const adjustedChoicesRequests =
+                choicesRequests === "" ? "*" : choicesRequests;
               return (
                 <div
+                  id={branch.id}
                   className={cx(
                     "border-2 border-black p-2 border-4  m-1 rounded",
                     {
@@ -278,7 +274,6 @@ const CreateScenarioPage = () => {
                       )}
                     />
                     <TextInput
-                      required
                       label="Branch Description"
                       value={branch.description}
                       onChange={updateBranchDescription(
@@ -311,24 +306,86 @@ const CreateScenarioPage = () => {
                       onClick={deleteBranch(dispatch, formData, index)}
                     />
                   </div>
-                  {choicesHidden && <div>Choices: {branch.choices.length}</div>}
-                  {!choicesHidden && (
-                    <div>
-                      {branch.choices?.map((choice, choiceIndex) => {
-                        const choiceHidden = hiddenChoices.includes(choice.key);
+                  <div
+                    style={{
+                      display: choicesHidden ? "block" : "none",
+                    }}
+                  >
+                    Choices: {branch.choices.length}{" "}
+                    {adjustedChoicesRequests.slice(0, 70)}
+                  </div>
 
-                        if (choiceHidden)
-                          return (
-                            <div
-                              className="border-2 border-black p-2 border-4 border-sky-300 m-1 rounded flex flex-row gap-2"
-                              key={choice.key}
+                  <div
+                    style={{
+                      display: choicesHidden ? "none" : "block",
+                    }}
+                  >
+                    {branch.choices?.map((choice, choiceIndex) => {
+                      const choiceHidden = hiddenChoices.includes(choice.key);
+                      // cut request if its too long
+                      const choiceRequest = choice.request
+                        .join(",")
+                        .slice(0, 25);
+                      // .length > 10
+                      // ? choice.request.join(",").slice(0, 10) + "..."
+                      // : choice.request.join(",");
+                      const adjustedChoiceRequest =
+                        choiceRequest === "" ? "*" : choiceRequest;
+                      const responsesText =
+                        choice.responses
+                          .map((response) => response.text)
+                          .join(",")
+                          .slice(0, 25) + "...";
+                      // .slice(0, 10) + "...";
+                      // cut request if its too long
+
+                      const disabled =
+                        choiceIndex === 0 || branch.choices.length === 1;
+                      const onNextBranchIdClick = () => {
+                        const nextBranchIdElement = document.getElementById(
+                          choice.nextBranchId
+                        );
+                        if (!nextBranchIdElement) return;
+                        nextBranchIdElement.scrollIntoView({
+                          behavior: "smooth",
+                        });
+                      };
+                      return (
+                        <>
+                          <div
+                            style={{
+                              display: choiceHidden ? "block" : "none",
+                            }}
+                            className="border-2 border-black p-2 border-4 border-sky-300 m-1 rounded flex flex-row gap-2"
+                            key={choice.key}
+                          >
+                            <span
+                              id={"choice_" + choice.key}
+                              className="flex flex-row gap-2 items-center "
                             >
-                              <span>
-                                Choice {choiceIndex + 1} of{" "}
-                                {branch.choices.length}
-                              </span>
-                              <span>Responses: {choice.responses.length}</span>
                               <Clickable
+                                onClick={() => {
+                                  setHiddenChoices(
+                                    hiddenChoices.filter(
+                                      (c) => c !== choice.key
+                                    )
+                                  );
+                                }}
+                              >
+                                {choiceIndex + 1}:
+                                <span>{adjustedChoiceRequest}</span>
+                                {"->"}
+                                <span>{responsesText}</span>
+                              </Clickable>
+
+                              <Clickable onClick={onNextBranchIdClick}>
+                                {" ->> "}
+                                {choice.nextBranchId?.slice(0, 10)}
+                              </Clickable>
+                              <span className="ml-auto">
+                                R: {choice.responses.length}
+                              </span>
+                              {/* <Clickable
                                 primary
                                 className="ml-auto"
                                 title="Show Choice"
@@ -340,24 +397,27 @@ const CreateScenarioPage = () => {
                                     )
                                   );
                                 }}
-                              />
-                            </div>
-                          );
+                              /> */}
+                            </span>
+                          </div>
 
-                        return (
                           <div
                             // className="border-2 border-black p-2 border-4 border-sky-300 m-1 rounded"
                             className={cx(
-                              "border-2 border-black p-2 border-4  m-1 rounded",
-                              {
-                                "border-red-500": invalidIds.includes(
-                                  "choice_" + choice.key
-                                ),
-                                "border-sky-300": !invalidIds.includes(
-                                  "choice_" + choice.key
-                                ),
-                              }
+                              "border-2 border-black p-2 border-4  m-1 rounded border-sky-300"
+                              // {
+                              //   "border-red-500": invalidIds.includes(
+                              //     "choice_" + choice.key
+                              //   ),
+                              //   "border-sky-300": !invalidIds.includes(
+                              //     "choice_" + choice.key
+                              //   ),
+                              // }
                             )}
+                            style={{
+                              display: !choiceHidden ? "block" : "none",
+                            }}
+                            id={"choice_" + choice.key}
                             key={choice.key}
                           >
                             <div className="flex gap-1">
@@ -414,19 +474,30 @@ const CreateScenarioPage = () => {
                               }
                               choices={branchIds}
                             />
+                            {/* <>{true && }</> */}
                             <TextInput
-                              required
-                              label="Request"
+                              // disabled if its first choice
+                              disabled={disabled}
+                              required={!disabled}
+                              fullLabel={
+                                disabled
+                                  ? "reserved for unknown request"
+                                  : undefined
+                              }
+                              label={disabled ? undefined : "Request"}
                               fullWidth
                               value={choice.request.join(",")}
-                              onChange={updateRequest(
-                                dispatch,
-                                formData,
-                                index,
-                                branch,
-                                choiceIndex,
-                                choice
-                              )}
+                              onChange={
+                                !disabled &&
+                                updateRequest(
+                                  dispatch,
+                                  formData,
+                                  index,
+                                  branch,
+                                  choiceIndex,
+                                  choice
+                                )
+                              }
                             />
                             <div>
                               <div className="flex flex-col gap-1 justify-center">
@@ -451,6 +522,7 @@ const CreateScenarioPage = () => {
                                             response.type ===
                                             EScenarioElementType.TEXT
                                           }
+                                          area
                                           label="Response Text"
                                           value={response.text}
                                           onChange={updateResponseText(
@@ -464,78 +536,100 @@ const CreateScenarioPage = () => {
                                             response
                                           )}
                                         />
-                                        {responseHidden && (
-                                          <>
-                                            <TextInputWithChoicesList
-                                              choices={AScenarioElementType}
-                                              required
-                                              className="w-full"
-                                              label="Response Type"
-                                              value={response.type}
-                                              defaultValue={
-                                                EScenarioElementType.TEXT
-                                              }
-                                              onChange={updateResponseType(
-                                                dispatch,
-                                                formData,
-                                                index,
-                                                branch,
-                                                choiceIndex,
-                                                choice,
-                                                responseIndex,
-                                                response
-                                              )}
-                                            />
-                                            <TextInput
-                                              className="w-full"
-                                              label="Response Description"
-                                              value={response.description}
-                                              onChange={updateResponseDescription(
-                                                dispatch,
-                                                formData,
-                                                index,
-                                                choiceIndex,
-                                                responseIndex
-                                              )}
-                                            />
-                                            <TextInput
-                                              className="w-full"
-                                              label="Response Caption"
-                                              value={response.caption}
-                                              onChange={updateResponseCaption(
-                                                dispatch,
-                                                formData,
-                                                index,
-                                                choiceIndex,
-                                                responseIndex
-                                              )}
-                                            />
-                                            <TextInput
-                                              className="w-full"
-                                              label="Response DB Name"
-                                              value={response.db_name}
-                                              onChange={updateResponseDbName(
-                                                dispatch,
-                                                formData,
-                                                index,
-                                                choiceIndex,
-                                                responseIndex
-                                              )}
-                                            />
-                                            <TextInput
-                                              className="w-full"
-                                              label="Response Coefficient"
-                                              value={response.coefficient}
-                                              onChange={updateResponseCoefficient(
-                                                dispatch,
-                                                formData,
-                                                index,
-                                                choiceIndex,
-                                                responseIndex
-                                              )}
-                                            />
-                                          </>
-                                        )}
+
+                                        <TextInputWithChoicesList
+                                          style={{
+                                            display: !responseHidden
+                                              ? "none"
+                                              : "block",
+                                          }}
+                                          choices={AScenarioElementType}
+                                          required
+                                          className="w-full"
+                                          label="Response Type"
+                                          value={response.type}
+                                          defaultValue={
+                                            EScenarioElementType.TEXT
+                                          }
+                                          onChange={updateResponseType(
+                                            dispatch,
+                                            formData,
+                                            index,
+                                            branch,
+                                            choiceIndex,
+                                            choice,
+                                            responseIndex,
+                                            response
+                                          )}
+                                        />
+                                        <TextInput
+                                          style={{
+                                            display: !responseHidden
+                                              ? "none"
+                                              : "block",
+                                          }}
+                                          className="w-full"
+                                          label="Response Description"
+                                          value={response.description}
+                                          onChange={updateResponseDescription(
+                                            dispatch,
+                                            formData,
+                                            index,
+                                            choiceIndex,
+                                            responseIndex
+                                          )}
+                                        />
+                                        <TextInput
+                                          style={{
+                                            display: !responseHidden
+                                              ? "none"
+                                              : "block",
+                                          }}
+                                          className="w-full"
+                                          label="Response Caption"
+                                          value={response.caption}
+                                          onChange={updateResponseCaption(
+                                            dispatch,
+                                            formData,
+                                            index,
+                                            choiceIndex,
+                                            responseIndex
+                                          )}
+                                        />
+                                        <TextInput
+                                          style={{
+                                            display: !responseHidden
+                                              ? "none"
+                                              : "block",
+                                          }}
+                                          className="w-full"
+                                          label="Response DB Name"
+                                          value={response.db_name}
+                                          onChange={updateResponseDbName(
+                                            dispatch,
+                                            formData,
+                                            index,
+                                            choiceIndex,
+                                            responseIndex
+                                          )}
+                                        />
+                                        <TextInput
+                                          style={{
+                                            display: !responseHidden
+                                              ? "none"
+                                              : "block",
+                                          }}
+                                          className="w-full"
+                                          label="Response Coefficient"
+                                          value={response.coefficient}
+                                          onChange={updateResponseCoefficient(
+                                            dispatch,
+                                            formData,
+                                            index,
+                                            choiceIndex,
+                                            responseIndex
+                                          )}
+                                        />
                                       </section>
                                       <Clickable
                                         className="ml-auto !w-full max-w-fit"
@@ -609,21 +703,21 @@ const CreateScenarioPage = () => {
                               )}
                             />
                           </div>
-                        );
-                      })}
-                      <Clickable
-                        primary
-                        icon={BsFillPlusCircleFill}
-                        text="Add Choice"
-                        onClick={addChoiceToBranch(
-                          dispatch,
-                          formData,
-                          index,
-                          branch
-                        )}
-                      />
-                    </div>
-                  )}
+                        </>
+                      );
+                    })}
+                    <Clickable
+                      primary
+                      icon={BsFillPlusCircleFill}
+                      text="Add Choice"
+                      onClick={addChoiceToBranch(
+                        dispatch,
+                        formData,
+                        index,
+                        branch
+                      )}
+                    />
+                  </div>
                 </div>
               );
             })}
@@ -638,11 +732,14 @@ const CreateScenarioPage = () => {
                 branches: [
                   ...formData.branches,
                   {
-                    key: uuidv4(),
-                    id:
-                      incorrectChoisesValues.length > 0
-                        ? incorrectChoisesValues[0]
-                        : uuidv4(),
+                    key: uuidv3(
+                      JSON.stringify(formData.branches) || "",
+                      uuidv3.URL
+                    ),
+                    id: uuidv3(
+                      JSON.stringify(formData.branches) || "",
+                      uuidv3.URL
+                    ),
                     choices: [],
                   },
                 ],
@@ -676,13 +773,39 @@ const CreateScenarioPage = () => {
                 primary
                 text="Apply"
                 onClick={() => {
-                  dispatch(JSON.parse(arbitraryRawData));
+                  const dataToapply = JSON.parse(arbitraryRawData);
+                  dataToapply.branches.forEach((branch) => {
+                    branch.choices.forEach((choice) => {
+                      choice.key = uuidv3(
+                        choice.request.join(",") ||
+                          JSON.stringify(choice) ||
+                          "",
+                        uuidv3.URL
+                      );
+                      choice.responses.forEach((response) => {
+                        response.key = uuidv3(
+                          response.text || JSON.stringify(response) || "",
+                          uuidv3.URL
+                        );
+                      });
+                    });
+                  });
+
+                  dispatch(dataToapply);
                 }}
               />
             </div>
           )}
         </div>
-        {testScenario && <TestScenario scenario={formData as any} />}
+        {testScenario && (
+          <div className=" h-full">
+            <div className="fixed w-1/2">
+              <div className="overflow-y-auto h-screen">
+                <TestScenario scenario={formData as any} />
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </Layout>
   );

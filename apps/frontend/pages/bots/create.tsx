@@ -7,6 +7,7 @@ import { TextInput } from "../../src/shared/Input/TextInput";
 import { Clickable } from "../../src/shared/Clickable/Clickable";
 import { useReducer } from "react";
 import { useRouter } from "next/router";
+import { InitBot } from "./InitBot";
 
 const defaultCreateBotData: CreateBotInput = {
   api_id: 0,
@@ -43,6 +44,7 @@ const CreateBotPage: NextPage = () => {
           e.preventDefault();
         }}
       >
+        <InitBot />
         <TextInput
           value={createBotData.api_id.toString()}
           onChange={(e) => {

@@ -9,7 +9,8 @@ import { AiOutlineArrowDown, AiOutlineArrowUp } from "react-icons/ai";
 const cx = classNames.bind(s);
 
 type TTextInputProps = {
-  label: string;
+  label?: string;
+  fullLabel?: string;
   fullWidth?: boolean;
   value: string;
   onChange?: (value: string) => void;
@@ -20,10 +21,15 @@ type TTextInputProps = {
   required?: boolean;
   showClear?: boolean;
   defaultValue?: string;
+  ariaLabel?: string;
+  area?: boolean;
+  style?: any;
 };
 export const TextInput = ({
   label,
   value,
+  area,
+  fullLabel,
   onChange,
   className,
   placeholder,
@@ -33,8 +39,10 @@ export const TextInput = ({
   showClear = true,
   fullWidth = false,
   defaultValue = "",
+  ariaLabel,
+  style,
 }: TTextInputProps) => {
-  const Component = value?.length > 30 ? "textarea" : "input";
+  const Component = area ? "textarea" : "input";
   // useEffect(() => {
   //   if (value?.length > 30 && value?.length < 31) {
   //     inputRef.current?.focus();
@@ -52,11 +60,12 @@ export const TextInput = ({
     disabled,
     fullWidth,
   });
-  const renderedPlaceholder = placeholder || `Enter ${label} here...`;
+  const renderedPlaceholder =
+    fullLabel || placeholder || `Enter ${label} here...`;
 
   return (
-    <div className={cx(classNames, className)}>
-      <label>{label}</label>
+    <div className={cx(classNames, className)} style={style}>
+      <label>{label || renderedPlaceholder}</label>
       <Component
         ref={inputRef}
         type={type}
@@ -65,6 +74,7 @@ export const TextInput = ({
         placeholder={renderedPlaceholder}
         disabled={disabled}
         required={required}
+        aria-label={ariaLabel}
       />
       {showClear && !disabled && value !== "" && (
         <ImCancelCircle
@@ -96,10 +106,12 @@ export const TextInputWithChoicesList = ({
   choices,
   onError,
   onClearError,
+  style,
   ...props
 }: TTextInputWithChoicesProps) => {
   const { defaultValue } = props;
-  const invalid = props.value !== "" && !choices.includes(props.value);
+
+  const invalid = props.value && !choices.includes(props.value);
 
   useEffect(() => {
     if (defaultValue !== "") {
@@ -122,8 +134,8 @@ export const TextInputWithChoicesList = ({
   });
 
   return (
-    <div className={classNames}>
-      <TextInput {...props} />
+    <div className={classNames} style={style}>
+      <TextInput {...props} style={style} />
       {open ? (
         <AiOutlineArrowUp className={s.arrow} onClick={() => setOpen(!open)} />
       ) : (

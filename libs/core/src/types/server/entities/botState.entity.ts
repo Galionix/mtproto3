@@ -70,6 +70,14 @@ export class BotStateEntity {
   @Field(() => [BotEvent], { nullable: true })
   @Column()
   eventLogs: BotEvent[];
+  // requestedPhoneNumber
+  @Field({ nullable: true })
+  @Column()
+  requestedPhoneNumber: boolean;
+  // requestedPhoneCode
+  @Field({ nullable: true })
+  @Column()
+  requestedPhoneCode: boolean;
 }
 
 @Entity()

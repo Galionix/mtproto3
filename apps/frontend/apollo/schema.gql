@@ -70,6 +70,8 @@ type BotStateEntity {
   lastUpdate: Float
   leaving_groups: Boolean
   leaving_groups_chat_ids: [String!]
+  requestedPhoneCode: Boolean
+  requestedPhoneNumber: Boolean
   startedDate: Float
   stoppedDate: Float
 }

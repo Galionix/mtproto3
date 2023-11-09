@@ -1,5 +1,8 @@
 import { BotEvents } from "../../../types/client";
-import { ServerEvents } from "../../../types/server/server-events";
+import {
+  ServerEvents,
+  ServerEventTypes,
+} from "../../../types/server/server-events";
 export const WAIT_FOR_SERVER_MESSAGE_TIMEOUT = 5000;
 
 export function sendToFather(
@@ -28,10 +31,20 @@ message: {
 
     const listener = (response: ServerEvents) => {
       // check if the response is one of the expected types
+      // if (!response.event_type) {
+      //   throw new Error(
+      //     "sendToFather: message.response_types is not defined"
+      //   );
+      // }
+      // message.response_types
+      // response.event_type
       if (
         message.response_types &&
         message.response_types.length &&
-        message.response_types.includes(response.event_type as any)
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        // WARNING: FIX THIS ASAP!!!!!!!!!!!!!!!!!!!!!
+        message.response_types.includes(response?.event_type)
       ) {
         clearTimeout(timeout);
         childProcess.off("message", listener);
