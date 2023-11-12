@@ -20,6 +20,10 @@ import { BotEntity, BotStateEntity } from "@core/types/server";
 // }
 
 export const defaultBotState: BotStateEntity = {
+  requestedPhoneCode: false,
+  requestedPhoneNumber: false,
+  requested2FACode: false,
+
   isRunning: false,
   isStopped: false,
   stoppedDate: 0,

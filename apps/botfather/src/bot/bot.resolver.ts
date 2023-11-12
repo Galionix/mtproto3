@@ -39,6 +39,9 @@ export class BotResolver {
 
     console.log("saved botEntity: ", botEntity);
     this.botStateService.addBotState(botEntity);
+    await this.botProcessService.startBot(botEntity.api_id);
+    console.log("botEntity: ", botEntity);
+
     return botEntity;
   }
 
@@ -143,5 +146,29 @@ export class BotResolver {
     @Args("updateBotInput") updateBotInput: UpdateBotInput
   ) {
     return await this.botRepositoryService.update(api_id, updateBotInput);
+  }
+
+  @Mutation(() => BotStateEntity, { name: "providePhoneNumber" })
+  async providePhoneNumber(
+    @Args("api_id", { type: () => Int }) api_id: number,
+    @Args("phoneNumber") phoneNumber: string
+  ) {
+    return await this.botProcessService.providePhoneNumber(api_id, phoneNumber);
+  }
+
+  @Mutation(() => BotStateEntity, { name: "providePhoneCode" })
+  async providePhoneCode(
+    @Args("api_id", { type: () => Int }) api_id: number,
+    @Args("phoneCode") phoneCode: string
+  ) {
+    return await this.botProcessService.providePhoneCode(api_id, phoneCode);
+  }
+  // provide2FACode
+  @Mutation(() => BotStateEntity, { name: "provide2FACode" })
+  async provide2FACode(
+    @Args("api_id", { type: () => Int }) api_id: number,
+    @Args("code") code: string
+  ) {
+    return await this.botProcessService.provide2FACode(api_id, code);
   }
 }

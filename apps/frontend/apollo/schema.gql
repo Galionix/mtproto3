@@ -70,6 +70,7 @@ type BotStateEntity {
   lastUpdate: Float
   leaving_groups: Boolean
   leaving_groups_chat_ids: [String!]
+  requested2FACode: Boolean
   requestedPhoneCode: Boolean
   requestedPhoneNumber: Boolean
   startedDate: Float
@@ -264,6 +265,9 @@ type Mutation {
   createSpamMessage(createSpamMessageInput: CreateMessageInput!): MessageEntity!
   joinGroups(JoinGroupsInput: JoinGroupsInput!): [BotStateEntity!]!
   leaveGroups(input: LeaveGroupsInput!): [BotStateEntity!]!
+  provide2FACode(api_id: Int!, code: String!): BotStateEntity!
+  providePhoneCode(api_id: Int!, phoneCode: String!): BotStateEntity!
+  providePhoneNumber(api_id: Int!, phoneNumber: String!): BotStateEntity!
   removeAnswer(id: String!): Int!
   removeBot(api_id: Int!): BotEntity!
   removeMessages(ids: [String!]!): Int!

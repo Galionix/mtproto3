@@ -3,7 +3,10 @@ import { ChildProcess, fork } from "child_process";
 import { BotEventsService } from "../bot-events-messaging-service/bot-events.service";
 import { BotStateService } from "../bot-state-service/bot-state.service";
 import { BotRepositoryService } from "../bot-repository-service/bot-repository.service";
-import { ChildProcessEntity } from "@core/types/server";
+import {
+  ChildProcessEntity,
+  ERegistrationServerMessagesTypes,
+} from "@core/types/server";
 import { sep } from "path";
 
 @Injectable()
@@ -191,5 +194,49 @@ export class BotProcessService {
 
   botsErrorsReducer(error: Error, api_id: number) {
     console.log("api_id: " + api_id + ", error: ", error);
+  }
+
+  async providePhoneNumber(api_id: number, phoneNumber: string) {
+    const botState = this.botStateService.getBotState(api_id);
+    if (botState) {
+      botState.childProcess.send({
+        event_type: ERegistrationServerMessagesTypes.PHONE_NUMBER_PROVIDED,
+        number: phoneNumber,
+      });
+    }
+    return botState;
+  }
+
+  async providePhoneCode(api_id: number, phoneCode: string) {
+    const botState = this.botStateService.getBotState(api_id);
+    if (botState) {
+      // make requestedPhoneNumber false
+      this.botStateService.updateBotState(api_id, {
+        requestedPhoneNumber: false,
+        requestedPhoneCode: false,
+      });
+
+      botState.childProcess.send({
+        event_type: ERegistrationServerMessagesTypes.PHONE_CODE_PROVIDED,
+        code: phoneCode,
+      });
+    }
+    return botState;
+  }
+  // provide2FACode
+  async provide2FACode(api_id: number, code: string) {
+    const botState = this.botStateService.getBotState(api_id);
+    if (botState) {
+      // make requestedPhoneNumber false
+      this.botStateService.updateBotState(api_id, {
+        requested2FACode: false,
+      });
+
+      botState.childProcess.send({
+        event_type: ERegistrationServerMessagesTypes.a2FA_CODE_PROVIDED,
+        code,
+      });
+    }
+    return botState;
   }
 }

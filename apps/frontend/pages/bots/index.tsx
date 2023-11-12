@@ -16,6 +16,7 @@ import {
 } from "./gql";
 import { BsStopCircle } from "react-icons/bs";
 import { VscDebugStart } from "react-icons/Vsc";
+import { SessionStringRestore } from "../../src/shared/BotSessionStringRestore/BotSessionStringRestore";
 
 const BotsPage: NextPage = () => {
   const { data } = useQuery(getBotsQuery);
@@ -75,6 +76,7 @@ const BotsPage: NextPage = () => {
         columns={["api_id", "botName", "api_hash", "behaviorModel"]}
         data={botsForTable}
         rowLeftControls={(bot) => [
+          <SessionStringRestore key={bot.api_id} api_id={bot.api_id} />,
           <Clickable
             key={bot.api_id}
             danger={!bot.botState?.isRunning}

@@ -358,11 +358,9 @@ const CreateScenarioPage = () => {
                             }}
                             className="border-2 border-black p-2 border-4 border-sky-300 m-1 rounded flex flex-row gap-2"
                             key={choice.key}
+                            id={"choice_" + choice.key}
                           >
-                            <span
-                              id={"choice_" + choice.key}
-                              className="flex flex-row gap-2 items-center "
-                            >
+                            <span className="flex flex-row gap-2 items-center ">
                               <Clickable
                                 onClick={() => {
                                   setHiddenChoices(
@@ -385,19 +383,6 @@ const CreateScenarioPage = () => {
                               <span className="ml-auto">
                                 R: {choice.responses.length}
                               </span>
-                              {/* <Clickable
-                                primary
-                                className="ml-auto"
-                                title="Show Choice"
-                                icon={AiFillEye}
-                                onClick={() => {
-                                  setHiddenChoices(
-                                    hiddenChoices.filter(
-                                      (c) => c !== choice.key
-                                    )
-                                  );
-                                }}
-                              /> */}
                             </span>
                           </div>
 
@@ -405,19 +390,11 @@ const CreateScenarioPage = () => {
                             // className="border-2 border-black p-2 border-4 border-sky-300 m-1 rounded"
                             className={cx(
                               "border-2 border-black p-2 border-4  m-1 rounded border-sky-300"
-                              // {
-                              //   "border-red-500": invalidIds.includes(
-                              //     "choice_" + choice.key
-                              //   ),
-                              //   "border-sky-300": !invalidIds.includes(
-                              //     "choice_" + choice.key
-                              //   ),
-                              // }
                             )}
                             style={{
                               display: !choiceHidden ? "block" : "none",
                             }}
-                            id={"choice_" + choice.key}
+                            id={"shown_choice_" + choice.key}
                             key={choice.key}
                           >
                             <div className="flex gap-1">

@@ -1,12 +1,13 @@
 import { ScenarioEntity } from "@core/types/server";
+import { getBotResponses, getNextBranchId } from "@core/functions";
 import { EditableTabs } from "../../../src/EditableTabs/EditableTabs";
 import { RenderMessage } from "../../../src/shared/RenderMessage";
 import { useState } from "react";
 import { TTab, useTestScenarioStore } from "../[id]/testStore";
-import {
-  getBotResponses,
-  getNextBranchId,
-} from "../../../src/simulation/scenarioDebug";
+// import {
+//   getBotResponses,
+//   getNextBranchId,
+// } from "../../../src/simulation/scenarioDebug";
 import { Clickable } from "../../../src/shared/Clickable/Clickable";
 import { AiFillEyeInvisible, AiFillEye } from "react-icons/ai";
 import cx from "classnames";

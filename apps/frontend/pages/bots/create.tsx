@@ -1,23 +1,30 @@
 import { NextPage } from "next";
 import { Layout } from "../../src/shared/Layout/Layout";
 import { CreateBotInput } from "@core/types/server";
-import { useMutation } from "@apollo/client";
-import { createBotMutation, getBotsQuery } from "./gql";
+import { useApolloClient, useMutation, useQuery } from "@apollo/client";
+import {
+  createBotMutation,
+  getBotStateQuery,
+  getBotStatesQuery,
+  getBotsQuery,
+} from "./gql";
 import { TextInput } from "../../src/shared/Input/TextInput";
 import { Clickable } from "../../src/shared/Clickable/Clickable";
-import { useReducer } from "react";
+import { useReducer, useState } from "react";
 import { useRouter } from "next/router";
 import { InitBot } from "./InitBot";
+import { SessionStringRestore } from "../../src/shared/BotSessionStringRestore/BotSessionStringRestore";
 
 const defaultCreateBotData: CreateBotInput = {
-  api_id: 0,
-  api_hash: "",
-  botName: "",
-  behaviorModel: "",
+  api_id: 26411752,
+  api_hash: "848d6968bf2786c0ebd73be6b2d3279e",
+  botName: "andromeda",
+  behaviorModel: "base",
   sessionString: "",
 };
 
 const CreateBotPage: NextPage = () => {
+  const client = useApolloClient();
   const [
     createBot,
     {
@@ -26,6 +33,7 @@ const CreateBotPage: NextPage = () => {
       error: createBotError,
     },
   ] = useMutation(createBotMutation);
+
   const router = useRouter();
 
   const [createBotData, dispatch] = useReducer(
@@ -44,7 +52,7 @@ const CreateBotPage: NextPage = () => {
           e.preventDefault();
         }}
       >
-        <InitBot />
+        {/* <InitBot /> */}
         <TextInput
           value={createBotData.api_id.toString()}
           onChange={(e) => {
@@ -85,7 +93,7 @@ const CreateBotPage: NextPage = () => {
             dispatch({ behaviorModel: e });
           }}
         />
-        <TextInput
+        {/* <TextInput
           label="sessionString"
           type="text"
           placeholder="sessionString"
@@ -94,12 +102,13 @@ const CreateBotPage: NextPage = () => {
           onChange={(e) => {
             dispatch({ sessionString: e });
           }}
-        />
+        /> */}
+        <SessionStringRestore api_id={createBotData.api_id} />
         <Clickable
           primary
           text="Create Bot"
           onClick={async () => {
-            await createBot({
+            const res = await createBot({
               variables: {
                 createBotInput: createBotData,
               },
@@ -109,7 +118,21 @@ const CreateBotPage: NextPage = () => {
                 },
               ],
             });
-            router.push("/bots");
+            console.log("res: ", res);
+            // router.push("/bots");
+          }}
+        />
+        <Clickable
+          // getBotStateQuery
+          primary
+          text="Get Bot State"
+          onClick={async () => {
+            await client.refetchQueries({
+              include: [getBotStateQuery],
+            });
+            // const res = await getBotStateQuery.refetch();
+            // console.log("res: ", res.data.getBotState);
+            // router.push("/bots");
           }}
         />
       </form>

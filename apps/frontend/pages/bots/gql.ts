@@ -66,6 +66,8 @@ export const getBotStatesQuery = graphql(`
         api_id
         api_hash
       }
+      requestedPhoneNumber
+      requestedPhoneCode
       isRunning
       isStarted
       isStopped
@@ -93,6 +95,31 @@ export const stopBotMutation = graphql(`
   mutation stopBot($api_id: Int!) {
     stopBot(api_id: $api_id) {
       isRunning
+    }
+  }
+`);
+
+export const getBotStateQuery = graphql(`
+  query getBotState($api_id: Int!) {
+    getBotState(id: $api_id) {
+      bot {
+        api_id
+        api_hash
+      }
+      requestedPhoneNumber
+      requestedPhoneCode
+      requested2FACode
+      isRunning
+      isStarted
+      isStopped
+      eventLogs {
+        log_event
+        event_date
+        event_message
+      }
+      childProcess {
+        pid
+      }
     }
   }
 `);

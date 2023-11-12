@@ -11,6 +11,7 @@ import {
   TTaskOrder,
 } from "@core/types/client";
 import {
+  EGetDatabaseResponseTypes,
   ERegistrationServerMessagesTypes,
   ServerEvents,
   TPhoneCodeProvided,
@@ -33,6 +34,7 @@ import { readDbSequence } from "./lib/utils/readDb";
 import { taskProcessor } from "./lib/tasksApi/processor";
 import { taskArranger } from "./lib/tasksApi/taskArranger";
 import { messageOrchestrator } from "./lib/messagesOrchestrator";
+import { sendToFather } from "@core/functions";
 
 const temporaryTaskOrder: TTaskOrder = [
   ETaskType.RESPOND_TO_DM_MESSAGE,
@@ -171,37 +173,75 @@ console.log("launching main thread");
         connectionRetries: 5,
       }
     );
+    console.log("before start");
     await client.start({
       phoneCode: async () => {
-        process.send({ event_type: BotEventTypes.PHONE_CODE });
-        return new Promise((resolve) => {
-          process.on("message", (message: TPhoneCodeProvided) => {
-            if (
-              message.event_type ===
-              ERegistrationServerMessagesTypes.PHONE_CODE_PROVIDED
-            ) {
-              resolve(message.code);
-            }
-          });
-        });
+        console.log("phone code requested");
+        const res = await sendToFather(
+          process,
+          {
+            event_type: BotEventTypes.PHONE_CODE,
+            response_types: [
+              ERegistrationServerMessagesTypes.PHONE_CODE_PROVIDED,
+            ],
+          },
+          true,
+          60000
+        );
+        console.log("res: ", res);
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        return res.code;
+        // process.send({ event_type: BotEventTypes.PHONE_CODE });
+        // return new Promise((resolve) => {
+        //   process.on("message", (message: TPhoneCodeProvided) => {
+        //     if (
+        //       message.event_type ===
+        //       ERegistrationServerMessagesTypes.PHONE_CODE_PROVIDED
+        //     ) {
+        //       resolve(message.code);
+        //     }
+        //   });
+        // });
       },
       phoneNumber: async () => {
-        process.send({ event_type: EregistrationMessagesTypes.PHONE_NUMBER });
-        return new Promise((resolve) => {
-          process.on("message", (message: TPhoneNumberProvided) => {
-            if (
-              message.event_type ===
-              ERegistrationServerMessagesTypes.PHONE_NUMBER_PROVIDED
-            ) {
-              resolve(message.number);
-            }
-          });
-        });
+        console.log("phone number requested");
+        const res = await sendToFather(
+          process,
+          {
+            event_type: BotEventTypes.PHONE_NUMBER,
+            response_types: [
+              ERegistrationServerMessagesTypes.PHONE_NUMBER_PROVIDED,
+            ],
+          },
+          true,
+          60000
+        );
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        return res.number;
       },
       onError: (err) => {
         logEvent(BotEventTypes.ERROR, err.message);
         process.send({ event_type: "ERROR", error: err });
         console.log(err);
+      },
+      password: async () => {
+        // console.log("password requested");
+        const res = await sendToFather(
+          process,
+          {
+            event_type: BotEventTypes.a2FA_CODE,
+            response_types: [
+              ERegistrationServerMessagesTypes.a2FA_CODE_PROVIDED,
+            ],
+          },
+          true,
+          60000
+        );
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        return res.code;
       },
     });
 

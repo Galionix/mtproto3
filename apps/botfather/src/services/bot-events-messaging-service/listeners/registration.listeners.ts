@@ -1,4 +1,9 @@
-import { TChatJoined, BotEventTypes, TPhoneNumber } from "@core/types/client";
+import {
+  TChatJoined,
+  BotEventTypes,
+  TPhoneNumber,
+  Ta2FA_CODE,
+} from "@core/types/client";
 import { TListenerArgs } from "../bot-events.service";
 import { TListener } from "../listeners";
 
@@ -25,6 +30,18 @@ function listenRequestPhoneCode({
     requestedPhoneCode: true,
   });
 }
+function listenRequest2FACode({
+  services,
+  message,
+  api_id,
+}: TListenerArgs<Ta2FA_CODE>) {
+  console.log("bot ", api_id, " requested phone code");
+
+  const { botStateService } = services;
+  botStateService.updateBotState(api_id, {
+    requested2FACode: true,
+  });
+}
 
 export const registrationListeners: TListener[] = [
   {
@@ -34,5 +51,9 @@ export const registrationListeners: TListener[] = [
   {
     event_type: BotEventTypes.PHONE_CODE,
     listener: listenRequestPhoneCode,
+  },
+  {
+    event_type: BotEventTypes.a2FA_CODE,
+    listener: listenRequest2FACode,
   },
 ];

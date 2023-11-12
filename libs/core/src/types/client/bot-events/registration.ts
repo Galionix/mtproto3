@@ -4,6 +4,7 @@ import { ERegistrationServerMessagesTypes } from "../../server";
 export enum EregistrationMessagesTypes {
   "PHONE_CODE" = "PHONE_CODE",
   "PHONE_NUMBER" = "PHONE_NUMBER",
+  "a2FA_CODE" = "a2FA_CODE",
 }
 
 export type TPhoneCode = TGenericMessage<
@@ -16,4 +17,9 @@ export type TPhoneNumber = TGenericMessage<
   ERegistrationServerMessagesTypes
 >;
 
-export type TRegistrationMessages = TPhoneCode | TPhoneNumber;
+export type Ta2FA_CODE = TGenericMessage<
+  EregistrationMessagesTypes.a2FA_CODE,
+  ERegistrationServerMessagesTypes
+>;
+
+export type TRegistrationMessages = TPhoneCode | TPhoneNumber | Ta2FA_CODE;

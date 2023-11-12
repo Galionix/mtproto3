@@ -78,6 +78,10 @@ export class BotStateEntity {
   @Field({ nullable: true })
   @Column()
   requestedPhoneCode: boolean;
+  // requested2FACode
+  @Field({ nullable: true })
+  @Column()
+  requested2FACode: boolean;
 }
 
 @Entity()
