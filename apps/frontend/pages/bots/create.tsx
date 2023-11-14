@@ -93,7 +93,7 @@ const CreateBotPage: NextPage = () => {
             dispatch({ behaviorModel: e });
           }}
         />
-        {/* <TextInput
+        <TextInput
           label="sessionString"
           type="text"
           placeholder="sessionString"
@@ -102,7 +102,7 @@ const CreateBotPage: NextPage = () => {
           onChange={(e) => {
             dispatch({ sessionString: e });
           }}
-        /> */}
+        />
         <SessionStringRestore api_id={createBotData.api_id} />
         <Clickable
           primary

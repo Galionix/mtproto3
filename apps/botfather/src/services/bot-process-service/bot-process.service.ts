@@ -8,6 +8,7 @@ import {
   ERegistrationServerMessagesTypes,
 } from "@core/types/server";
 import { sep } from "path";
+import { ScenarioRepositoryService } from "../../databases/scenario-repository/scenario-repository.service";
 
 @Injectable()
 export class BotProcessService {
@@ -16,7 +17,8 @@ export class BotProcessService {
   constructor(
     private readonly botRepositoryService: BotRepositoryService,
     private readonly botStateService: BotStateService,
-    private readonly botMessageService: BotEventsService
+    private readonly botMessageService: BotEventsService,
+    private readonly scenarioRepositoryService: ScenarioRepositoryService
   ) {}
 
   stopBots() {
@@ -62,23 +64,31 @@ export class BotProcessService {
     if (botState.isStarted) {
       return bot;
     }
-    console.log([
-      bot.api_id.toString(),
-      bot.api_hash,
-      bot.sessionString,
-      bot.behaviorModel,
-      bot.answersDb,
-      bot.readDelay.toString(),
-      bot.typeDelayMultiplier.toString(),
-      bot.taskOrder,
-      bot.afterTaskDelay.toString(),
-      bot.afterTaskIdleTime.toString(),
-      bot.scenario,
-      bot.voice,
-      bot.replacements,
-      bot.spamDBname,
-      // bot.id,
-    ]);
+
+    // const scenarios =
+    //   (await this.scenarioRepositoryService.findAllByNames(
+    //     bot.dmScenarioNames
+    //   )) || [];
+
+    // console.log("scenarios: ", scenarios);
+    console.log("bot.dmScenarioNames: ", bot.dmScenarioNames);
+    // console.log([
+    //   bot.api_id.toString(),
+    //   bot.api_hash,
+    //   bot.sessionString,
+    //   bot.behaviorModel,
+    //   bot.answersDb,
+    //   bot.readDelay.toString(),
+    //   bot.typeDelayMultiplier.toString(),
+    //   bot.taskOrder,
+    //   bot.afterTaskDelay.toString(),
+    //   bot.afterTaskIdleTime.toString(),
+    //   bot.scenario,
+    //   bot.voice,
+    //   bot.replacements,
+    //   bot.spamDBname,
+    //   // bot.id,
+    // ]);
 
     const childProcess = fork(
       "dist" + sep + "apps" + sep + "bot-client" + sep + "main.js",
@@ -93,7 +103,7 @@ export class BotProcessService {
         bot.taskOrder,
         bot.afterTaskDelay.toString(),
         bot.afterTaskIdleTime.toString(),
-        bot.scenario,
+        bot.dmScenarioNames.join(","),
         bot.voice,
         bot.replacements,
         bot.spamDBname,

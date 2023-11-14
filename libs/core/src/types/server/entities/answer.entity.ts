@@ -75,6 +75,7 @@ export type TAnswerEntity = {
   db_name: string;
   nextBranchId?: string;
   branch: ScenarioBranchEntity;
+  index: number;
 };
 
 @Entity()
@@ -179,5 +180,9 @@ export class AnswerEntity implements TAnswerEntity {
   )
   // @Column({ nullable: true, default: null })
   branch: ScenarioBranchEntity;
+  // index
+  @Field(() => Number, { description: "index", nullable: true })
+  @Column({ default: 0 })
+  index: number;
 }
 

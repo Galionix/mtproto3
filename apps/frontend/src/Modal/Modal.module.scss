@@ -1,4 +1,9 @@
 dialog.modal{
+    h1{
+        margin-bottom: 1rem;
+        font-size: x-large;
+
+    }
     &::backdrop{
         background-color: rgba(0, 0, 0, 0.5);
         backdrop-filter: blur(2px);

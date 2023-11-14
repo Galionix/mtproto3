@@ -1,4 +1,5 @@
 import bigInt from "big-integer";
+import { MessageEntity } from "../../server";
 
 export enum ETaskType {
   RESPOND_TO_DM_MESSAGE = "RESPOND_TO_DM_MESSAGE",
@@ -41,10 +42,8 @@ export type TGenericTask<T extends ETaskType, P> = {
 };
 
 export type TRespondToDMMessagePayload = {
-  step: TAnyDMMessageStep;
-  message: string;
+  message: MessageEntity;
   senderId: bigInt.BigInteger;
-  count: number;
 };
 
 export interface TRespondToDMMessage {

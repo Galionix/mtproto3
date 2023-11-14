@@ -15,11 +15,35 @@ export const getBotQuery = graphql(`
       copyFrom
       readDelay
       replacements
-      scenario
+      dmScenarioNames
       sessionString
       spamDBname
       taskOrder
       typeDelayMultiplier
+      voice
+    }
+  }
+`);
+
+// updateBot
+export const updateBotMutation = graphql(`
+  mutation updateBot($api_id: Int!, $updateBotInput: UpdateBotInput!) {
+    updateBot(api_id: $api_id, updateBotInput: $updateBotInput) {
+      afterTaskDelay
+      afterTaskIdleTime
+      answersDb
+      api_hash
+      api_id
+      behaviorModel
+      botName
+      clientState
+      copyFrom
+      readDelay
+      replacements
+      dmScenarioNames
+      sessionString
+      spamDBname
+      taskOrder
       voice
     }
   }

@@ -1,12 +1,17 @@
 import { NextPage } from "next";
-import { BotStateEntity, CreateBotInput } from "@core/types/server";
+import {
+  BotStateEntity,
+  CreateBotInput,
+  UpdateBotInput,
+} from "@core/types/server";
 import { useMutation, useQuery } from "@apollo/client";
-import { useReducer, useState } from "react";
+import { useEffect, useReducer, useState } from "react";
 import { useRouter } from "next/router";
 import { Layout } from "../../../src/shared/Layout/Layout";
-import { getBotQuery } from "./gql";
+import { getBotQuery, updateBotMutation } from "./gql";
 import { TextInput } from "../../../src/shared/Input/TextInput";
 import { EditableList } from "../../../src/shared/EditableList/EditableList";
+import { Clickable } from "../../../src/shared/Clickable/Clickable";
 
 // const defaultCreateBotData: CreateBotInput = {
 //   api_id: 0,
@@ -30,6 +35,36 @@ const EditBotPage: NextPage = () => {
   const { data: { bot } = { bot: null } } = useQuery(getBotQuery, {
     variables: { api_id: parseInt(`${id}`) },
   });
+  console.log("bot: ", bot);
+  console.log("bot?.typeDelayMultiplier: ", bot?.typeDelayMultiplier);
+  const preparedBotData = {
+    ...bot,
+    // dmScenarioNames: bot?.dmScenarioNames?.join(","),
+    typeDelayMultiplier: 1,
+  };
+
+  // updateBotMutation
+  const [
+    updateBot,
+    {
+      data: updateBotDataResult,
+      loading: updateBotLoading,
+      error: updateBotError,
+    },
+  ] = useMutation(updateBotMutation);
+
+  const [updateBotData, dispatch] = useReducer(
+    (state: Partial<UpdateBotInput>, newState: Partial<UpdateBotInput>) => ({
+      ...state,
+      ...newState,
+    }),
+    preparedBotData
+  );
+
+  // useEffect(() => {
+  //   dispatch(preparedBotData);
+  // }, [bot]);
+  console.log("updateBotData: ", updateBotData);
   //   console.log("bot: ", bot);
   //   const botData: BotStateEntity = null;
 
@@ -112,7 +147,18 @@ const EditBotPage: NextPage = () => {
         required
         value={bot.taskOrder}
       />
-      <EditableList
+      {/* dmScenarioNames */}
+      <TextInput
+        label="dmScenarioNames"
+        type="text"
+        placeholder="dmScenarioNames"
+        required
+        value={bot.dmScenarioNames?.join(",")}
+        onChange={(e) => {
+          dispatch({ dmScenarioNames: e.split(",") });
+        }}
+      />
+      {/* <EditableList
         label="taskOrder"
         type="text"
         placeholder="taskOrder"
@@ -143,7 +189,7 @@ const EditBotPage: NextPage = () => {
         onError={(error) => {
           setError(error);
         }}
-      />
+      /> */}
 
       {/* <form
         onSubmit={async (e) => {
@@ -211,6 +257,23 @@ const EditBotPage: NextPage = () => {
       </form>
       {createBotError && <pre>{JSON.stringify(createBotError, null, 2)}</pre>} */}
       {/* <pre>{JSON.stringify(editBotData, null, 2)}</pre> */}
+      <Clickable
+        primary
+        text="Update Bot"
+        onClick={async () => {
+          const preparedUpdateBotData = {
+            ...updateBotData,
+            typeDelayMultiplier: `${updateBotData.typeDelayMultiplier}`,
+          };
+          await updateBot({
+            variables: {
+              api_id: parseInt(`${id}`),
+              updateBotInput: preparedUpdateBotData,
+            },
+          });
+          router.push("/bots");
+        }}
+      />
     </Layout>
   );
 };

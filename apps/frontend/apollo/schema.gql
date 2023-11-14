@@ -14,6 +14,9 @@ type AnswerEntity {
 
   """entity id"""
   id: ID
+
+  """index"""
+  index: Float
   isChannelAnswer: Boolean
   isDmAnswer: Boolean
   isGroupAnswer: Boolean
@@ -39,9 +42,9 @@ type BotEntity {
   clientState: String
   clientStateUpdateTime: String
   copyFrom: Int
+  dmScenarioNames: [String!]
   readDelay: Int
   replacements: String
-  scenario: String
   sessionString: String
   spamDBname: String
   taskOrder: String
@@ -97,6 +100,9 @@ input CreateAnswerEntityInput {
   """description"""
   description: String
 
+  """index"""
+  index: Float
+
   """isChannelAnswer"""
   isChannelAnswer: Boolean
 
@@ -150,6 +156,9 @@ input CreateMessageInput {
   """notes"""
   description: String = ""
 
+  """index"""
+  index: Float
+
   """payload of photo for message"""
   photo: String = ""
 
@@ -178,6 +187,9 @@ input CreateScenarioBranchInput {
 
   """id"""
   id: String
+
+  """index"""
+  index: Float
 }
 
 input CreateScenarioInput {
@@ -234,6 +246,9 @@ type MessageEntity {
 
   """entity id"""
   id: ID
+
+  """index"""
+  index: Float
 
   """payload of photo for message"""
   photo: String
@@ -311,6 +326,9 @@ type ScenarioBranchEntity {
   """entity id"""
   id: String
 
+  """index"""
+  index: Float
+
   """scenario"""
   scenario: ScenarioEntity
 }
@@ -350,6 +368,9 @@ input UpdateAnswersRepositoryInput {
   """entity id"""
   id: String!
 
+  """index"""
+  index: Float
+
   """isChannelAnswer"""
   isChannelAnswer: Boolean
 
@@ -374,9 +395,14 @@ input UpdateBotInput {
   afterTaskIdleTime: Int
   answersDb: String
   behaviorModel: String
+  botName: String
+  clientState: String
+  copyFrom: Int
+  dmScenarioNames: [String!]
   readDelay: Int
   replacements: String
-  scenario: String
+  sessionString: String
+  spamDBname: String
   taskOrder: String
   typeDelayMultiplier: String
   voice: String
@@ -397,6 +423,9 @@ input UpdateMessageInput {
 
   """notes"""
   description: String = ""
+
+  """index"""
+  index: Float
 
   """payload of photo for message"""
   photo: String = ""

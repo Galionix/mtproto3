@@ -13,6 +13,7 @@ import {
   AiOutlinePlus,
 } from "react-icons/ai";
 import { RenderMessage } from "../RenderMessage";
+import s from "./EditableList.module.css";
 
 export const EditableList = ({
   items,
@@ -64,7 +65,7 @@ export const EditableList = ({
   };
 
   return (
-    <div>
+    <div className={s.container}>
       <div>
         {items.map((item, index) => (
           <div key={index}>
@@ -116,7 +117,6 @@ export const EditableList = ({
         />
         <AiOutlineEdit onClick={handleEdit} />
       </div>
-      {/* {error && <RenderMessage error={error} />} */}
     </div>
   );
 };

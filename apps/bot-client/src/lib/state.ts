@@ -25,7 +25,7 @@ export const state: TState = {
   message_probability: 1,
   latestGroupJoinDate: 1685333489917,
   groupJoinInterval: twoHours,
-  scenario: [],
+  dmScenario: null,
   taskOrder: [],
   afterTaskDelay: 1000,
   afterTaskIdleTime: 10000,

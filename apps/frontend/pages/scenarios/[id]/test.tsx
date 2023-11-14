@@ -5,12 +5,13 @@ import { getScenarioQuery } from "../gql";
 import { EditableTabs } from "../../../src/EditableTabs/EditableTabs";
 import { useState } from "react";
 import { TTab, useTestScenarioStore } from "./testStore";
-import {
-  getBotResponse,
-  getBotResponses,
-  getNextBranchId,
-} from "../../../src/simulation/scenarioDebug";
+// import {
+//   getBotResponse,
+//   getBotResponses,
+//   getNextBranchId,
+// } from "../../../src/simulation/scenarioDebug";
 import { RenderMessage } from "../../../src/shared/RenderMessage";
+import { getBotResponses, getNextBranchId } from "@core/functions";
 
 const TestScenarioPage = () => {
   const router = useRouter();

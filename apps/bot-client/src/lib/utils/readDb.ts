@@ -34,14 +34,17 @@ export function readDb(db: AnswerEntity[]): {
 export async function readDbSequence({
   answers_db,
   spamDBname,
+  dmScenarioNames,
 }: {
   answers_db: string;
   spamDBname: string;
+  dmScenarioNames: string[];
 }) {
   const res = await sendToFather(process, {
     event_type: BotEventTypes.GET_DATABASE,
     database: answers_db,
     spamDBname: spamDBname,
+    dmScenarioNames,
     response_types: [
       EGetDatabaseResponseTypes.DB_GET_ERROR,
       EGetDatabaseResponseTypes.DB_GET_SUCCESS,
@@ -58,7 +61,7 @@ export async function readDbSequence({
     logEvent(BotEventTypes.LOG_EVENT, "db response success");
 
     try {
-      const { db, spamDb } = res;
+      const { db, spamDb, scenarios } = res;
       // console.log("spamDb: ", spamDb);
 
       const { dmDb, groupDb, channelDb } = readDb(db);
@@ -67,6 +70,7 @@ export async function readDbSequence({
       state.groupDb = groupDb;
       state.channelDb = channelDb;
       state.spamDb = spamDb;
+      state.dmScenario = scenarios[0];
     } catch (error) {
       logEvent(BotEventTypes.ERROR, "db read error" + error.message);
       process.exit(1);

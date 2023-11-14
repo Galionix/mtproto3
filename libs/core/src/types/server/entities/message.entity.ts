@@ -137,5 +137,9 @@ export class MessageEntity implements TMessageEntity {
   )
   // @Column(() => AnswerEntity)
   answer: Relation<AnswerEntity>;
+  // index
+  @Field(() => Number, { description: "index", nullable: true })
+  @Column({ default: 0 })
+  index: number;
 }
 

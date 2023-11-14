@@ -43,4 +43,9 @@ export class CreateAnswerEntityInput {
   @Field(() => String, { description: "next branch id" })
   // @Column({ default: null })
   nextBranchId: string;
+
+  // index
+  @Field(() => Number, { description: "index", nullable: true })
+  @Column({ default: 0 })
+  index: number;
 }

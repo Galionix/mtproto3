@@ -23,6 +23,11 @@ export class ScenarioBranchEntity {
   @Column({ default: "" })
   description?: string;
 
+  // index
+  @Field(() => Number, { description: "index", nullable: true })
+  @Column({ default: 0 })
+  index: number;
+
   @Field(() => ScenarioEntity, { description: "scenario", nullable: true })
   @ManyToOne(() => ScenarioEntity, (scenario) => scenario.branches, {
     onDelete: "CASCADE",

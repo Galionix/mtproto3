@@ -7,9 +7,10 @@ import {
   // ScenarioChoiceEntity,
   ScenarioEntity,
 } from "@core/types/server";
-import { Repository } from "typeorm";
+import { In, Repository } from "typeorm";
 import { InjectRepository } from "@nestjs/typeorm";
 import { AnswersRepositoryService } from "../answers-repository/answers-repository.service";
+import { orderByIndexScenarioEntities } from "@core/functions";
 
 @Injectable()
 export class ScenarioRepositoryService {
@@ -49,24 +50,36 @@ export class ScenarioRepositoryService {
       relations: ["branches", "branches.choices", "branches.choices.responses"],
     });
 
-    return res;
+    return orderByIndexScenarioEntities([res])[0];
     // return this.scenarioRepository.save({
     //   ...rest,
     //   branches,
     // });
   }
 
-  findAll() {
-    return this.scenarioRepository.find({
+  async findAll() {
+    const scenarios = await this.scenarioRepository.find({
       relations: ["branches", "branches.choices", "branches.choices.responses"],
     });
+    return orderByIndexScenarioEntities(scenarios);
   }
 
-  findOne(id: string) {
-    return this.scenarioRepository.findOne({
+  async findOne(id: string) {
+    const scenario = await this.scenarioRepository.findOne({
       where: { id },
       relations: ["branches", "branches.choices", "branches.choices.responses"],
     });
+
+    return orderByIndexScenarioEntities([scenario])[0];
+  }
+
+  async findAllByNames(scenarioNames: string[]) {
+    const scenarios = await this.scenarioRepository.find({
+      where: { description: In(scenarioNames) },
+      relations: ["branches", "branches.choices", "branches.choices.responses"],
+    });
+
+    return orderByIndexScenarioEntities(scenarios);
   }
 
   // update(

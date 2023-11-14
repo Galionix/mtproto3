@@ -53,7 +53,7 @@ export const defaultValues: Omit<BotEntity, "api_id" | "api_hash"> = {
   behaviorModel: "base",
   answersDb: "base",
   readDelay: 1000,
-  scenario: JSON.stringify(defaultScenario),
+  dmScenarioNames: ["initial"],
   typeDelayMultiplier: 1,
   taskOrder: defaultTaskOrder.join(","),
   afterTaskDelay: 1000,

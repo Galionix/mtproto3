@@ -48,6 +48,7 @@ import {
   useCreateScenarioStore,
 } from "./createScenarioStore";
 import cx from "classnames";
+import { BooleanInput } from "../../src/shared/BooleanInput/BooleanInput";
 export type TResponse = CreateMessageInput & {
   key: string;
 };
@@ -188,6 +189,7 @@ const CreateScenarioPage = () => {
               text="Save"
               onClick={async () => {
                 const preparedFormData = getPreparedData(formData);
+                console.log("preparedFormData: ", preparedFormData);
 
                 await createScenario({
                   variables: {
@@ -283,11 +285,31 @@ const CreateScenarioPage = () => {
                         branch
                       )}
                     />
-
+                    <TextInput
+                      label="Index"
+                      width={60}
+                      value={`${branch.index}`}
+                      onChange={(value) => {
+                        dispatch({
+                          branches: [
+                            ...formData.branches.slice(0, index).map((b) => ({
+                              ...b,
+                            })),
+                            {
+                              ...branch,
+                              index: parseInt(value),
+                            },
+                            ...formData.branches.slice(index + 1).map((b) => ({
+                              ...b,
+                            })),
+                          ],
+                        });
+                      }}
+                    />
                     <Clickable
                       primary={choicesHidden}
                       icon={choicesHidden ? AiFillEyeInvisible : AiFillEye}
-                      text="Toggle Choices"
+                      // text="Toggle Choices"
                       onClick={() => {
                         if (choicesHidden) {
                           setHiddenBranches(
@@ -298,9 +320,9 @@ const CreateScenarioPage = () => {
                         }
                       }}
                     />
-
                     <Clickable
                       danger
+                      onClickMessage={<p>You sure?</p>}
                       icon={FaTrash}
                       title="Delete Branch"
                       onClick={deleteBranch(dispatch, formData, index)}
@@ -376,13 +398,36 @@ const CreateScenarioPage = () => {
                                 <span>{responsesText}</span>
                               </Clickable>
 
-                              <Clickable onClick={onNextBranchIdClick}>
+                              <Clickable
+                                className="ml-auto min-w-fit"
+                                onClick={onNextBranchIdClick}
+                              >
                                 {" ->> "}
                                 {choice.nextBranchId?.slice(0, 10)}
                               </Clickable>
-                              <span className="ml-auto">
+                              <span className="ml-1 min-w-fit">
                                 R: {choice.responses.length}
                               </span>
+
+                              <Clickable
+                                // className="ml-auto"
+                                primary
+                                // title="Hide Choice"
+                                icon={AiFillEyeInvisible}
+                                onClick={() => {
+                                  setHiddenChoices(
+                                    hiddenChoices.filter(
+                                      (c) => c !== choice.key
+                                    )
+                                  );
+                                }}
+                                // onClick={() => {
+                                //   setHiddenChoices([
+                                //     ...hiddenChoices,
+                                //     choice.key,
+                                //   ]);
+                                // }}
+                              />
                             </span>
                           </div>
 
@@ -450,6 +495,47 @@ const CreateScenarioPage = () => {
                                   : undefined
                               }
                               choices={branchIds}
+                            />
+                            <TextInput
+                              label="Index"
+                              width={60}
+                              value={`${choice.index}`}
+                              disabled={true}
+                              // onChange={(value) => {
+                              //   dispatch({
+                              //     branches: [
+                              //       ...formData.branches
+                              //         .slice(0, index)
+                              //         .map((b) => ({
+                              //           ...b,
+                              //         })),
+                              //       {
+                              //         ...branch,
+                              //         choices: [
+                              //           ...branch.choices
+                              //             .slice(0, choiceIndex)
+                              //             .map((c) => ({
+                              //               ...c,
+                              //             })),
+                              //           {
+                              //             ...choice,
+                              //             index: parseInt(value),
+                              //           },
+                              //           ...branch.choices
+                              //             .slice(choiceIndex + 1)
+                              //             .map((c) => ({
+                              //               ...c,
+                              //             })),
+                              //         ],
+                              //       },
+                              //       ...formData.branches
+                              //         .slice(index + 1)
+                              //         .map((b) => ({
+                              //           ...b,
+                              //         })),
+                              //     ],
+                              //   });
+                              // }}
                             />
                             {/* <>{true && }</> */}
                             <TextInput
@@ -608,6 +694,12 @@ const CreateScenarioPage = () => {
                                           )}
                                         />
                                       </section>
+                                      <TextInput
+                                        label="Index"
+                                        width={60}
+                                        value={`${response.index}`}
+                                        disabled={true}
+                                      />
                                       <Clickable
                                         className="ml-auto !w-full max-w-fit"
                                         //   primary={responseHidden}
@@ -718,6 +810,8 @@ const CreateScenarioPage = () => {
                       uuidv3.URL
                     ),
                     choices: [],
+                    index: formData.branches.length,
+                    // isEntry: formData.branches.length === 0,
                   },
                 ],
               });
@@ -747,6 +841,16 @@ const CreateScenarioPage = () => {
               ></textarea>
               {/* apply arbitrary raw data */}
               <Clickable
+                onClickMessage={
+                  <>
+                    <p>Are you sure you want to apply arbitrary raw data?</p>
+                    <p>
+                      Note: this will replace all current data with arbitrary
+                      raw data and generate <strong>new keys and ids</strong>{" "}
+                      for all elements
+                    </p>
+                  </>
+                }
                 primary
                 text="Apply"
                 onClick={() => {

@@ -5,9 +5,10 @@ import { useRouter } from "next/router";
 import classNames from "classnames/bind";
 import { useEffect, useRef, useState } from "react";
 import { flushSync } from "react-dom";
+import { useModal } from "../../Modal/Modal";
 
 const cx = classNames.bind(styles);
-export type TClickableProps = {
+type TClickableProps = {
   children?: React.ReactNode;
   onClick?: () => void;
 
@@ -22,6 +23,8 @@ export type TClickableProps = {
   danger?: boolean;
   primary?: boolean;
   disabled?: boolean;
+  onClickMessage?: React.ReactNode;
+  modalId?: string;
 };
 
 export const Clickable = ({
@@ -37,6 +40,8 @@ export const Clickable = ({
   primary,
   disabled,
   title,
+  onClickMessage,
+  modalId,
 }: TClickableProps) => {
   const Component = comp === "link" ? Link : "button";
   // const gapStyle = icon && text !== "" ? styles.gap : "";
@@ -44,6 +49,7 @@ export const Clickable = ({
   const classNames = cx("h-fit w-fit", {
     button: comp === "button",
     link: comp === "link",
+    base: true,
     danger,
     primary,
     gap: icon && text,
@@ -57,6 +63,14 @@ export const Clickable = ({
         router.push(href);
       }
     : onClick;
+
+  const preparedOnCLickHandler = () => {
+    if (onClickMessage) {
+      showModal();
+    } else {
+      onClickHandler();
+    }
+  };
 
   useEffect(() => {
     if (
@@ -73,19 +87,29 @@ export const Clickable = ({
     }
   }, [classNames]);
 
+  const [ConfirmModal, { showModal }] = useModal({
+    id: modalId,
+    children: () => <span>{onClickMessage}</span>,
+    onSubmit: onClickHandler,
+    className: styles.modal,
+  });
+
   return (
-    <Component
-      suppressHydrationWarning={true}
-      title={title || text}
-      href={href}
-      target={target}
-      onClick={onClickHandler}
-      className={`${classes} ${className}`}
-      disabled={disabled}
-    >
-      {<IconComponent />}
-      <span suppressHydrationWarning={true}>{text}</span>
-      {children}
-    </Component>
+    <>
+      <Component
+        suppressHydrationWarning={true}
+        title={title || text}
+        href={href}
+        target={target}
+        onClick={preparedOnCLickHandler}
+        className={`${classes} ${className}`}
+        disabled={disabled}
+      >
+        {<IconComponent />}
+        <span suppressHydrationWarning={true}>{text}</span>
+        {children}
+      </Component>
+      {onClickMessage && ConfirmModal}
+    </>
   );
 };

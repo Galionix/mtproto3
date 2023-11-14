@@ -96,4 +96,8 @@ export class CreateMessageInput {
   })
   @Column({ default: "base" })
   db_name?: string;
+  // index
+  @Field(() => Number, { description: "index", nullable: true })
+  @Column({ default: 0 })
+  index?: number;
 }

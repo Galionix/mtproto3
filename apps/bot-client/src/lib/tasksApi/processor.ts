@@ -17,7 +17,7 @@ export const taskProcessor: TTaskProcessor = async (task, client) => {
 
   switch (task.type) {
     case ETaskType.RESPOND_TO_DM_MESSAGE:
-      console.log("processing dm message", payload);
+      // console.log("processing dm message", payload);
       // here type guard is necessary
       // if ("step" in payload) {
       await respondToDMMessage({ client, task });

@@ -24,6 +24,7 @@ type TTextInputProps = {
   ariaLabel?: string;
   area?: boolean;
   style?: any;
+  width?: number;
 };
 export const TextInput = ({
   label,
@@ -38,6 +39,7 @@ export const TextInput = ({
   required = false,
   showClear = true,
   fullWidth = false,
+  width,
   defaultValue = "",
   ariaLabel,
   style,
@@ -64,7 +66,13 @@ export const TextInput = ({
     fullLabel || placeholder || `Enter ${label} here...`;
 
   return (
-    <div className={cx(classNames, className)} style={style}>
+    <div
+      className={cx(classNames, className)}
+      style={{
+        width: `${width}px`,
+        ...style,
+      }}
+    >
       <label>{label || renderedPlaceholder}</label>
       <Component
         ref={inputRef}

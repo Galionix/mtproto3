@@ -29,12 +29,17 @@ import { listeners } from "./lib/processApi/listeners";
 import { logEvent } from "./lib/processApi/logEventTostate";
 import { state } from "./lib/state";
 import { addDmTask } from "./lib/tasksApi/addTask";
-import { delayFactory, getDMMessageStep } from "./lib/utils/messagingUtils";
+import {
+  delayFactory,
+  // getDMMessageStep
+} from "./lib/utils/messagingUtils";
 import { readDbSequence } from "./lib/utils/readDb";
 import { taskProcessor } from "./lib/tasksApi/processor";
 import { taskArranger } from "./lib/tasksApi/taskArranger";
 import { messageOrchestrator } from "./lib/messagesOrchestrator";
 import { sendToFather } from "@core/functions";
+
+const showBreathe = false;
 
 const temporaryTaskOrder: TTaskOrder = [
   ETaskType.RESPOND_TO_DM_MESSAGE,
@@ -90,7 +95,7 @@ const [
   taskOrder,
   afterTaskDelay,
   afterTaskIdleTime,
-  scenario,
+  dmScenarioNames,
   voice,
   replacements,
   spamDBname,
@@ -113,8 +118,8 @@ const initState = () => {
   state.answers_db = answers_db;
   state.read_delay = parseInt(read_delay);
   state.type_delay_multiplier = parseInt(type_delay_multiplier);
-  console.log("scenariof: ", scenario);
-  state.scenario = JSON.parse(scenario);
+  // console.log("scenario: ", scenarios);
+  // state.dmScenario = dmScenarioNames;
   state.spamDbName = spamDBname;
 };
 if (!isTestMode) {
@@ -132,14 +137,16 @@ console.log("launching main thread");
   await readDbSequence({
     answers_db,
     spamDBname,
+    dmScenarioNames: dmScenarioNames.split(","),
   });
+  console.log("state.dmScenario: ", state.dmScenario);
   console.log("readDbSequence finished");
 
   let isRunning = false;
   // let tasksDisplay = [];
 
   async function runTasks(client: TelegramClient) {
-    console.log(apiId, "state.tasks", state.tasks);
+    showBreathe && console.log(apiId, "state.tasks", state.tasks);
     if (isRunning || state.tasks.length === 0) return;
     isRunning = true;
     const tasks = [...taskArranger(state.tasks)];

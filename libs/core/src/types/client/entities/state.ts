@@ -1,3 +1,4 @@
+import { ScenarioEntity } from "../../server";
 import { TTask, TTaskOrder } from "../bot-tasks";
 import { TAnswer } from "./botAnswer";
 import { TClientMessage } from "./message.entity";
@@ -27,7 +28,7 @@ export type TState = {
   answers_db: string;
   read_delay: number;
   type_delay_multiplier: number;
-  scenario: TScenarioElement[];
+  dmScenario: ScenarioEntity;
 
   // message_probability: this is a number between 0 and 1
   // that represents the probability of a message being sent

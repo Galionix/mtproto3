@@ -19,17 +19,15 @@ function checkIfRequestMatches(request: string[], userRequest: string) {
   return false;
 }
 
-export function getBotResponse(
-  scenarioData: ScenarioEntity,
-  userRequests: string[],
-  currentBranch = scenarioData?.branches[0],
-  currentChoice = currentBranch?.choices[0]
-) {
+export function getBotResponse(scenarioData: ScenarioEntity, userRequests: string[]) {
   if (!scenarioData) return null;
-  // let currentBranch = scenarioData?.branches[0];
-  // let currentChoice = currentBranch?.choices[0];
+  let currentBranch = scenarioData?.branches[0];
+  // console.log("currentBranch: ", currentBranch);
+  let currentChoice = currentBranch?.choices[0];
+  // console.log("currentChoice: ", currentChoice);
 
   for (const userRequest of userRequests) {
+    // console.log("userRequest: ", userRequest);
     // if (!currentBranch) {
     //   return null;
     // }
@@ -80,6 +78,7 @@ export function getBotResponses(
 ) {
   if (!scenarioData) return null;
   let currentBranch = scenarioData?.branches[0];
+
   let currentChoice = currentBranch?.choices[0];
   const responses: AnswerEntity["responses"] = [];
 

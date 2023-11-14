@@ -56,9 +56,9 @@ export class BotEntity {
   @Column()
   afterTaskIdleTime: number;
 
-  @Field(() => String, { nullable: true })
-  @Column()
-  scenario: string;
+  @Field(() => [String], { nullable: true })
+  @Column("simple-array", { nullable: true })
+  dmScenarioNames: string[];
 
   @Field(() => String, { nullable: true })
   @Column()

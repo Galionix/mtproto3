@@ -55,8 +55,7 @@ export const delayFactory = () => {
     switch (message.type) {
       case EMessageType.TEXT:
         // if ("text" in message) {
-        delay =
-          (message.payload.text.length / 2.5) * state.type_delay_multiplier;
+        delay = (message.payload.text.length / 4) * state.type_delay_multiplier;
         // }
         break;
       case EMessageType.AUDIO:
@@ -123,39 +122,39 @@ export const delayFactory = () => {
   };
 };
 
-export const getDMMessageStep = async (
-  client: TelegramClient,
-  senderId: bigInt.BigInteger
-): Promise<{
-  step: TAnyDMMessageStep;
-  count: number;
-}> => {
-  // count sent messages to this user
-  const messages = await client.getMessages(senderId, {
-    limit: state.scenario.length + 2,
-    fromUser: "me",
-  });
-  console.log("messages: ", messages);
-  const messagesCount = messages.length;
-  console.log("messagesCount: ", messagesCount);
+// export const getDMMessageStep = async (
+//   client: TelegramClient,
+//   senderId: bigInt.BigInteger
+// ): Promise<{
+//   step: TAnyDMMessageStep;
+//   count: number;
+// }> => {
+//   // count sent messages to this user
+//   const messages = await client.getMessages(senderId, {
+//     limit: state.scenario.length + 2,
+//     fromUser: "me",
+//   });
+//   console.log("messages: ", messages);
+//   const messagesCount = messages.length;
+//   console.log("messagesCount: ", messagesCount);
 
-  // if messages count is less than scenario length, we return corresponding step.
-  // if messages count is more than scenario length, we return 'finished' step.
-  // if messages count is zero, we return 'initial' step.
+//   // if messages count is less than scenario length, we return corresponding step.
+//   // if messages count is more than scenario length, we return 'finished' step.
+//   // if messages count is zero, we return 'initial' step.
 
-  if (messagesCount > state.scenario.length - 1) {
-    return {
-      step: EDMMessageStep.FINISHED,
-      count: -1,
-    };
-  }
+//   if (messagesCount > state.scenario.length - 1) {
+//     return {
+//       step: EDMMessageStep.FINISHED,
+//       count: -1,
+//     };
+//   }
 
-  return {
-    step: EDMMessageStepValues[messagesCount],
-    // -1 because we cannot actually know, because we request 2 more messages than in scenario length
-    count: messagesCount,
-  };
-};
+//   return {
+//     step: EDMMessageStepValues[messagesCount],
+//     // -1 because we cannot actually know, because we request 2 more messages than in scenario length
+//     count: messagesCount,
+//   };
+// };
 
 export const applyReplacements = (message: string) => {
   const { replacements } = state;

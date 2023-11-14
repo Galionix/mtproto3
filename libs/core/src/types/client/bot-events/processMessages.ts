@@ -24,6 +24,7 @@ export type TGetDatabase = TGenericMessage<
 > & {
   database: string;
   spamDBname: string;
+  dmScenarioNames: string[];
 };
 
 export type TGetSpamDatabase = TGenericMessage<

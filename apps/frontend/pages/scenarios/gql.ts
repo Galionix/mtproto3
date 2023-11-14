@@ -23,16 +23,22 @@ export const getBasicScenariosDetailsQuery = graphql(`
 export const getScenarioQuery = graphql(`
   query scenario($id: String!) {
     scenario(id: $id) {
+      db_name
+      updatedAt
+      maxConversationLength
       id
       description
       createdAt
       branches {
+        index
         id
         choices {
+          index
           id
           request
           nextBranchId
           responses {
+            index
             id
             text
             type
@@ -42,7 +48,6 @@ export const getScenarioQuery = graphql(`
     }
   }
 `);
-
 
 export const removeScenarioMutation = graphql(`
   mutation removeScenario($id: String!) {

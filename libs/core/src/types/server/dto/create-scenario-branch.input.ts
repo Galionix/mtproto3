@@ -19,4 +19,9 @@ export class CreateScenarioBranchInput {
     nullable: true,
   })
   choices: CreateAnswerEntityInput[];
+
+  // index
+  @Field(() => Number, { description: "index", nullable: true })
+  @Column({ default: 0 })
+  index: number;
 }

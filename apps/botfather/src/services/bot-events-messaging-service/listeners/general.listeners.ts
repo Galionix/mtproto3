@@ -11,10 +11,14 @@ import {
   AnswerEntity,
   EGetDatabaseResponseTypes,
   MessageEntity,
+  ScenarioEntity,
   TGetDatabaseResponse,
 } from "@core/types/server";
 import { TListenerArgs } from "../bot-events.service";
-import { messageTransformer } from "@core/functions";
+import {
+  messageTransformer,
+  orderByIndexScenarioEntities,
+} from "@core/functions";
 // import { messageTransformer } from "./utils";
 const { BOT_EVENT_LOG_MAX_SIZE } = process.env;
 
@@ -45,22 +49,34 @@ async function listenForBotToRequestDB({
   message,
   api_id,
 }: TListenerArgs<TGetDatabase>): Promise<TGetDatabaseResponse> {
-  const { database, spamDBname } = message;
-  console.log("database, spamDBname: ", database, spamDBname);
+  const { database, spamDBname, dmScenarioNames } = message;
 
   try {
-    const { answersRepositoryService, spamRepositoryService, l } = services;
+    const {
+      scenarioRepositoryService,
+      answersRepositoryService,
+      spamRepositoryService,
+      l,
+    } = services;
+    // console.log("scenarioRepositoryService: ", scenarioRepositoryService);
 
-    const db = await answersRepositoryService.findByDbName(database);
-    const spamDb = await spamRepositoryService.findByDbName(spamDBname);
+    // const db = await answersRepositoryService.findByDbName(database);
+    // const spamDb = await spamRepositoryService.findByDbName(spamDBname);
+    const scenarios = await scenarioRepositoryService.findAllByNames(
+      dmScenarioNames
+    );
+    console.log("scenarios: ", scenarios);
 
     // TODO: query spamdb repos by spamDBname
     l.log("bot requested db", api_id, message);
 
     return {
       event_type: EGetDatabaseResponseTypes.DB_GET_SUCCESS,
-      db,
-      spamDb: messageTransformer(spamDb),
+      // db,
+      // spamDb: messageTransformer(spamDb),
+      db: [],
+      spamDb: [],
+      scenarios: scenarios,
     };
   } catch (error) {
     console.log("error: ", error);

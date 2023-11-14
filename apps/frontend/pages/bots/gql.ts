@@ -16,7 +16,7 @@ export const getBotsQuery = graphql(`
       copyFrom
       readDelay
       replacements
-      scenario
+      dmScenarioNames
       sessionString
       spamDBname
       taskOrder
@@ -41,7 +41,7 @@ export const createBotMutation = graphql(`
       copyFrom
       readDelay
       replacements
-      scenario
+      dmScenarioNames
       sessionString
       spamDBname
       taskOrder

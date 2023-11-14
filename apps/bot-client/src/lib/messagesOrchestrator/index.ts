@@ -1,13 +1,15 @@
 import { BotEventTypes } from "@core/types/client";
 import { NewMessageEvent } from "telegram/events";
-import { getDMMessageStep } from "../utils/messagingUtils";
+// import { getDMMessageStep } from "../utils/messagingUtils";
 import { logEvent } from "../processApi/logEventTostate";
 import { state } from "../state";
 import { addDmTask, addGroupSpamTask } from "../tasksApi/addTask";
 import { defaultSpamInterval } from "../../constants";
+import { Api } from "telegram";
+import { getBotResponse } from "@core/functions";
 
 export async function messageOrchestrator(event: NewMessageEvent) {
-  // console.log("event: ", event);
+  //
   /*event:  {
   originalUpdate: {
     CONSTRUCTOR_ID: 1656358105,
@@ -123,17 +125,56 @@ export async function messageOrchestrator(event: NewMessageEvent) {
   const { isPrivate, isChannel, isGroup } = event;
   if (isPrivate) {
     const { client, chat, message } = event;
+    console.log("-----------incomingMessage: ", message);
 
     const senderId = (await message.getSender()).id;
     const messageText = message.message;
+
+    // const messages = await client.getMessages(message.senderId, {
+    //   limit: state.dmScenario.maxConversationLength,
+    //   fromUser: senderId,
+    // });
+    // console.log(state.dmScenario);
+    // state.dmScenario.branches[0].choices.forEach((choice) => {
+    //   console.log("choice: ", choice);
+    // });
+
+    console.log("message.senderId: ", message.senderId);
+    // const messages: string[] = [];
+
+    // get messages from user
+
+    // const messages = await client.getMessages(message.senderId, {
+    //   limit: state.dmScenario.maxConversationLength,
+    //   fromUser: senderId,
+    // });
+    // const messagesTexts = messages.map((message) => message.text);
+    // console.log("messagesTexts: ", messagesTexts);
+    // get text from messages
+    // for (const messageItem of messages) {
+    //   console.log("messageItem: ", messageItem);
+    //   messages.push(messageItem.text);
+    // }
+    console.log("message.senderId: ", message.senderId);
+    const messagesTexts: string[] = [];
+    for await (const messageItem of client.iterMessages(message.peerId, {
+      reverse: true,
+    })) {
+      console.log("messageItem: ", messageItem);
+      if (!messageItem.out) messagesTexts.push(messageItem.text);
+    }
+    console.log("messagesTexts: ", messagesTexts);
+
+    const responseMessage = getBotResponse(state.dmScenario, messagesTexts);
+
+    // const previousUserMessages = client.
     logEvent(BotEventTypes.DIRECT_MESSAGE, messageText);
-    const { step, count } = await getDMMessageStep(client, senderId);
+    // WARN! replace below with new implementation
+    // const { step, count } = await getDMMessageStep(client, senderId);
 
     addDmTask({
       senderId,
-      message: messageText,
-      step,
-      count,
+      message: responseMessage,
     });
     // code below is to move to task handlers
     //
@@ -156,7 +197,7 @@ export async function messageOrchestrator(event: NewMessageEvent) {
       if (!(channelIdString in state.groupCounters)) {
         // if we have not seen this group before, we need to get its members count
         const groupMembers = await client.getParticipants(channelIdString);
-        console.log("groupMembers: ", groupMembers);
+
         const groupMembersCount = groupMembers.length;
         // and then we need to add it to state
         state.groupCounters[channelIdString] = {
@@ -167,7 +208,7 @@ export async function messageOrchestrator(event: NewMessageEvent) {
         };
       }
       state.groupCounters[channelIdString].messagesSinceLastSpam++;
-      console.log("state.groupCounters: ", state.groupCounters);
+
       if (
         state.groupCounters[channelIdString].messagesSinceLastSpam >=
         state.groupCounters[channelIdString].spamInterval

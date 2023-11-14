@@ -6,51 +6,61 @@ import { IsOptional } from "class-validator";
 export class UpdateBotInput {
   @Field(() => String, { nullable: true })
   @Column()
-  @IsOptional()
+  sessionString?: string;
+
+  @Field({ nullable: true })
+  @Column()
+  clientState?: string;
+
+  @Field(() => String, { nullable: true })
+  @Column()
   behaviorModel?: string;
 
   @Field(() => String, { nullable: true })
   @Column()
-  @IsOptional()
   answersDb?: string;
 
   @Field(() => Int, { nullable: true })
   @Column()
-  @IsOptional()
   readDelay?: number;
 
   @Field(() => String, { nullable: true })
   @Column()
-  @IsOptional()
   typeDelayMultiplier?: number;
 
   @Field(() => String, { nullable: true })
   @Column()
-  @IsOptional()
   taskOrder?: string;
 
   @Field(() => Int, { nullable: true })
   @Column()
-  @IsOptional()
   afterTaskDelay?: number;
 
   @Field(() => Int, { nullable: true })
   @Column()
-  @IsOptional()
   afterTaskIdleTime?: number;
 
-  @Field(() => String, { nullable: true })
-  @Column()
-  @IsOptional()
-  scenario?: string;
+  @Field(() => [String], { nullable: true })
+  @Column("simple-array", { nullable: true })
+  dmScenarioNames?: string[];
 
   @Field(() => String, { nullable: true })
   @Column()
-  @IsOptional()
   voice?: string;
 
   @Field(() => String, { nullable: true })
   @Column()
-  @IsOptional()
   replacements?: string;
+
+  @Field(() => Int, { nullable: true })
+  @Column()
+  copyFrom?: number;
+
+  @Field(() => String, { nullable: true })
+  @Column()
+  spamDBname?: string;
+
+  @Field(() => String, { nullable: true })
+  @Column()
+  botName?: string;
 }

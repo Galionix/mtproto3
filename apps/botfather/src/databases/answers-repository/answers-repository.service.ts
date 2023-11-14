@@ -20,6 +20,7 @@ export class AnswersRepositoryService {
   ) {}
 
   async create({
+    index,
     request,
     responses,
     description,
@@ -45,6 +46,7 @@ export class AnswersRepositoryService {
     await Promise.all(responsesPromises);
 
     const answer = this.answersRepository.create({
+      index,
       request,
       responses: responsesMessages,
       description,

@@ -9,21 +9,14 @@ import {
 import { v4 as uuid } from "uuid";
 import { sendStateToFatherProcess, state } from "../state";
 
-export const addDmTask = async ({
-  senderId,
-  message,
-  step,
-  count,
-}: TRespondToDMMessagePayload) => {
+export const addDmTask = async ({ senderId, message }: TRespondToDMMessagePayload) => {
   const task: TRespondToDMMessage = {
     id: uuid(),
     type: ETaskType.RESPOND_TO_DM_MESSAGE,
     date: Date.now(),
     payload: {
-      step: step,
       message: message,
       senderId,
-      count,
     },
   };
   state.tasks.push(task);

@@ -16,31 +16,32 @@ export const respondToDMMessage = async ({
   client,
   task,
 }: TTaskProcessorArgs<TRespondToDMMessage>) => {
-  const { step, message, senderId, count } = task.payload;
+  const { message, senderId } = task.payload;
   await readDelay();
   // we cant use await message.markAsRead() because its not reproducable by params
   await client.markAsRead(task.payload.senderId);
-  const sendableMessage: TSendableMessage = {
+  if (!message) return;
+  const { type, ...payload } = message;
+
+  const sendableMessage = {
     receiver: task.payload.senderId,
-    type: EMessageType.TEXT,
-    payload: {
-      text: task.payload.message,
-    },
-  };
+    type,
+    payload,
+  } as TSendableMessage;
 
   await typeDelay(client, sendableMessage);
 
-  if (step === EDMMessageStep.FINISHED) {
-    await dmHandler({
-      step,
-      message,
-      client,
-      senderId,
-      count,
-    });
-  } else {
-    await scenarioHandler({ count, client, senderId });
-  }
+  // if (step === EDMMessageStep.FINISHED) {
+  //   await dmHandler({
+  //     step,
+  //     message,
+  //     client,
+  //     senderId,
+  //     count,
+  //   });
+  // } else {
+  await scenarioHandler({ client, senderId, sendableMessage });
+  // }
 
   removeTaskFromQueue(task);
 };
