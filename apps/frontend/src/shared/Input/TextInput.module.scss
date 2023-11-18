@@ -59,6 +59,12 @@
     top: 2.7rem;
     background-color: white;
   }
+  ul{
+    position: absolute;
+    z-index: 1;
+    background-color: white;
+    width: 350px;
+  }
   ul>li{
     user-select: none;
     cursor: pointer;

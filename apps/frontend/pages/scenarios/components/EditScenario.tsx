@@ -36,12 +36,15 @@ import {
   updateBranchId,
   updateNextBranchId,
   updateRequest,
+  updateResponseAudio,
   updateResponseCaption,
   updateResponseCoefficient,
   updateResponseDbName,
   updateResponseDescription,
+  updateResponsePhoto,
   updateResponseText,
   updateResponseType,
+  updateResponseVideo,
 } from "../createUtils";
 import {
   TextInput,
@@ -51,6 +54,8 @@ import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 import { FaTrash } from "react-icons/fa";
 import { EScenarioElementType, AScenarioElementType } from "@core/types/client";
 import { TestScenario } from "./TestScenario";
+import { useResourcesStore } from "../../resources/resourcesStore";
+import s from "./EditScenario.module.scss";
 export type TChoice = {
   key: string;
   responses: TResponse[];
@@ -76,6 +81,7 @@ export const EditScenario = ({
   createdScenario,
   scenarioString,
 }: TEditScenarioProps) => {
+  const { resources } = useResourcesStore();
   // const
   const router = useRouter();
   const [testScenario, setTestScenario] = useState(false);
@@ -665,98 +671,164 @@ export const EditScenario = ({
                                         response
                                       )}
                                     />
-
-                                    <TextInputWithChoicesList
-                                      style={{
-                                        display: !responseHidden
-                                          ? "none"
-                                          : "block",
-                                      }}
-                                      choices={AScenarioElementType}
-                                      required
-                                      className="w-full"
-                                      label="Response Type"
-                                      value={response.type}
-                                      defaultValue={EScenarioElementType.TEXT}
-                                      onChange={updateResponseType(
-                                        dispatch,
-                                        formData,
-                                        branchIndex,
-                                        branch,
-                                        choiceIndex,
-                                        choice,
-                                        responseIndex,
-                                        response
-                                      )}
-                                    />
-                                    <TextInput
-                                      style={{
-                                        display: !responseHidden
-                                          ? "none"
-                                          : "block",
-                                      }}
-                                      className="w-full"
-                                      label="Response Description"
-                                      value={response.description}
-                                      onChange={updateResponseDescription(
-                                        dispatch,
-                                        formData,
-                                        branchIndex,
-                                        choiceIndex,
-                                        responseIndex
-                                      )}
-                                    />
-                                    <TextInput
-                                      style={{
-                                        display: !responseHidden
-                                          ? "none"
-                                          : "block",
-                                      }}
-                                      className="w-full"
-                                      label="Response Caption"
-                                      value={response.caption}
-                                      onChange={updateResponseCaption(
-                                        dispatch,
-                                        formData,
-                                        branchIndex,
-                                        choiceIndex,
-                                        responseIndex
-                                      )}
-                                    />
-                                    <TextInput
-                                      style={{
-                                        display: !responseHidden
-                                          ? "none"
-                                          : "block",
-                                      }}
-                                      className="w-full"
-                                      label="Response DB Name"
-                                      value={response.db_name}
-                                      onChange={updateResponseDbName(
-                                        dispatch,
-                                        formData,
-                                        branchIndex,
-                                        choiceIndex,
-                                        responseIndex
-                                      )}
-                                    />
-                                    <TextInput
-                                      style={{
-                                        display: !responseHidden
-                                          ? "none"
-                                          : "block",
-                                      }}
-                                      className="w-full"
-                                      label="Response Coefficient"
-                                      value={response.coefficient}
-                                      onChange={updateResponseCoefficient(
-                                        dispatch,
-                                        formData,
-                                        branchIndex,
-                                        choiceIndex,
-                                        responseIndex
-                                      )}
-                                    />
+                                    <div className={s.responseControlGroup}>
+                                      <TextInputWithChoicesList
+                                        style={{
+                                          display: !responseHidden
+                                            ? "none"
+                                            : "block",
+                                        }}
+                                        choices={AScenarioElementType}
+                                        required
+                                        className="w-full"
+                                        label="Response Type"
+                                        value={response.type}
+                                        defaultValue={EScenarioElementType.TEXT}
+                                        onChange={updateResponseType(
+                                          dispatch,
+                                          formData,
+                                          branchIndex,
+                                          branch,
+                                          choiceIndex,
+                                          choice,
+                                          responseIndex,
+                                          response
+                                        )}
+                                      />
+                                      <TextInputWithChoicesList
+                                        style={{
+                                          display: !responseHidden
+                                            ? "none"
+                                            : "block",
+                                        }}
+                                        choices={resources.images}
+                                        className="w-full"
+                                        label="Image"
+                                        value={response.photo}
+                                        onChange={updateResponsePhoto(
+                                          dispatch,
+                                          formData,
+                                          branchIndex,
+                                          branch,
+                                          choiceIndex,
+                                          choice,
+                                          responseIndex,
+                                          response
+                                        )}
+                                      />
+                                      {/* audio */}
+                                      <TextInputWithChoicesList
+                                        style={{
+                                          display: !responseHidden
+                                            ? "none"
+                                            : "block",
+                                        }}
+                                        choices={resources.audios}
+                                        className="w-full"
+                                        label="Audio"
+                                        value={response.audio}
+                                        onChange={updateResponseAudio(
+                                          dispatch,
+                                          formData,
+                                          branchIndex,
+                                          branch,
+                                          choiceIndex,
+                                          choice,
+                                          responseIndex,
+                                          response
+                                        )}
+                                      />
+                                      {/* video */}
+                                      <TextInputWithChoicesList
+                                        style={{
+                                          display: !responseHidden
+                                            ? "none"
+                                            : "block",
+                                        }}
+                                        choices={resources.videos}
+                                        className="w-full"
+                                        label="Video"
+                                        value={response.video}
+                                        onChange={updateResponseVideo(
+                                          dispatch,
+                                          formData,
+                                          branchIndex,
+                                          branch,
+                                          choiceIndex,
+                                          choice,
+                                          responseIndex,
+                                          response
+                                        )}
+                                      />
+                                      <TextInput
+                                        style={{
+                                          display: !responseHidden
+                                            ? "none"
+                                            : "block",
+                                        }}
+                                        className="w-full"
+                                        label="Response Description"
+                                        value={response.description}
+                                        onChange={updateResponseDescription(
+                                          dispatch,
+                                          formData,
+                                          branchIndex,
+                                          choiceIndex,
+                                          responseIndex
+                                        )}
+                                      />
+                                      <TextInput
+                                        style={{
+                                          display: !responseHidden
+                                            ? "none"
+                                            : "block",
+                                        }}
+                                        className="w-full"
+                                        label="Response Caption"
+                                        value={response.caption}
+                                        onChange={updateResponseCaption(
+                                          dispatch,
+                                          formData,
+                                          branchIndex,
+                                          choiceIndex,
+                                          responseIndex
+                                        )}
+                                      />
+                                      <TextInput
+                                        style={{
+                                          display: !responseHidden
+                                            ? "none"
+                                            : "block",
+                                        }}
+                                        className="w-full"
+                                        label="Response DB Name"
+                                        value={response.db_name}
+                                        onChange={updateResponseDbName(
+                                          dispatch,
+                                          formData,
+                                          branchIndex,
+                                          choiceIndex,
+                                          responseIndex
+                                        )}
+                                      />
+                                      <TextInput
+                                        style={{
+                                          display: !responseHidden
+                                            ? "none"
+                                            : "block",
+                                        }}
+                                        className="w-full"
+                                        label="Response Coefficient"
+                                        value={response.coefficient}
+                                        onChange={updateResponseCoefficient(
+                                          dispatch,
+                                          formData,
+                                          branchIndex,
+                                          choiceIndex,
+                                          responseIndex
+                                        )}
+                                      />
+                                    </div>
                                   </section>
                                   <TextInput
                                     label="Index"

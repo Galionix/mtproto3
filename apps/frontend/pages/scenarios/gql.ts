@@ -42,6 +42,9 @@ export const getScenarioQuery = graphql(`
             id
             text
             type
+            photo
+            video
+            audio
           }
         }
       }

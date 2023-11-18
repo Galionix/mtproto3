@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 import { NextPage } from "next";
 import {
   BotStateEntity,
@@ -60,6 +61,11 @@ const EditBotPage: NextPage = () => {
     }),
     preparedBotData
   );
+
+  useEffect(() => {
+    dispatch(preparedBotData);
+  }, [bot]);
+  console.log("updateBotData: ", updateBotData);
 
   // useEffect(() => {
   //   dispatch(preparedBotData);
@@ -153,7 +159,7 @@ const EditBotPage: NextPage = () => {
         type="text"
         placeholder="dmScenarioNames"
         required
-        value={bot.dmScenarioNames?.join(",")}
+        value={updateBotData.dmScenarioNames?.join(",")}
         onChange={(e) => {
           dispatch({ dmScenarioNames: e.split(",") });
         }}
@@ -261,9 +267,21 @@ const EditBotPage: NextPage = () => {
         primary
         text="Update Bot"
         onClick={async () => {
+          const {
+            // @ts-ignore
+            __typename,
+            // @ts-ignore
+            api_hash,
+            // @ts-ignore
+            api_id,
+            // @ts-ignore
+            clientStateUpdateTime,
+            ...rest
+          } = updateBotData;
+
           const preparedUpdateBotData = {
-            ...updateBotData,
-            typeDelayMultiplier: `${updateBotData.typeDelayMultiplier}`,
+            ...rest,
+            typeDelayMultiplier: `${rest.typeDelayMultiplier}`,
           };
           await updateBot({
             variables: {

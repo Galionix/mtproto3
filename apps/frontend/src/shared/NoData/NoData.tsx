@@ -2,7 +2,7 @@ import s from "./NoData.module.scss";
 
 type NoDataProps = {
   title: string;
-  message: string;
+  message?: string;
 };
 export const NoData = (props: NoDataProps) => {
   const { title, message = title ? "No Data for " + title : "No Data found." } =

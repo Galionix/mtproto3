@@ -1,4 +1,5 @@
 import { BiUser } from "react-icons/bi";
+import { FaFileAlt } from "react-icons/fa";
 import { PiFilmScriptFill } from "react-icons/pi";
 
 export const sections = [
@@ -15,6 +16,13 @@ export const sections = [
     url: "/bots",
     icon: BiUser,
     description: "Create and manage bots",
+  },
+  {
+    key: "resources",
+    title: "Resources",
+    url: "/resources/view",
+    icon: FaFileAlt,
+    description: "Create and manage resources",
   },
 ];
 

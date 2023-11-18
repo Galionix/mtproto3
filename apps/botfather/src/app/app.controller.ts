@@ -28,8 +28,6 @@ export class AppController {
   @Post("add-answers")
   @UseInterceptors(FilesInterceptor("files"))
   async addAnswers(@UploadedFiles() files) {
-
-
     let answersAdded = 0;
 
     if (files.length === 0) {
@@ -103,6 +101,11 @@ export class AppController {
         }
       });
     }, 60000);
+  }
+
+  @Post("sync-files-with-cloud")
+  async syncFilesWithCloud() {
+    return this.appService.syncFilesWithCloud();
   }
 }
 

@@ -203,6 +203,120 @@ export function updateResponseType(
   };
 }
 
+export function updateResponsePhoto(
+  dispatch: Dispatch<Partial<TCreateScenarioFormData>>,
+  formData: { description?: string; branches: TBranch[] },
+  index: number,
+  branch: TBranch,
+  choiceIndex: number,
+  choice: TChoice,
+  responseIndex: number,
+  response: TResponse
+): (value: string) => void {
+  return (value) => {
+    dispatch({
+      branches: [
+        ...formData.branches.slice(0, index),
+        {
+          ...branch,
+          choices: [
+            ...branch.choices.slice(0, choiceIndex),
+            {
+              ...choice,
+              responses: [
+                ...choice.responses.slice(0, responseIndex),
+                {
+                  ...response,
+                  photo: value,
+                },
+                ...choice.responses.slice(responseIndex + 1),
+              ],
+            },
+            ...branch.choices.slice(choiceIndex + 1),
+          ],
+        },
+        ...formData.branches.slice(index + 1),
+      ],
+    });
+  };
+}
+
+export function updateResponseVideo(
+  dispatch: Dispatch<Partial<TCreateScenarioFormData>>,
+  formData: { description?: string; branches: TBranch[] },
+  index: number,
+  branch: TBranch,
+  choiceIndex: number,
+  choice: TChoice,
+  responseIndex: number,
+  response: TResponse
+): (value: string) => void {
+  return (value) => {
+    dispatch({
+      branches: [
+        ...formData.branches.slice(0, index),
+        {
+          ...branch,
+          choices: [
+            ...branch.choices.slice(0, choiceIndex),
+            {
+              ...choice,
+              responses: [
+                ...choice.responses.slice(0, responseIndex),
+                {
+                  ...response,
+                  video: value,
+                },
+                ...choice.responses.slice(responseIndex + 1),
+              ],
+            },
+            ...branch.choices.slice(choiceIndex + 1),
+          ],
+        },
+        ...formData.branches.slice(index + 1),
+      ],
+    });
+  };
+}
+
+export function updateResponseAudio(
+  dispatch: Dispatch<Partial<TCreateScenarioFormData>>,
+  formData: { description?: string; branches: TBranch[] },
+  index: number,
+  branch: TBranch,
+  choiceIndex: number,
+  choice: TChoice,
+  responseIndex: number,
+  response: TResponse
+): (value: string) => void {
+  return (value) => {
+    dispatch({
+      branches: [
+        ...formData.branches.slice(0, index),
+        {
+          ...branch,
+          choices: [
+            ...branch.choices.slice(0, choiceIndex),
+            {
+              ...choice,
+              responses: [
+                ...choice.responses.slice(0, responseIndex),
+                {
+                  ...response,
+                  audio: value,
+                },
+                ...choice.responses.slice(responseIndex + 1),
+              ],
+            },
+            ...branch.choices.slice(choiceIndex + 1),
+          ],
+        },
+        ...formData.branches.slice(index + 1),
+      ],
+    });
+  };
+}
+
 export function updateResponseText(
   dispatch: Dispatch<Partial<TCreateScenarioFormData>>,
   formData: { description?: string; branches: TBranch[] },

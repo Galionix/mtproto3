@@ -163,9 +163,11 @@ export class ScenarioRepositoryService {
     //   relations: ["choices"],
     // });
 
+    console.log("createChoiceInput: ", createChoiceInput);
     const choice = await this.answersRepositoryService.create(
       createChoiceInput
     );
+      console.log("choice: ", choice);
 
     branch.choices.push(choice);
 
