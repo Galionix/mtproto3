@@ -1,6 +1,0 @@
-{
-  "watch": ["apps/bot-client", "libs"],
-  "ignore": ["apps/bot-client/src/dist"],
-  "ext": "ts,json,env,js,graphql",
-  "exec": "nx build bot-client"
-}
