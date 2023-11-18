@@ -25,8 +25,10 @@ type TTextInputProps = {
   area?: boolean;
   style?: any;
   width?: number;
+  onCtrlEnter?: () => void;
 };
 export const TextInput = ({
+  onCtrlEnter,
   label,
   value,
   area,
@@ -45,11 +47,11 @@ export const TextInput = ({
   style,
 }: TTextInputProps) => {
   const Component = area ? "textarea" : "input";
-  // useEffect(() => {
-  //   if (value?.length > 30 && value?.length < 31) {
-  //     inputRef.current?.focus();
-  //   }
-  // }, [value?.length]);
+  const onKeyUpHandler = (e) => {
+    if (e.ctrlKey && e.key === "Enter") {
+      onCtrlEnter?.();
+    }
+  };
 
   const onChangeHandler = (e) => {
     if (!onChange) return;
@@ -78,6 +80,7 @@ export const TextInput = ({
         ref={inputRef}
         type={type}
         value={value}
+        onKeyUp={onKeyUpHandler}
         onChange={onChangeHandler}
         placeholder={renderedPlaceholder}
         disabled={disabled}

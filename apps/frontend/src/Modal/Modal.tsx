@@ -111,7 +111,7 @@ export function useModal<T>(
       danger={danger}
       actionProps={actionProps}
       className={props.className}
-      title={"Just one more thing before you proceed..."}
+      title={props.title || "Just one more thing before you proceed..."}
     >
       {children}
     </Modal>

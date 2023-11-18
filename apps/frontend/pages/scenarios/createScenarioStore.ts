@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { devtools, persist } from "zustand/middleware";
-import { TBranch } from "./create";
+import { TBranch } from "./create_old";
 
 export const createScenarioInitialData = {
   description: "",
@@ -10,7 +10,7 @@ export const createScenarioInitialData = {
 };
 // persist data across creation sessions
 export type TCreateScenarioFormData = {
-  description: string;
+  description?: string;
   branches: TBranch[];
   maxConversationLength: string;
   db_name: string;
@@ -27,7 +27,9 @@ export const useCreateScenarioStore = create<ICreateScenarioStore>()(
     persist(
       (set) => ({
         scenario: createScenarioInitialData,
-        setScenario: (scenario: TCreateScenarioFormData) => set({ scenario }),
+        setScenario: (scenario: TCreateScenarioFormData) => {
+          set({ scenario });
+        },
         clearScenario: () => set({ scenario: createScenarioInitialData }),
       }),
       {

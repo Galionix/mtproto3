@@ -59,6 +59,8 @@ export const delayFactory = () => {
         // }
         break;
       case EMessageType.AUDIO:
+        // compute based on direction
+
         delay = 5;
         break;
       case EMessageType.PHOTO:

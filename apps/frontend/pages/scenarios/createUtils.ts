@@ -1,11 +1,16 @@
 import { Dispatch } from "react";
 import { CreateScenarioInput } from "../../apollo/codegen/graphql";
-import { TBranch, TChoice, TCreateScenarioFormData, TResponse } from "./create";
+import {
+  TBranch,
+  TChoice,
+  TCreateScenarioFormData,
+  TResponse,
+} from "./create_old";
 import { v4 as uuidv4 } from "uuid";
 
 export function updateResponseDescription(
   dispatch: Dispatch<Partial<TCreateScenarioFormData>>,
-  formData: { description: string; branches: TBranch[] },
+  formData: { description?: string; branches: TBranch[] },
   index: number,
   choiceIndex: number,
   responseIndex: number
@@ -37,7 +42,7 @@ export function updateResponseDescription(
 
 export function updateResponseCaption(
   dispatch: Dispatch<Partial<TCreateScenarioFormData>>,
-  formData: { description: string; branches: TBranch[] },
+  formData: { description?: string; branches: TBranch[] },
   index: number,
   choiceIndex: number,
   responseIndex: number
@@ -69,7 +74,7 @@ export function updateResponseCaption(
 
 export function updateResponseCoefficient(
   dispatch: Dispatch<Partial<TCreateScenarioFormData>>,
-  formData: { description: string; branches: TBranch[] },
+  formData: { description?: string; branches: TBranch[] },
   index: number,
   choiceIndex: number,
   responseIndex: number
@@ -101,7 +106,7 @@ export function updateResponseCoefficient(
 
 export function updateResponseDbName(
   dispatch: Dispatch<Partial<TCreateScenarioFormData>>,
-  formData: { description: string; branches: TBranch[] },
+  formData: { description?: string; branches: TBranch[] },
   index: number,
   choiceIndex: number,
   responseIndex: number
@@ -133,7 +138,7 @@ export function updateResponseDbName(
 
 export function updateRequest(
   dispatch: Dispatch<Partial<TCreateScenarioFormData>>,
-  formData: { description: string; branches: TBranch[] },
+  formData: { description?: string; branches: TBranch[] },
   index: number,
   branch: TBranch,
   choiceIndex: number,
@@ -162,7 +167,7 @@ export function updateRequest(
 
 export function updateResponseType(
   dispatch: Dispatch<Partial<TCreateScenarioFormData>>,
-  formData: { description: string; branches: TBranch[] },
+  formData: { description?: string; branches: TBranch[] },
   index: number,
   branch: TBranch,
   choiceIndex: number,
@@ -200,7 +205,7 @@ export function updateResponseType(
 
 export function updateResponseText(
   dispatch: Dispatch<Partial<TCreateScenarioFormData>>,
-  formData: { description: string; branches: TBranch[] },
+  formData: { description?: string; branches: TBranch[] },
   index: number,
   branch: TBranch,
   choiceIndex: number,
@@ -238,7 +243,7 @@ export function updateResponseText(
 
 export function deleteResponse(
   dispatch: Dispatch<Partial<TCreateScenarioFormData>>,
-  formData: { description: string; branches: TBranch[] },
+  formData: { description?: string; branches: TBranch[] },
   index: number,
   branch: TBranch,
   choiceIndex: number,
@@ -271,13 +276,24 @@ export function deleteResponse(
 
 export function addResponseToChoice(
   dispatch: Dispatch<Partial<TCreateScenarioFormData>>,
-  formData: { description: string; branches: TBranch[] },
+  formData: { description?: string; branches: TBranch[] },
   index: number,
   branch: TBranch,
   choiceIndex: number,
   choice: TChoice
 ): () => void {
   return () => {
+    // put focus on new response
+    // find choice element with id like "responses_89544b35-97c8-38ef-8054-5145d724c474"
+
+    console.log({
+      dispatch,
+      formData,
+      index,
+      branch,
+      choiceIndex,
+      choice,
+    });
     dispatch({
       branches: [
         ...formData.branches.slice(0, index),
@@ -303,12 +319,31 @@ export function addResponseToChoice(
         ...formData.branches.slice(index + 1),
       ],
     });
+
+    setTimeout(() => {
+      const choiceEl = document.getElementById(
+        `responses_${choice.key}`
+      ) as HTMLElement;
+
+      if (!choiceEl) return;
+
+      //get element by index of newley added response
+      const responseEl = choiceEl.children[
+        choiceEl.children.length - 2
+      ] as HTMLElement;
+      if (!responseEl) return;
+      // get textarea element in response element
+      const textareaEl = responseEl.getElementsByTagName(
+        "textarea"
+      )[0] as HTMLElement;
+      if (textareaEl) textareaEl.focus();
+    }, 200);
   };
 }
 
 export function updateBranchDescription(
   dispatch: Dispatch<Partial<TCreateScenarioFormData>>,
-  formData: { description: string; branches: TBranch[] },
+  formData: { description?: string; branches: TBranch[] },
   index: number,
   branch: TBranch
 ): (value: string) => void {
@@ -325,7 +360,7 @@ export function updateBranchDescription(
 
 export function updateBranchId(
   dispatch: Dispatch<Partial<TCreateScenarioFormData>>,
-  formData: { description: string; branches: TBranch[] },
+  formData: { description?: string; branches: TBranch[] },
   index: number,
   branch: TBranch
 ): (value: string) => void {
@@ -342,7 +377,7 @@ export function updateBranchId(
 
 export function deleteBranch(
   dispatch: Dispatch<Partial<TCreateScenarioFormData>>,
-  formData: { description: string; branches: TBranch[] },
+  formData: { description?: string; branches: TBranch[] },
   index: number
 ): () => void {
   return () => {
@@ -357,7 +392,7 @@ export function deleteBranch(
 
 export function addChoiceToBranch(
   dispatch: Dispatch<Partial<TCreateScenarioFormData>>,
-  formData: { description: string; branches: TBranch[] },
+  formData: { description?: string; branches: TBranch[] },
   index: number,
   branch: TBranch
 ): () => void {
@@ -386,7 +421,7 @@ export function addChoiceToBranch(
 
 export function updateNextBranchId(
   dispatch: Dispatch<Partial<TCreateScenarioFormData>>,
-  formData: { description: string; branches: TBranch[] },
+  formData: { description?: string; branches: TBranch[] },
   index: number,
   branch: TBranch,
   choiceIndex: number,
@@ -412,7 +447,7 @@ export function updateNextBranchId(
 
 export function deleteChoice(
   dispatch: Dispatch<Partial<TCreateScenarioFormData>>,
-  formData: { description: string; branches: TBranch[] },
+  formData: { description?: string; branches: TBranch[] },
   index: number,
   branch: TBranch,
   choiceIndex: number
@@ -450,4 +485,57 @@ export function getPreparedData(
       })),
     })),
   };
+}
+
+export function removeTypenameFromScenario(scenario: TCreateScenarioFormData) {
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  const { __typename, updatedAt,id, createdAt,...restScenario } = scenario;
+
+  const preparedScenario = {
+    ...restScenario,
+    branches: restScenario.branches.map((branch) => {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      const { __typename, ...restBranch } = branch;
+      return restBranch;
+    }),
+  };
+
+  const preparedScenario2 = {
+    ...preparedScenario,
+    branches: preparedScenario.branches.map((branch) => {
+      return {
+        ...branch,
+        choices: branch.choices.map((choice) => {
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          const { __typename, id, ...restChoice } = choice;
+          return restChoice;
+        }),
+      };
+    }),
+  };
+
+  const preparedScenario3 = {
+    ...preparedScenario2,
+    branches: preparedScenario2.branches.map((branch) => {
+      return {
+        ...branch,
+        choices: branch.choices.map((choice) => {
+          return {
+            ...choice,
+            responses: choice.responses.map((response) => {
+              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+              // @ts-ignore
+              const { __typename, id, ...restResponse } = response;
+              return restResponse;
+            }),
+          };
+        }),
+      };
+    }),
+  };
+
+  return preparedScenario3;
 }
