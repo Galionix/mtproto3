@@ -26,6 +26,7 @@ export default async function scenarioHandler({
     return null;
   }
 
+  console.log("sendableMessage.type: ", sendableMessage.type);
   switch (sendableMessage.type) {
     case EMessageType.TEXT:
       if ("text" in sendableMessage.payload) {
@@ -34,26 +35,28 @@ export default async function scenarioHandler({
         });
       }
       break;
-    // case EMessageType.AUDIO:
-    //   if ("fileName" in sendableMessage.payload) {
-    //     console.log("__dirname: ", __dirname);
-    //     const filePath = path.join(
-    //       __dirname,
-    //       "..",
-    //       "..",
-    //       "..",
-    //       "client-resources",
-    //       "voices",
-    //       state.voice,
-    //       sendableMessage.payload.fileName
-    //     );
-    //     console.log("filePath: ", filePath);
-    //     await client.sendFile(senderId, {
-    //       file: filePath,
-    //       voiceNote: true,
-    //     });
-    //   }
-    //   break;
+    case EMessageType.AUDIO:
+      if ("audio" in sendableMessage.payload) {
+        console.log("sendableMessage: ", sendableMessage);
+        console.log("__dirname: ", __dirname);
+        const filePath = path.join(
+          __dirname,
+          "..",
+          "..",
+          "..",
+          "media",
+          "audios",
+          state.voice,
+          sendableMessage.payload.audio
+        );
+        console.log("filePath: ", filePath);
+        await client.sendFile(senderId, {
+          file: filePath,
+          voiceNote: true,
+          caption: sendableMessage.payload.text,
+        });
+      }
+      break;
   }
 }
 

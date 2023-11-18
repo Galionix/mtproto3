@@ -139,7 +139,7 @@ export async function messageOrchestrator(event: NewMessageEvent) {
     //   console.log("choice: ", choice);
     // });
 
-    console.log("message.senderId: ", message.senderId);
+    // console.log("message.senderId: ", message.senderId);
     // const messages: string[] = [];
 
     // get messages from user
@@ -155,17 +155,18 @@ export async function messageOrchestrator(event: NewMessageEvent) {
     //   console.log("messageItem: ", messageItem);
     //   messages.push(messageItem.text);
     // }
-    console.log("message.senderId: ", message.senderId);
+    // console.log("message.senderId: ", message.senderId);
     const messagesTexts: string[] = [];
     for await (const messageItem of client.iterMessages(message.peerId, {
       reverse: true,
     })) {
-      console.log("messageItem: ", messageItem);
+      // console.log("messageItem: ", messageItem);
       if (!messageItem.out) messagesTexts.push(messageItem.text);
     }
     console.log("messagesTexts: ", messagesTexts);
 
     const responseMessage = getBotResponse(state.dmScenario, messagesTexts);
+    console.log("responseMessage: ", responseMessage);
 
     // const previousUserMessages = client.
     logEvent(BotEventTypes.DIRECT_MESSAGE, messageText);

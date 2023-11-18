@@ -8,7 +8,7 @@ import {
 } from "@core/types/client";
 import { Api, TelegramClient } from "telegram";
 import { state } from "../state";
-
+import { sep } from "path";
 
 export const findDmAnswer = (request: string) => {
   let res: string = null;
@@ -83,21 +83,19 @@ export const delayFactory = () => {
     const typingActionInterval = 3;
 
     const typingActionIntervalCount = Math.floor(delay / typingActionInterval);
-    console.log("typingActionIntervalCount: ", typingActionIntervalCount);
+    // console.log("typingActionIntervalCount: ", typingActionIntervalCount);
 
-    console.time("typeDelay");
+    const typingAction = new Api.messages.SetTyping({
+      peer: senderId,
+      action: new Api.SendMessageTypingAction(),
+    });
+    // const
+
+    // console.time("typeDelay");
     for (let i = 0; i < typingActionIntervalCount; i++) {
       await new Promise((resolve) =>
         setTimeout(async () => {
-          // if (type === "text") {
-          await client.invoke(
-            new Api.messages.SetTyping({
-              peer: senderId,
-              action: new Api.SendMessageTypingAction(),
-              // topMsgId: 43,
-            })
-          );
-          // }
+          await client.invoke(typingAction);
           resolve(true);
         }, (typingActionInterval + getRandomInt(2)) * 1000)
       );
@@ -219,6 +217,7 @@ export const sendMessage = async (
   // replyMarkup?: Api.TypeReplyMarkup,
 ) => {
   const { receiver, replyToMessageId } = message;
+  const relativePath = ".." + sep + ".." + sep + ".." + sep + "media" + sep;
   switch (message.type) {
     case EMessageType.TEXT:
       // if ("text" in message) {
@@ -230,13 +229,8 @@ export const sendMessage = async (
       // }
       break;
     case EMessageType.AUDIO:
-      // await client.sendAudio(senderId, {
-      //   file: message.payload.file,
-      //   // replyTo: replyToMessageId,
-      //   // replyMarkup,
-      // });
       return await client.sendFile(receiver, {
-        file: message.payload.audio,
+        file: relativePath + sep + "audios" + sep + message.payload.audio,
         voiceNote: true,
         caption: message.payload.text,
       });
