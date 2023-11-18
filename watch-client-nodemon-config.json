@@ -1,0 +1,8 @@
+{
+  "watch": ["dist/apps/bot-client/*", "client-dist.test.ts"],
+  "ext": "js",
+  "exec": "node",
+  "delay": 1000,
+  "pollingInterval": 1000,
+  "legacyWatch": true
+}

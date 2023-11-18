@@ -1,0 +1,447 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type AnswerEntity {
+  base_probability: String
+
+  """scenario branch relation"""
+  branch: ScenarioBranchEntity
+  db_name: String
+
+  """notes"""
+  description: String
+
+  """entity id"""
+  id: ID
+
+  """index"""
+  index: Float
+  isChannelAnswer: Boolean
+  isDmAnswer: Boolean
+  isGroupAnswer: Boolean
+
+  """next scenario branch id"""
+  nextBranchId: String
+
+  """request"""
+  request: [String!]
+
+  """responses"""
+  responses: [MessageEntity!]
+}
+
+type BotEntity {
+  afterTaskDelay: Int
+  afterTaskIdleTime: Int
+  answersDb: String
+  api_hash: String
+  api_id: String
+  behaviorModel: String
+  botName: String
+  clientState: String
+  clientStateUpdateTime: String
+  copyFrom: Int
+  dmScenarioNames: [String!]
+  readDelay: Int
+  replacements: String
+  sessionString: String
+  spamDBname: String
+  taskOrder: String
+  typeDelayMultiplier: String
+  voice: String
+}
+
+type BotEvent {
+  event_date: Float
+  event_message: String
+  log_event: String
+}
+
+type BotStateEntity {
+  bot: BotEntity
+  childProcess: ChildProcessEntity
+  error: String
+  eventLogs: [BotEvent!]
+  isErrored: Boolean
+  isRunning: Boolean
+  isStarted: Boolean
+  isStopped: Boolean
+  joining_groups: Boolean
+  joining_groups_chat_ids: [String!]
+  lastMessage: String
+  lastUpdate: Float
+  leaving_groups: Boolean
+  leaving_groups_chat_ids: [String!]
+  requested2FACode: Boolean
+  requestedPhoneCode: Boolean
+  requestedPhoneNumber: Boolean
+  startedDate: Float
+  stoppedDate: Float
+}
+
+type ChildProcessEntity {
+  connected: Boolean
+  exitCode: Float
+  id: Int
+  killed: Boolean
+  pid: Float
+  signalCode: String
+  spawnfile: String
+}
+
+input CreateAnswerEntityInput {
+  """base_probability"""
+  base_probability: String
+
+  """db_name"""
+  db_name: String
+
+  """description"""
+  description: String
+
+  """index"""
+  index: Float
+
+  """isChannelAnswer"""
+  isChannelAnswer: Boolean
+
+  """isDmAnswer"""
+  isDmAnswer: Boolean
+
+  """isGroupAnswer"""
+  isGroupAnswer: Boolean
+
+  """next branch id"""
+  nextBranchId: String!
+
+  """request"""
+  request: [String!]!
+
+  """response"""
+  responses: [CreateMessageInput!]!
+}
+
+input CreateBotInput {
+  afterTaskDelay: Int
+  afterTaskIdleTime: Int
+  answersDb: String
+  api_hash: String
+  api_id: Int
+  behaviorModel: String
+  botName: String
+  copyFrom: Int
+  readDelay: Int
+  replacements: String
+  scenario: String
+  sessionString: String
+  taskOrder: String
+  typeDelayMultiplier: Int
+  voice: String
+}
+
+input CreateMessageInput {
+  """payload of audio for message"""
+  audio: String = ""
+
+  """payload of caption for message"""
+  caption: String = ""
+
+  """coefficient for message"""
+  coefficient: String = "1"
+
+  """db_name"""
+  db_name: String = "base"
+
+  """notes"""
+  description: String = ""
+
+  """index"""
+  index: Float
+
+  """payload of photo for message"""
+  photo: String = ""
+
+  """payload of reaction for message"""
+  reaction: String = ""
+
+  """payload of sticker for message"""
+  sticker: String = ""
+
+  """payload of text for message"""
+  text: String = ""
+
+  """value of EMessageType"""
+  type: String = "TEXT"
+
+  """payload of video for message"""
+  video: String = ""
+}
+
+input CreateScenarioBranchInput {
+  """choices"""
+  choices: [CreateAnswerEntityInput!]
+
+  """notes"""
+  description: String
+
+  """id"""
+  id: String
+
+  """index"""
+  index: Float
+}
+
+input CreateScenarioInput {
+  """branches"""
+  branches: [CreateScenarioBranchInput!]
+
+  """db_name"""
+  db_name: String = "base"
+
+  """notes"""
+  description: String = ""
+
+  """maxConversationLength"""
+  maxConversationLength: Float = 0
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+input JoinGroupsInput {
+  api_ids: [Int!]!
+  behavior_model: String = "default"
+  chatNames: [String!]!
+  join_delay: Int = 5000
+  processing_enabled: Boolean = false
+  spam_frequency: Int = 1000
+}
+
+input LeaveGroupsInput {
+  api_ids: [Int!]!
+  chatNames: [String!]!
+}
+
+type MessageEntity {
+  """answer"""
+  answer: AnswerEntity
+
+  """payload of audio for message"""
+  audio: String
+
+  """payload of caption for message"""
+  caption: String
+
+  """coefficient for message"""
+  coefficient: String
+
+  """db_name"""
+  db_name: String
+
+  """notes"""
+  description: String
+
+  """entity id"""
+  id: ID
+
+  """index"""
+  index: Float
+
+  """payload of photo for message"""
+  photo: String
+
+  """payload of reaction for message"""
+  reaction: String
+
+  """payload of sticker for message"""
+  sticker: String
+
+  """payload of text for message"""
+  text: String
+
+  """value of EMessageType"""
+  type: String
+
+  """payload of video for message"""
+  video: String
+}
+
+type Mutation {
+  addBranchToScenario(createScenarioBranchInput: CreateScenarioBranchInput!, scenarioId: String!): ScenarioEntity!
+  addChoiceToBranch(createScenarioBranchInput: CreateAnswerEntityInput!, scenarioBranchId: String!): ScenarioBranchEntity!
+  createAnswer(createAnswerInput: CreateAnswerEntityInput!): AnswerEntity!
+  createBot(createBotInput: CreateBotInput!): BotEntity!
+  createManyMessages(createManyMessagesInput: [CreateMessageInput!]!): [MessageEntity!]!
+  createMessage(createMessageInput: CreateMessageInput!): MessageEntity!
+  createScenario(scenarioInput: CreateScenarioInput!): ScenarioEntity!
+  createSpamMessage(createSpamMessageInput: CreateMessageInput!): MessageEntity!
+  joinGroups(JoinGroupsInput: JoinGroupsInput!): [BotStateEntity!]!
+  leaveGroups(input: LeaveGroupsInput!): [BotStateEntity!]!
+  provide2FACode(api_id: Int!, code: String!): BotStateEntity!
+  providePhoneCode(api_id: Int!, phoneCode: String!): BotStateEntity!
+  providePhoneNumber(api_id: Int!, phoneNumber: String!): BotStateEntity!
+  removeAnswer(id: String!): Int!
+  removeBot(api_id: Int!): BotEntity!
+  removeMessages(ids: [String!]!): Int!
+  removeScenario(id: String!): String!
+  restartBot(api_id: Int!): BotEntity!
+  setUsername(api_id: Int!, username: String!): String!
+  stopBot(api_id: Int!): BotStateEntity!
+  updateAnswer(updateAnswerInput: UpdateAnswersRepositoryInput!): AnswerEntity!
+  updateBot(api_id: Int!, updateBotInput: UpdateBotInput!): BotEntity!
+  updateMessage(id: String!, updateMessageInput: UpdateMessageInput!): MessageEntity!
+}
+
+type Query {
+  answer(id: String!): AnswerEntity
+  answers: [AnswerEntity!]!
+  batchFind(ids: [String!]!): [MessageEntity!]!
+  bot(api_id: Int!): BotEntity!
+  bots: [BotEntity!]!
+  getBotState(id: Int!): BotStateEntity!
+  getBotStates: [BotStateEntity!]!
+  getProcessesCount: Int!
+  message(id: String!): MessageEntity!
+  messages: [MessageEntity!]!
+  reloadStates: [BotStateEntity!]!
+  scenario(id: String!): ScenarioEntity!
+  scenarios: [ScenarioEntity!]!
+  someAnswers(findSomeAnswersInput: UpdateAnswersRepositoryInput!): [AnswerEntity!]!
+  spamMessages: [MessageEntity!]!
+  startBot(api_id: Int!): BotEntity!
+  startBots: [BotEntity!]!
+  stopBots: [BotEntity!]!
+}
+
+type ScenarioBranchEntity {
+  """choices"""
+  choices: [AnswerEntity!]
+
+  """notes"""
+  description: String
+
+  """entity id"""
+  id: String
+
+  """index"""
+  index: Float
+
+  """scenario"""
+  scenario: ScenarioEntity
+}
+
+type ScenarioEntity {
+  branches: [ScenarioBranchEntity!]!
+
+  """createdAt"""
+  createdAt: DateTime
+
+  """db_name"""
+  db_name: String
+
+  """notes"""
+  description: String
+
+  """entity id"""
+  id: ID!
+
+  """maxConversationLength"""
+  maxConversationLength: Float
+
+  """updatedAt"""
+  updatedAt: DateTime
+}
+
+input UpdateAnswersRepositoryInput {
+  """base_probability"""
+  base_probability: String
+
+  """db_name"""
+  db_name: String
+
+  """description"""
+  description: String
+
+  """entity id"""
+  id: String!
+
+  """index"""
+  index: Float
+
+  """isChannelAnswer"""
+  isChannelAnswer: Boolean
+
+  """isDmAnswer"""
+  isDmAnswer: Boolean
+
+  """isGroupAnswer"""
+  isGroupAnswer: Boolean
+
+  """next branch id"""
+  nextBranchId: String
+
+  """request"""
+  request: [String!]
+
+  """response"""
+  responses: [CreateMessageInput!]
+}
+
+input UpdateBotInput {
+  afterTaskDelay: Int
+  afterTaskIdleTime: Int
+  answersDb: String
+  behaviorModel: String
+  botName: String
+  clientState: String
+  copyFrom: Int
+  dmScenarioNames: [String!]
+  readDelay: Int
+  replacements: String
+  sessionString: String
+  spamDBname: String
+  taskOrder: String
+  typeDelayMultiplier: String
+  voice: String
+}
+
+input UpdateMessageInput {
+  """payload of audio for message"""
+  audio: String = ""
+
+  """payload of caption for message"""
+  caption: String = ""
+
+  """coefficient for message"""
+  coefficient: String = "1"
+
+  """db_name"""
+  db_name: String = "base"
+
+  """notes"""
+  description: String = ""
+
+  """index"""
+  index: Float
+
+  """payload of photo for message"""
+  photo: String = ""
+
+  """payload of reaction for message"""
+  reaction: String = ""
+
+  """payload of sticker for message"""
+  sticker: String = ""
+
+  """payload of text for message"""
+  text: String = ""
+
+  """value of EMessageType"""
+  type: String = "TEXT"
+
+  """payload of video for message"""
+  video: String = ""
+}
