@@ -58,3 +58,9 @@ export const listFirebaseStorageFiles = async (
   setFiles && setFiles(filesWithUrl);
   return filesWithUrl;
 };
+
+export const getPhotoUrlByPath = async (path: string) => {
+  const storage = getStorage();
+  const fileRef = ref(storage, path);
+  return fileRef;
+};

@@ -65,10 +65,7 @@ export class SettingsService {
     return botStateService.getBotStates();
   }
 
-  async leaveGroups({
-    api_ids,
-    chatNames
-  }: LeaveGroupsInput) {
+  async leaveGroups({ api_ids, chatNames }: LeaveGroupsInput) {
     const botStateService = this.botStateService;
 
     // const botStates = botStateService.getBotStates();
@@ -93,5 +90,36 @@ export class SettingsService {
     });
 
     return botStateService.getBotStates();
+  }
+  async setPhoto(api_id: number, photoName: string) {
+    const botState = this.botStateService.getBotState(api_id);
+
+    if (botState) {
+      sendToBot(
+        botState.childProcess as ChildProcess,
+        {
+          event_type: ServerEventTypes.SET_PHOTO,
+          photoName,
+        },
+        false
+      );
+    }
+    return botState;
+  }
+
+  // remove photos
+  async removePhotos(api_id: number) {
+    const botState = this.botStateService.getBotState(api_id);
+
+    if (botState) {
+      sendToBot(
+        botState.childProcess as ChildProcess,
+        {
+          event_type: ServerEventTypes.REMOVE_PHOTOS,
+        },
+        false
+      );
+    }
+    return botState;
   }
 }

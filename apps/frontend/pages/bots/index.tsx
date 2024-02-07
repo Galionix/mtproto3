@@ -8,6 +8,7 @@ import { Clickable } from "../../src/shared/Clickable/Clickable";
 import { Layout } from "../../src/shared/Layout/Layout";
 import { Table } from "../../src/shared/Table/Table";
 import {
+  getBotStateLogs,
   getBotStatesQuery,
   getBotsQuery,
   removeBotMutation,
@@ -17,12 +18,33 @@ import {
 import { BsStopCircle } from "react-icons/bs";
 import { VscDebugStart } from "react-icons/Vsc";
 import { SessionStringRestore } from "../../src/shared/BotSessionStringRestore/BotSessionStringRestore";
+import { useEffect, useState } from "react";
+import { IoList } from "react-icons/io5";
+import { BotStateLogsList } from "../../src/domains/bots/EventsList/EventsList";
+import s from "./Index.module.scss";
 
 const BotsPage: NextPage = () => {
   const { data } = useQuery(getBotsQuery);
-  const { data: botStates } = useQuery(getBotStatesQuery, {
-    pollInterval: 1000,
+  const [viewLogsId, setViewLogsId] = useState<string | null>(null);
+  const {
+    data: botStates,
+    startPolling,
+    stopPolling,
+  } = useQuery(getBotStatesQuery, {
+    // pollInterval: 5000,
   });
+
+  useEffect(() => {
+    // if at least one bot is running
+    if (botStates?.getBotStates.some((botState) => botState.isRunning)) {
+      startPolling(5000);
+    } else {
+      stopPolling();
+    }
+    return () => {
+      stopPolling();
+    };
+  }, [botStates?.getBotStates, startPolling, stopPolling]);
 
   const [restartBot, { data: restartBotData }] =
     useMutation(restartBotMutation);
@@ -54,6 +76,24 @@ const BotsPage: NextPage = () => {
       });
     },
   });
+  const [ViewLogsModal, { showModal: showLogsModal }] = useModal<string>({
+    id: "viewLogsModal",
+    className: s.viewLogsModal,
+    children: (id) => {
+      const botName = data?.bots.find((bot) => bot.api_id === id)?.botName;
+      return (
+        <div>
+          <h2>Bot name: {botName}</h2>
+          <BotStateLogsList id={id} />
+          {/* <pre>{JSON.stringify(botLogs, null, 2)}</pre> */}
+        </div>
+      );
+    },
+    danger: false,
+    onSubmit: (id: string) => {
+      setViewLogsId(null);
+    },
+  });
 
   const botsForTable =
     data?.bots.map((bot) => {
@@ -70,13 +110,18 @@ const BotsPage: NextPage = () => {
   return (
     <Layout>
       <h1>Bots</h1>
+      {ViewLogsModal}
       {DeleteModal}
       <Clickable primary text="Create New Bot" href="/bots/create" />
       <Table
         columns={["api_id", "botName", "api_hash", "behaviorModel"]}
         data={botsForTable}
         rowLeftControls={(bot) => [
-          <SessionStringRestore key={bot.api_id} api_id={bot.api_id} />,
+          <SessionStringRestore
+            key={bot.api_id}
+            api_id={bot.api_id}
+            requestedPhone={bot.botState.requestedPhoneCode}
+          />,
           <Clickable
             key={bot.api_id}
             danger={!bot.botState?.isRunning}
@@ -112,6 +157,16 @@ const BotsPage: NextPage = () => {
           />,
         ]}
         rowControls={(bot) => [
+          <Clickable
+            key={bot.api_id}
+            primary
+            title="view logs"
+            icon={IoList}
+            onClick={() => {
+              showLogsModal(bot.api_id);
+              setViewLogsId(bot.api_id);
+            }}
+          />,
           <Clickable
             key={bot.api_id}
             primary

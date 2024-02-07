@@ -3,6 +3,7 @@ import { TTask, TTaskOrder } from "../bot-tasks";
 import { TAnswer } from "./botAnswer";
 import { TClientMessage } from "./message.entity";
 import { TScenarioElement } from "./scenario";
+import { Api, TelegramClient } from "telegram";
 export type TReplacement = {
   [key: string]: string;
 };
@@ -16,6 +17,13 @@ type TGroupCounters = {
 };
 
 export type TState = {
+  tasksTries: {
+    [key: string]: number;
+  };
+  me: Api.User;
+  audioDurations: {
+    [key: string]: number;
+  };
   voice: string;
   dmDb: TAnswer[];
   groupDb: TAnswer[];

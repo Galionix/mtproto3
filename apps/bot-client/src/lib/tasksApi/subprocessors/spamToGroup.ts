@@ -1,9 +1,14 @@
 import { client, Api } from "telegram";
 import { TTaskProcessorArgs } from ".";
-import { TGroupSpamTask, TSendableMessage } from "@core/types/client";
+import {
+  ETaskType,
+  TGroupSpamTask,
+  TSendableMessage,
+} from "@core/types/client";
 import { delayFactory, sendMessage } from "../../utils/messagingUtils";
 import { removeTaskFromQueue } from "../processor";
 import { state } from "../../state";
+import { logEvent } from "../../processApi/logEventTostate";
 
 const { readDelay, typeDelay } = delayFactory();
 
@@ -25,8 +30,11 @@ export const spamToGroup = async ({
   };
 
   await typeDelay(client, message);
-
-  const res = await sendMessage(client, message);
+  try {
+    const res = await sendMessage(client, message);
+    console.log("res: ", res);
+  } catch (error) {
+    logEvent("ERROR_SPAM_TO_GROUP", JSON.stringify({ error, message, task }));
+  }
   removeTaskFromQueue(task);
-  console.log("res: ", res);
 };

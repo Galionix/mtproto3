@@ -9,6 +9,7 @@ import {
 
 export type TSessionStringRestoreProps = {
   api_id: any;
+  requestedPhone: boolean;
 };
 
 export const SessionStringRestore = (props: TSessionStringRestoreProps) => {
@@ -17,11 +18,28 @@ export const SessionStringRestore = (props: TSessionStringRestoreProps) => {
   const [requestedPhone, setRequestedPhone] = useState(false);
   const [requestedCode, setRequestedCode] = useState(false);
   const [requested2FACode, setRequested2FACode] = useState(false);
+  // const [enableQuery, setEnableQuery] = useState(false);
 
   const botState = useQuery(getBotStateQuery, {
     variables: { api_id: parseInt(`${preparedApiId}`) },
-    pollInterval: 1000,
+    // pollInterval: 1000,
+    // disabled: !enableQuery,
   });
+  // TODO: test wether it working
+  useEffect(() => {
+    if (
+      botState?.data?.getBotState?.isRunning &&
+      botState.startPolling &&
+      requestedPhone
+    ) {
+      console.log("startPolling");
+      botState.startPolling(1000);
+    }
+    return () => {
+      botState.stopPolling();
+    };
+  }, [botState, requestedPhone]);
+
   //   console.log("botState: ", botState);
 
   //   const [

@@ -7,6 +7,7 @@ import { addDmTask, addGroupSpamTask } from "../tasksApi/addTask";
 import { defaultSpamInterval } from "../../constants";
 import { Api } from "telegram";
 import { getBotResponse } from "@core/functions";
+import { responseMessageEmpty } from "./utils";
 
 export async function messageOrchestrator(event: NewMessageEvent) {
   //
@@ -130,32 +131,6 @@ export async function messageOrchestrator(event: NewMessageEvent) {
     const senderId = (await message.getSender()).id;
     const messageText = message.message;
 
-    // const messages = await client.getMessages(message.senderId, {
-    //   limit: state.dmScenario.maxConversationLength,
-    //   fromUser: senderId,
-    // });
-    // console.log(state.dmScenario);
-    // state.dmScenario.branches[0].choices.forEach((choice) => {
-    //   console.log("choice: ", choice);
-    // });
-
-    // console.log("message.senderId: ", message.senderId);
-    // const messages: string[] = [];
-
-    // get messages from user
-
-    // const messages = await client.getMessages(message.senderId, {
-    //   limit: state.dmScenario.maxConversationLength,
-    //   fromUser: senderId,
-    // });
-    // const messagesTexts = messages.map((message) => message.text);
-    // console.log("messagesTexts: ", messagesTexts);
-    // get text from messages
-    // for (const messageItem of messages) {
-    //   console.log("messageItem: ", messageItem);
-    //   messages.push(messageItem.text);
-    // }
-    // console.log("message.senderId: ", message.senderId);
     const messagesTexts: string[] = [];
     for await (const messageItem of client.iterMessages(message.peerId, {
       reverse: true,
@@ -169,14 +144,20 @@ export async function messageOrchestrator(event: NewMessageEvent) {
     console.log("responseMessage: ", responseMessage);
 
     // const previousUserMessages = client.
-    logEvent(BotEventTypes.DIRECT_MESSAGE, messageText);
+    logEvent(
+      BotEventTypes.DIRECT_MESSAGE,
+      `originalMessageId: ${message.id} sender: ${message.senderId}, messageText: ${messageText}`
+    );
     // WARN! replace below with new implementation
     // const { step, count } = await getDMMessageStep(client, senderId);
 
-    addDmTask({
-      senderId,
-      message: responseMessage,
-    });
+    if (!responseMessageEmpty(responseMessage)) {
+      addDmTask({
+        senderId,
+        message: responseMessage,
+        originalMessageId: message.id,
+      });
+    }
     // code below is to move to task handlers
     //
     //

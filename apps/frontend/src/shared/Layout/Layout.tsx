@@ -7,16 +7,22 @@ export const Layout = ({
   children,
   loading = false,
   outside = <></>,
+  className = "",
 }: {
   children: React.ReactNode;
   loading?: boolean;
   outside?: React.ReactNode;
+  className?: string;
 }) => {
   return (
     <>
       <div className={s.layout}>
         <Header />
-        <div className={`${s.content} ${loading ? s.loading : ""}`}>
+        <div
+          className={`${s.content} ${loading ? s.loading : ""} ${
+            className ? className : ""
+          }`}
+        >
           {children}
         </div>
         <Footer />

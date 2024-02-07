@@ -1,0 +1,29 @@
+.list {
+  height: 100%;
+  max-height: calc(100vh - 237px);
+  overflow-y: auto;
+
+  ul {
+    height: 100%;
+  }
+  li {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    grid-template-rows: auto auto;
+    grid-template-areas:
+      "event description"
+      "date description";
+    padding: 10px;
+    border-radius: 5px;
+    p.event {
+      grid-area: event;
+      font-weight: bold;
+    }
+    p.description {
+      grid-area: description;
+    }
+    p.date {
+      grid-area: date;
+    }
+  }
+}

@@ -103,7 +103,10 @@ const CreateBotPage: NextPage = () => {
             dispatch({ sessionString: e });
           }}
         />
-        <SessionStringRestore api_id={createBotData.api_id} />
+        <SessionStringRestore
+          api_id={createBotData.api_id}
+          requestedPhone={true}
+        />
         <Clickable
           primary
           text="Create Bot"

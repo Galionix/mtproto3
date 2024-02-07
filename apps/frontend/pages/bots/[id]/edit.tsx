@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import { NextPage } from "next";
 import {
@@ -9,10 +10,19 @@ import { useMutation, useQuery } from "@apollo/client";
 import { useEffect, useReducer, useState } from "react";
 import { useRouter } from "next/router";
 import { Layout } from "../../../src/shared/Layout/Layout";
-import { getBotQuery, updateBotMutation } from "./gql";
+import {
+  getBotQuery,
+  removePhotosMutation,
+  setPhotoMutation,
+  updateBotMutation,
+} from "./gql";
 import { TextInput } from "../../../src/shared/Input/TextInput";
 import { EditableList } from "../../../src/shared/EditableList/EditableList";
 import { Clickable } from "../../../src/shared/Clickable/Clickable";
+import s from "./Edit.module.scss";
+import { getBotStatesQuery } from "../gql";
+import { getPhotoUrlByPath } from "../../resources/resourcesUtils";
+import { useFirebaseStorageUrl } from "../../../src/utils/hooks/useFileUrl";
 
 // const defaultCreateBotData: CreateBotInput = {
 //   api_id: 0,
@@ -54,6 +64,25 @@ const EditBotPage: NextPage = () => {
     },
   ] = useMutation(updateBotMutation);
 
+  // setPhotoMutation
+  const [
+    setPhoto,
+    {
+      data: setPhotoDataResult,
+      loading: setPhotoLoading,
+      error: setPhotoError,
+    },
+  ] = useMutation(setPhotoMutation);
+  //removePhotosMutation
+  const [
+    removePhotos,
+    {
+      data: removePhotosDataResult,
+      loading: removePhotosLoading,
+      error: removePhotosError,
+    },
+  ] = useMutation(removePhotosMutation);
+
   const [updateBotData, dispatch] = useReducer(
     (state: Partial<UpdateBotInput>, newState: Partial<UpdateBotInput>) => ({
       ...state,
@@ -65,6 +94,10 @@ const EditBotPage: NextPage = () => {
   useEffect(() => {
     dispatch(preparedBotData);
   }, [bot]);
+  const [photoName, setPhotoName] = useState("");
+  // const [photUrl, setPhotoUrl] = useState("");
+  const { url: photoUrl } = useFirebaseStorageUrl("images", photoName);
+  console.log("photoUrl: ", photoUrl);
   console.log("updateBotData: ", updateBotData);
 
   // useEffect(() => {
@@ -86,8 +119,8 @@ const EditBotPage: NextPage = () => {
   );
   console.log(bot?.taskOrder);
   console.log("taskOrder: ", taskOrder);
-  const [error, setError] = useState("");
-  console.log("error: ", error);
+  // const [error, setError] = useState("");
+  // console.log("error: ", error);
   // const [editBotData, dispatch] = useReducer(
   //     (state: CreateBotInput, newState: Partial<CreateBotInput>) => ({
   //       ...state,
@@ -103,67 +136,148 @@ const EditBotPage: NextPage = () => {
     );
 
   return (
-    <Layout>
+    <Layout className={s.editBot}>
       <h1>Edit Bot {bot.botName}</h1>
-      <TextInput
-        label="api_id"
-        type="number"
-        placeholder="api_id"
-        required
-        value={bot.api_id.toString()}
-        disabled
-      />
-      {/* api_hash */}
-      <TextInput
-        label="api_hash"
-        type="text"
-        placeholder="api_hash"
-        required
-        value={bot.api_hash}
-        disabled
-      />
-      <TextInput
-        label="botName"
-        type="text"
-        placeholder="botName"
-        required
-        value={bot.botName}
-      />
-      {/* answersDb */}
-      <TextInput
-        label="answersDb"
-        type="text"
-        placeholder="answersDb"
-        required
-        value={bot.answersDb}
-      />
-      {/* behaviorModel */}
-      <TextInput
-        label="behaviorModel"
-        type="text"
-        placeholder="behaviorModel"
-        required
-        value={bot.behaviorModel}
-      />
-      {/* taskOrder */}
-      <TextInput
-        label="taskOrder"
-        type="text"
-        placeholder="taskOrder"
-        required
-        value={bot.taskOrder}
-      />
-      {/* dmScenarioNames */}
-      <TextInput
-        label="dmScenarioNames"
-        type="text"
-        placeholder="dmScenarioNames"
-        required
-        value={updateBotData.dmScenarioNames?.join(",")}
-        onChange={(e) => {
-          dispatch({ dmScenarioNames: e.split(",") });
-        }}
-      />
+      <div className={s.content}>
+        <main>
+          <TextInput
+            label="api_id"
+            type="number"
+            placeholder="api_id"
+            required
+            value={bot.api_id.toString()}
+            disabled
+          />
+          {/* api_hash */}
+          <TextInput
+            label="api_hash"
+            type="text"
+            placeholder="api_hash"
+            required
+            value={bot.api_hash}
+            disabled
+          />
+          <TextInput
+            label="botName"
+            type="text"
+            placeholder="botName"
+            required
+            value={bot.botName}
+          />
+          {/* answersDb */}
+          <TextInput
+            label="answersDb"
+            type="text"
+            placeholder="answersDb"
+            required
+            value={bot.answersDb}
+          />
+          {/* behaviorModel */}
+          <TextInput
+            label="behaviorModel"
+            type="text"
+            placeholder="behaviorModel"
+            required
+            value={bot.behaviorModel}
+          />
+          {/* taskOrder */}
+        </main>
+        <section>
+          <TextInput
+            width={400}
+            area
+            label="taskOrder"
+            type="text"
+            placeholder="taskOrder"
+            required
+            value={updateBotData.taskOrder}
+            onChange={(e) => {
+              dispatch({ taskOrder: e });
+            }}
+          />
+          {/* dmScenarioNames */}
+          <TextInput
+            label="dmScenarioNames"
+            type="text"
+            placeholder="dmScenarioNames"
+            required
+            value={updateBotData.dmScenarioNames?.join(",")}
+            onChange={(e) => {
+              dispatch({ dmScenarioNames: e.split(",") });
+            }}
+          />
+          <TextInput
+            // className={s.replacementsArea}
+            width={400}
+            area
+            label="replacements"
+            type="text"
+            placeholder="replacements"
+            required
+            value={updateBotData.replacements}
+            onChange={(e) => {
+              dispatch({ replacements: e });
+            }}
+          />
+          {/* removePhotosMutation */}
+          <Clickable
+            danger
+            text="Remove Photos"
+            onClick={async () => {
+              const { data } = await removePhotos({
+                variables: {
+                  api_id: parseInt(`${id}`),
+                },
+              });
+              console.log("data: ", data);
+            }}
+          />
+          {/* setPhoto */}
+          <div>
+            <img src={photoUrl} alt={photoName} width={200} height={200} />
+            <TextInput
+              label="photo"
+              type="text"
+              placeholder="photo"
+              required
+              value={photoName}
+              onChange={(e) => {
+                setPhotoName(e);
+              }}
+            />
+            <Clickable
+              primary
+              text="Set Photo"
+              onClick={async () => {
+                const { data } = await setPhoto({
+                  variables: {
+                    api_id: parseInt(`${id}`),
+                    photoName,
+                  },
+                });
+                console.log("data: ", data);
+                // await updateBot({
+                //   variables: {
+                //     api_id: parseInt(`${id}`),
+                //     updateBotInput: {
+                //       photo: photoName,
+                //     },
+                //   },
+                //   refetchQueries: [
+                //     {
+                //       query: getBotStatesQuery,
+                //     },
+                //     {
+                //       query: getBotQuery,
+                //       variables: { api_id: parseInt(`${id}`) },
+                //     },
+                //   ],
+                // });
+              }}
+            />
+          </div>
+        </section>
+      </div>
       {/* <EditableList
         label="taskOrder"
         type="text"
@@ -288,6 +402,15 @@ const EditBotPage: NextPage = () => {
               api_id: parseInt(`${id}`),
               updateBotInput: preparedUpdateBotData,
             },
+            refetchQueries: [
+              {
+                query: getBotStatesQuery,
+              },
+              {
+                query: getBotQuery,
+                variables: { api_id: parseInt(`${id}`) },
+              },
+            ],
           });
           router.push("/bots");
         }}

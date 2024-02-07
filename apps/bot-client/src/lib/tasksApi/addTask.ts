@@ -5,16 +5,22 @@ import {
   TGroupSpamTask,
   TRespondToDMMessage,
   TRespondToDMMessagePayload,
+  TRespondToUnreadMessageTask,
 } from "@core/types/client";
 import { v4 as uuid } from "uuid";
 import { sendStateToFatherProcess, state } from "../state";
 
-export const addDmTask = async ({ senderId, message }: TRespondToDMMessagePayload) => {
+export const addDmTask = async ({
+  senderId,
+  message,
+  originalMessageId,
+}: TRespondToDMMessagePayload) => {
   const task: TRespondToDMMessage = {
     id: uuid(),
     type: ETaskType.RESPOND_TO_DM_MESSAGE,
     date: Date.now(),
     payload: {
+      originalMessageId,
       message: message,
       senderId,
     },
@@ -22,6 +28,18 @@ export const addDmTask = async ({ senderId, message }: TRespondToDMMessagePayloa
   state.tasks.push(task);
   sendStateToFatherProcess(state);
 };
+
+export const addRespondToUnreadDmTask = async () => {
+  const task: TRespondToUnreadMessageTask = {
+    id: uuid(),
+    type: ETaskType.RESPOND_TO_UNREAD_DM_MESSAGE,
+    date: Date.now(),
+    // payload: {},
+  };
+  state.tasks.push(task);
+  sendStateToFatherProcess(state);
+};
+
 
 export const addJoinGroupTask = async ({
   joinGroupName,

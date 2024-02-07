@@ -123,3 +123,14 @@ export const getBotStateQuery = graphql(`
     }
   }
 `);
+export const getBotStateLogs = graphql(`
+  query getBotStateLogs($api_id: Int!) {
+    getBotState(id: $api_id) {
+      eventLogs {
+        log_event
+        event_date
+        event_message
+      }
+    }
+  }
+`);

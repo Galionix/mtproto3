@@ -4,6 +4,9 @@ import { AppProps } from "next/app";
 import Head from "next/head";
 import "../styles/tailwind-output.css";
 import { Header } from "../src/Header";
+import { firebaseApp } from "../firestore";
+console.log("firebaseApp: ", firebaseApp);
+
 
 const apolloClient = new ApolloClient({
   uri: "http://localhost:3002/graphql",
@@ -11,6 +14,7 @@ const apolloClient = new ApolloClient({
 });
 
 function CustomApp({ Component, pageProps }: AppProps) {
+
   return (
     <>
       <Head>

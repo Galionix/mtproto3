@@ -56,10 +56,12 @@ async function listenForBotToRequestDB({
       scenarioRepositoryService,
       answersRepositoryService,
       spamRepositoryService,
+      botRepositoryService,
       l,
     } = services;
     // console.log("scenarioRepositoryService: ", scenarioRepositoryService);
 
+    const bot = await botRepositoryService.findOne(api_id);
     // const db = await answersRepositoryService.findByDbName(database);
     // const spamDb = await spamRepositoryService.findByDbName(spamDBname);
     const scenarios = await scenarioRepositoryService.findAllByNames(
@@ -74,6 +76,7 @@ async function listenForBotToRequestDB({
       event_type: EGetDatabaseResponseTypes.DB_GET_SUCCESS,
       // db,
       // spamDb: messageTransformer(spamDb),
+      replacements: bot.replacements.replaceAll("\n", ""),
       db: [],
       spamDb: [],
       scenarios: scenarios,

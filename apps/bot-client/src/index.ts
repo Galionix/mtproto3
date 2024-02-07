@@ -28,7 +28,7 @@ import { generalReducer } from "./lib/processApi/composeReducer";
 import { listeners } from "./lib/processApi/listeners";
 import { logEvent } from "./lib/processApi/logEventTostate";
 import { state } from "./lib/state";
-import { addDmTask } from "./lib/tasksApi/addTask";
+import { addDmTask, addRespondToUnreadDmTask } from "./lib/tasksApi/addTask";
 import {
   delayFactory,
   // getDMMessageStep
@@ -38,7 +38,8 @@ import { taskProcessor } from "./lib/tasksApi/processor";
 import { taskArranger } from "./lib/tasksApi/taskArranger";
 import { messageOrchestrator } from "./lib/messagesOrchestrator";
 import { sendToFather } from "@core/functions";
-
+import path from "path";
+import { readFileSync } from "fs";
 const showBreathe = false;
 
 const temporaryTaskOrder: TTaskOrder = [
@@ -103,7 +104,6 @@ const [
 ] = process.argv.slice(2);
 const isTestMode = Boolean(isTest);
 const initState = () => {
-  console.log("replacements: ", replacements);
   state.replacements = JSON.parse(replacements);
 
   state.taskOrder = taskOrder.split(",") as TTaskOrder;
@@ -134,13 +134,33 @@ console.log("launching main thread");
 (async () => {
   console.log("answers_db: ", answers_db);
   console.log("spamDBname: ", spamDBname);
+
+  const filePath = path.join(
+    __dirname,
+    "..",
+    "..",
+    "..",
+    "media",
+    "audioDurations.json"
+  );
+
+  const audioDurations = readFileSync(filePath);
+
+  // read text from buffer
+  state.audioDurations = JSON.parse(audioDurations.toString("utf8"));
+  // console.log("text: ", text);
+
+  // console.log("audioDurations: ", audioDurations);
+
   await readDbSequence({
     answers_db,
     spamDBname,
     dmScenarioNames: dmScenarioNames.split(","),
   });
-  console.log("state.dmScenario: ", state.dmScenario);
-  console.log("readDbSequence finished");
+  // console.log("replacements: ", state.replacements);
+
+  // console.log("state.dmScenario: ", state.dmScenario);
+  // console.log("readDbSequence finished");
 
   let isRunning = false;
   // let tasksDisplay = [];
@@ -257,6 +277,12 @@ console.log("launching main thread");
     await client.connect();
     console.log(apiId, " connected.");
 
+    const result = await client.invoke(
+      new Api.photos.GetUserPhotos({
+        userId: new Api.InputPeerSelf(),
+      })
+    );
+    console.log(result);
     // const result = await client.invoke(
     //   new Api.messages.GetAllChats({
     //     exceptIds: [],
@@ -286,6 +312,16 @@ console.log("launching main thread");
       reducer(message);
     });
 
+    addRespondToUnreadDmTask();
+
+    const me = await client.getMe();
+    state.me = me as Api.User;
+
+    const meAsInputPeer = await client.getInputEntity(me);
+    console.log("meAsInputPeer: ", meAsInputPeer);
+    // console.log("me: ", me);
+
+    // this is forever loop
     setInterval(() => runTasks(client), state.afterTaskDelay);
   } catch (error) {
     console.log("error: ", error);

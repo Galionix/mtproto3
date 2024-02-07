@@ -5,6 +5,13 @@ import { groupJoin } from "./subprocessors/groupJoin";
 import { groupLeave } from "./subprocessors/groupLeave";
 import { respondToDMMessage } from "./subprocessors/respondToDMMessage";
 import { spamToGroup } from "./subprocessors/spamToGroup";
+import { respondToUnreadDmMessage } from "./subprocessors/respondToUnreadDmMessage";
+import {
+  incrementTaskTries,
+  isTaskMaxTriesReached,
+  removeTaskFromTries,
+} from "./taskArranger";
+import { logEvent } from "../processApi/logEventTostate";
 
 export type TTaskProcessor = (
   task: TTask,
@@ -15,7 +22,13 @@ export const taskProcessor: TTaskProcessor = async (task, client) => {
   console.time("taskProcessor: " + task?.id);
   const { payload } = task;
 
+  incrementTaskTries(task);
   switch (task.type) {
+    case ETaskType.RESPOND_TO_UNREAD_DM_MESSAGE:
+      // list last chats
+      await respondToUnreadDmMessage({ client, task });
+
+      break;
     case ETaskType.RESPOND_TO_DM_MESSAGE:
       // console.log("processing dm message", payload);
       // here type guard is necessary
@@ -46,6 +59,12 @@ export const taskProcessor: TTaskProcessor = async (task, client) => {
       throw new Error(`Unknown task type`);
   }
 
+  if (isTaskMaxTriesReached(task)) {
+    logEvent("TASK_MAX_TRIES_REACHED", JSON.stringify(task));
+
+    // removeTaskFromTries(task);
+    removeTaskFromQueue(task);
+  }
   // state.tasks = state.tasks.filter((t) => t.id !== task.id);
 
   // if (task.type === ETaskType.RESPOND_TO_DM_MESSAGE) {
@@ -71,6 +90,7 @@ export const taskProcessor: TTaskProcessor = async (task, client) => {
 
 export function removeTaskFromQueue(task: TTask) {
   const { id } = task;
+  removeTaskFromTries(task);
 
   state.tasks = state.tasks.filter((t) => t.id !== id);
 }

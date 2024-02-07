@@ -1,0 +1,17 @@
+.editBot{
+
+    .content{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        main, section{
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+        }
+        .replacementsArea{
+            // width: 500px;
+        }
+    }
+}

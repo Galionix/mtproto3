@@ -82,6 +82,7 @@ export const EditScenario = ({
   scenarioString,
 }: TEditScenarioProps) => {
   const { resources } = useResourcesStore();
+  console.log("resources: ", resources);
   // const
   const router = useRouter();
   const [testScenario, setTestScenario] = useState(false);

@@ -7,6 +7,7 @@ export enum ETaskType {
   SPAM_TO_GROUP = "SPAM_TO_GROUP",
   GROUP_JOIN = "GROUP_JOIN",
   GROUP_LEAVE = "GROUP_LEAVE",
+  RESPOND_TO_UNREAD_DM_MESSAGE = "RESPOND_TO_UNREAD_DM_MESSAGE",
 }
 export type TAnyTaskType = keyof typeof ETaskType;
 
@@ -38,12 +39,13 @@ export type TGenericTask<T extends ETaskType, P> = {
   id: string;
   type: T;
   date: number;
-  payload: P;
+  payload?: P;
 };
 
 export type TRespondToDMMessagePayload = {
   message: MessageEntity;
   senderId: bigInt.BigInteger;
+  originalMessageId: number;
 };
 
 export interface TRespondToDMMessage {
@@ -89,6 +91,15 @@ export type TGroupLeaveTask = TGenericTask<
   TGroupLeaveTaskPayload
 >;
 
+export type TRespondToUnread = TGenericTask<
+  ETaskType.RESPOND_TO_UNREAD_DM_MESSAGE,
+  null
+>;
+export interface TRespondToUnreadMessageTask {
+  id: string;
+  type: ETaskType.RESPOND_TO_UNREAD_DM_MESSAGE;
+  date: number;
+}
 export type TGroupSpamTaskPayload = {
   spamGroupId: bigInt.BigInteger;
   spamGroupIdString: string;
@@ -104,7 +115,8 @@ export type TTask =
   | TRespondToGroupMessage
   | TGroupJoinTask
   | TGroupLeaveTask
-  | TGroupSpamTask;
+  | TGroupSpamTask
+  | TRespondToUnread;
 
 export type TTaskOrder = TAnyTaskType[];
 
@@ -113,4 +125,5 @@ export type TAnyTaskPayload =
   | TGroupJoinTaskPayload
   | TRespondToGroupMessagePayload
   | TRespondToDMMessagePayload
-  | TGroupSpamTaskPayload;
+  | TGroupSpamTaskPayload
+  | null;

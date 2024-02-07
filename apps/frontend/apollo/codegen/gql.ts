@@ -15,6 +15,8 @@ import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/
 const documents = {
     "\n  query Bot($api_id: Int!) {\n    bot(api_id: $api_id) {\n      afterTaskDelay\n      afterTaskIdleTime\n      answersDb\n      api_hash\n      api_id\n      behaviorModel\n      botName\n      clientState\n      clientStateUpdateTime\n      copyFrom\n      readDelay\n      replacements\n      dmScenarioNames\n      sessionString\n      spamDBname\n      taskOrder\n      typeDelayMultiplier\n      voice\n    }\n  }\n": types.BotDocument,
     "\n  mutation updateBot($api_id: Int!, $updateBotInput: UpdateBotInput!) {\n    updateBot(api_id: $api_id, updateBotInput: $updateBotInput) {\n      afterTaskDelay\n      afterTaskIdleTime\n      answersDb\n      api_hash\n      api_id\n      behaviorModel\n      botName\n      clientState\n      copyFrom\n      readDelay\n      replacements\n      dmScenarioNames\n      sessionString\n      spamDBname\n      taskOrder\n      voice\n    }\n  }\n": types.UpdateBotDocument,
+    "\n  mutation setPhoto($api_id: Int!, $photoName: String!) {\n    setPhoto(api_id: $api_id, photoName: $photoName) {\n      bot {\n        api_id\n      }\n    }\n  }\n": types.SetPhotoDocument,
+    "\n  mutation removePhotos($api_id: Int!) {\n    removePhotos(api_id: $api_id) {\n      bot {\n        api_id\n      }\n    }\n  }\n": types.RemovePhotosDocument,
     "\n  query Bots {\n    bots {\n      afterTaskDelay\n      afterTaskIdleTime\n      answersDb\n      api_hash\n      api_id\n      behaviorModel\n      botName\n      clientState\n      clientStateUpdateTime\n      copyFrom\n      readDelay\n      replacements\n      dmScenarioNames\n      sessionString\n      spamDBname\n      taskOrder\n      typeDelayMultiplier\n      voice\n    }\n  }\n": types.BotsDocument,
     "\n  mutation CreateBot($createBotInput: CreateBotInput!) {\n    createBot(createBotInput: $createBotInput) {\n      afterTaskDelay\n      afterTaskIdleTime\n      answersDb\n      api_hash\n      api_id\n      behaviorModel\n      botName\n      clientState\n      clientStateUpdateTime\n      copyFrom\n      readDelay\n      replacements\n      dmScenarioNames\n      sessionString\n      spamDBname\n      taskOrder\n      typeDelayMultiplier\n      voice\n    }\n  }\n": types.CreateBotDocument,
     "\n  mutation removeBot($api_id: Int!) {\n    removeBot(api_id: $api_id) {\n      api_id\n    }\n  }\n": types.RemoveBotDocument,
@@ -22,6 +24,7 @@ const documents = {
     "\n  mutation restartBot($api_id: Int!) {\n    restartBot(api_id: $api_id) {\n      api_id\n    }\n  }\n": types.RestartBotDocument,
     "\n  mutation stopBot($api_id: Int!) {\n    stopBot(api_id: $api_id) {\n      isRunning\n    }\n  }\n": types.StopBotDocument,
     "\n  query getBotState($api_id: Int!) {\n    getBotState(id: $api_id) {\n      bot {\n        api_id\n        api_hash\n      }\n      requestedPhoneNumber\n      requestedPhoneCode\n      requested2FACode\n      isRunning\n      isStarted\n      isStopped\n      eventLogs {\n        log_event\n        event_date\n        event_message\n      }\n      childProcess {\n        pid\n      }\n    }\n  }\n": types.GetBotStateDocument,
+    "\n  query getBotStateLogs($api_id: Int!) {\n    getBotState(id: $api_id) {\n      eventLogs {\n        log_event\n        event_date\n        event_message\n      }\n    }\n  }\n": types.GetBotStateLogsDocument,
     "\n  query scenarios {\n    scenarios {\n      id\n      description\n      createdAt\n      branches {\n        id\n        choices {\n          id\n          request\n          responses {\n            text\n          }\n        }\n      }\n    }\n  }\n": types.ScenariosDocument,
     "\n  query scenario($id: String!) {\n    scenario(id: $id) {\n      db_name\n      updatedAt\n      maxConversationLength\n      id\n      description\n      createdAt\n      branches {\n        index\n        id\n        choices {\n          index\n          id\n          request\n          nextBranchId\n          responses {\n            index\n            id\n            text\n            type\n            photo\n            video\n            audio\n          }\n        }\n      }\n    }\n  }\n": types.ScenarioDocument,
     "\n  mutation removeScenario($id: String!) {\n    removeScenario(id: $id)\n  }\n": types.RemoveScenarioDocument,
@@ -56,6 +59,14 @@ export function graphql(source: "\n  mutation updateBot($api_id: Int!, $updateBo
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
+export function graphql(source: "\n  mutation setPhoto($api_id: Int!, $photoName: String!) {\n    setPhoto(api_id: $api_id, photoName: $photoName) {\n      bot {\n        api_id\n      }\n    }\n  }\n"): (typeof documents)["\n  mutation setPhoto($api_id: Int!, $photoName: String!) {\n    setPhoto(api_id: $api_id, photoName: $photoName) {\n      bot {\n        api_id\n      }\n    }\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  mutation removePhotos($api_id: Int!) {\n    removePhotos(api_id: $api_id) {\n      bot {\n        api_id\n      }\n    }\n  }\n"): (typeof documents)["\n  mutation removePhotos($api_id: Int!) {\n    removePhotos(api_id: $api_id) {\n      bot {\n        api_id\n      }\n    }\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
 export function graphql(source: "\n  query Bots {\n    bots {\n      afterTaskDelay\n      afterTaskIdleTime\n      answersDb\n      api_hash\n      api_id\n      behaviorModel\n      botName\n      clientState\n      clientStateUpdateTime\n      copyFrom\n      readDelay\n      replacements\n      dmScenarioNames\n      sessionString\n      spamDBname\n      taskOrder\n      typeDelayMultiplier\n      voice\n    }\n  }\n"): (typeof documents)["\n  query Bots {\n    bots {\n      afterTaskDelay\n      afterTaskIdleTime\n      answersDb\n      api_hash\n      api_id\n      behaviorModel\n      botName\n      clientState\n      clientStateUpdateTime\n      copyFrom\n      readDelay\n      replacements\n      dmScenarioNames\n      sessionString\n      spamDBname\n      taskOrder\n      typeDelayMultiplier\n      voice\n    }\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
@@ -81,6 +92,10 @@ export function graphql(source: "\n  mutation stopBot($api_id: Int!) {\n    stop
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(source: "\n  query getBotState($api_id: Int!) {\n    getBotState(id: $api_id) {\n      bot {\n        api_id\n        api_hash\n      }\n      requestedPhoneNumber\n      requestedPhoneCode\n      requested2FACode\n      isRunning\n      isStarted\n      isStopped\n      eventLogs {\n        log_event\n        event_date\n        event_message\n      }\n      childProcess {\n        pid\n      }\n    }\n  }\n"): (typeof documents)["\n  query getBotState($api_id: Int!) {\n    getBotState(id: $api_id) {\n      bot {\n        api_id\n        api_hash\n      }\n      requestedPhoneNumber\n      requestedPhoneCode\n      requested2FACode\n      isRunning\n      isStarted\n      isStopped\n      eventLogs {\n        log_event\n        event_date\n        event_message\n      }\n      childProcess {\n        pid\n      }\n    }\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  query getBotStateLogs($api_id: Int!) {\n    getBotState(id: $api_id) {\n      eventLogs {\n        log_event\n        event_date\n        event_message\n      }\n    }\n  }\n"): (typeof documents)["\n  query getBotStateLogs($api_id: Int!) {\n    getBotState(id: $api_id) {\n      eventLogs {\n        log_event\n        event_date\n        event_message\n      }\n    }\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

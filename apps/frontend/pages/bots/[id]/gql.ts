@@ -48,3 +48,23 @@ export const updateBotMutation = graphql(`
     }
   }
 `);
+
+export const setPhotoMutation = graphql(`
+  mutation setPhoto($api_id: Int!, $photoName: String!) {
+    setPhoto(api_id: $api_id, photoName: $photoName) {
+      bot {
+        api_id
+      }
+    }
+  }
+`);
+
+export const removePhotosMutation = graphql(`
+  mutation removePhotos($api_id: Int!) {
+    removePhotos(api_id: $api_id) {
+      bot {
+        api_id
+      }
+    }
+  }
+`);

@@ -4,6 +4,8 @@ import { usernameMessagesTypes } from "../../client";
 export enum ESettingsMessageType {
   // GET_GENERAL_SETTINGS_SUCCESS = "GET_GENERAL_SETTINGS_SUCCESS",
   // GET_GENERAL_SETTINGS_ERROR = "GET_GENERAL_SETTINGS_ERROR",
+  SET_PHOTO = "SET_PHOTO",
+  REMOVE_PHOTOS = "REMOVE_PHOTOS",
   SET_USERNAME = "SET_USERNAME",
   JOIN_GROUPS = "JOIN_GROUPS",
   LEAVE_GROUPS = "LEAVE_GROUPS",
@@ -16,6 +18,13 @@ export type TSetUsernameMessage = TGenericMessage<
   username: string;
 };
 
+export type TSetPhotoMessage =
+  TGenericMessage<ESettingsMessageType.SET_PHOTO> & {
+    photoName: string;
+  };
+
+export type TRemovePhotosMessage =
+  TGenericMessage<ESettingsMessageType.REMOVE_PHOTOS>;
 export type TJoinGroupsMessage =
   TGenericMessage<ESettingsMessageType.JOIN_GROUPS> & {
     chatNames: string[];
@@ -34,4 +43,6 @@ export type TLeaveGroupsMessage =
 export type TSettingsMessage =
   | TSetUsernameMessage
   | TJoinGroupsMessage
-  | TLeaveGroupsMessage;
+  | TLeaveGroupsMessage
+  | TSetPhotoMessage
+  | TRemovePhotosMessage;

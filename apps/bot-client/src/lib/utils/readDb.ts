@@ -61,16 +61,18 @@ export async function readDbSequence({
     logEvent(BotEventTypes.LOG_EVENT, "db response success");
 
     try {
-      const { db, spamDb, scenarios } = res;
+      const { db, spamDb, scenarios, replacements } = res;
       // console.log("spamDb: ", spamDb);
 
       const { dmDb, groupDb, channelDb } = readDb(db);
 
       state.dmDb = dmDb;
+      state.replacements = JSON.parse(replacements);
       state.groupDb = groupDb;
       state.channelDb = channelDb;
       state.spamDb = spamDb;
       state.dmScenario = scenarios[0];
+      console.log("state.replacements: ", state.replacements);
     } catch (error) {
       logEvent(BotEventTypes.ERROR, "db read error" + error.message);
       process.exit(1);

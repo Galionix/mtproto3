@@ -57,7 +57,7 @@ export function getBotResponse(scenarioData: ScenarioEntity, userRequests: strin
       ) ?? currentBranch.choices[0];
 
     const nextBranch = scenarioData.branches.find(
-      (branch) => branch.id === currentChoice.nextBranchId
+      (branch) => branch.id === currentChoice?.nextBranchId
     );
     currentBranch = nextBranch;
 
@@ -68,7 +68,7 @@ export function getBotResponse(scenarioData: ScenarioEntity, userRequests: strin
     // );
   }
 
-  return currentChoice.responses[getRandomInt(currentChoice.responses.length)];
+  return currentChoice?.responses[getRandomInt(currentChoice.responses.length)];
 }
 
 // this function is exactly the same, but accumulates all responses from bot, not just the last one

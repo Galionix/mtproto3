@@ -71,7 +71,7 @@ export class BotProcessService {
     //   )) || [];
 
     // console.log("scenarios: ", scenarios);
-    console.log("bot.dmScenarioNames: ", bot.dmScenarioNames);
+    console.log("bot.replacements: ", bot.replacements);
     // console.log([
     //   bot.api_id.toString(),
     //   bot.api_hash,
@@ -105,7 +105,7 @@ export class BotProcessService {
         bot.afterTaskIdleTime.toString(),
         bot.dmScenarioNames.join(","),
         bot.voice,
-        bot.replacements,
+        bot.replacements.replaceAll("\n", ""),
         bot.spamDBname,
         // isTest
         "false",

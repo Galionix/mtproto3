@@ -8,7 +8,7 @@ import {
 } from "@core/types/client";
 import { Api, TelegramClient } from "telegram";
 import { state } from "../state";
-import { sep } from "path";
+import { getMediaPath } from "../../constants";
 
 export const findDmAnswer = (request: string) => {
   let res: string = null;
@@ -51,6 +51,7 @@ export const delayFactory = () => {
   ) => {
     const senderId = message.receiver;
     let delay = 5;
+    let action: any = new Api.SendMessageTypingAction();
 
     switch (message.type) {
       case EMessageType.TEXT:
@@ -59,9 +60,9 @@ export const delayFactory = () => {
         // }
         break;
       case EMessageType.AUDIO:
+        action = new Api.SendMessageRecordAudioAction();
         // compute based on direction
-
-        delay = 5;
+        delay = state.audioDurations[message.payload.audio] * 1.5 || 15;
         break;
       case EMessageType.PHOTO:
         delay = 5;
@@ -87,7 +88,7 @@ export const delayFactory = () => {
 
     const typingAction = new Api.messages.SetTyping({
       peer: senderId,
-      action: new Api.SendMessageTypingAction(),
+      action,
     });
     // const
 
@@ -156,8 +157,10 @@ export const delayFactory = () => {
 //   };
 // };
 
-export const applyReplacements = (message: string) => {
+export const applyReplacements = (msg: string) => {
+  let message = msg;
   const { replacements } = state;
+  console.log("replacements: ", replacements);
 
   // replacements are presented in object, where key is a string to replace, and value is a string to replace with
   // we iterate through all replacements and replace all occurrences of key with value
@@ -167,6 +170,7 @@ export const applyReplacements = (message: string) => {
     const regex = new RegExp(`##${key}##`, "gi");
     message = message.replace(regex, replacements[key]);
   });
+  console.log("message: ", message);
   return message;
 };
 
@@ -217,7 +221,7 @@ export const sendMessage = async (
   // replyMarkup?: Api.TypeReplyMarkup,
 ) => {
   const { receiver, replyToMessageId } = message;
-  const relativePath = ".." + sep + ".." + sep + ".." + sep + "media" + sep;
+  // const relativePath = ;
   switch (message.type) {
     case EMessageType.TEXT:
       // if ("text" in message) {
@@ -230,7 +234,7 @@ export const sendMessage = async (
       break;
     case EMessageType.AUDIO:
       return await client.sendFile(receiver, {
-        file: relativePath + sep + "audios" + sep + message.payload.audio,
+        file: getMediaPath("audios", message.payload.audio),
         voiceNote: true,
         caption: message.payload.text,
       });

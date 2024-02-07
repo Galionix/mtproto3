@@ -9,6 +9,7 @@ import dmHandler from "../../behaviour/dm/base";
 import scenarioHandler from "../../behaviour/dm/scenarioHandler";
 import { removeTaskFromQueue } from "../processor";
 import { delayFactory } from "../../utils/messagingUtils";
+import { Api } from "telegram";
 
 const { readDelay, typeDelay } = delayFactory();
 
@@ -16,7 +17,11 @@ export const respondToDMMessage = async ({
   client,
   task,
 }: TTaskProcessorArgs<TRespondToDMMessage>) => {
-  const { message, senderId } = task.payload;
+  if (!task.payload || !task.payload.message || !task.payload.senderId) {
+    removeTaskFromQueue(task);
+  }
+  // console.log('task: ', task);
+  const { message, senderId, originalMessageId } = task.payload;
   await readDelay();
   // we cant use await message.markAsRead() because its not reproducable by params
   await client.markAsRead(task.payload.senderId);
@@ -28,6 +33,27 @@ export const respondToDMMessage = async ({
     type,
     payload,
   } as TSendableMessage;
+
+  try {
+    const reactions: Api.TypeReaction[] = [
+      new Api.ReactionEmoji({
+        emoticon: "👍",
+      }),
+    ];
+    if (originalMessageId > 0) {
+      const result = await client.invoke(
+        new Api.messages.SendReaction({
+          peer: senderId,
+          msgId: originalMessageId,
+          reaction: reactions,
+        })
+      );
+
+      console.log("result: ", result);
+    }
+  } catch (error) {
+    console.error("error: ", error);
+  }
 
   await typeDelay(client, sendableMessage);
 

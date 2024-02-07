@@ -29,7 +29,7 @@ export default async function scenarioHandler({
   console.log("sendableMessage.type: ", sendableMessage.type);
   switch (sendableMessage.type) {
     case EMessageType.TEXT:
-      if ("text" in sendableMessage.payload) {
+      if ("text" in sendableMessage.payload && sendableMessage.payload.text) {
         await client.sendMessage(senderId, {
           message: applyReplacements(sendableMessage.payload.text),
         });
@@ -46,10 +46,9 @@ export default async function scenarioHandler({
           "..",
           "media",
           "audios",
-          state.voice,
+          // state.voice,
           sendableMessage.payload.audio
         );
-        console.log("filePath: ", filePath);
         await client.sendFile(senderId, {
           file: filePath,
           voiceNote: true,

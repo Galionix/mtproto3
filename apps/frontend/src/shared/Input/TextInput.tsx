@@ -72,6 +72,7 @@ export const TextInput = ({
       className={cx(classNames, className)}
       style={{
         width: `${width}px`,
+        maxWidth: `${width}px`,
         ...style,
       }}
     >
@@ -111,6 +112,7 @@ type TTextInputWithChoicesProps = {
   choices: string[];
   onError?: (error?: string) => void;
   onClearError?: () => void;
+  multiple?: boolean;
 } & TTextInputProps;
 
 export const TextInputWithChoicesList = ({
@@ -118,11 +120,14 @@ export const TextInputWithChoicesList = ({
   onError,
   onClearError,
   style,
+  multiple,
   ...props
 }: TTextInputWithChoicesProps) => {
   const { defaultValue } = props;
 
-  const invalid = props.value && !choices.includes(props.value);
+  const invalid = !multiple
+    ? props.value && !choices.includes(props.value)
+    : props.value && props.value.split(",").some((v) => !choices.includes(v));
 
   useEffect(() => {
     if (defaultValue !== "") {
@@ -132,11 +137,13 @@ export const TextInputWithChoicesList = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [defaultValue]);
   const [open, setOpen] = useState(invalid);
+  const checkedItems = props.value ? props.value.split(",") : [];
+  // const [selectedItems, setSelectedItems] = useState(checkedItems);
 
   useEffect(() => {
-    setOpen(invalid);
     onError?.(invalid ? "Invalid choice!" : undefined);
     !invalid && onClearError?.();
+    // if (!invalid) setOpen(true);
   }, [invalid]);
 
   const classNames = cx({
@@ -159,11 +166,20 @@ export const TextInputWithChoicesList = ({
         <ul>
           {choices.map((choice) => (
             <li
+              className={cx({ selected: checkedItems.includes(choice) })}
               key={choice}
               onClick={() => {
                 if (!props.onChange) return;
-                props.onChange(choice);
-                setOpen(false);
+                if (multiple) {
+                  const newItems = checkedItems.includes(choice)
+                    ? checkedItems.filter((item) => item !== choice)
+                    : [...checkedItems, choice];
+                  props.onChange(newItems.join(","));
+                } else {
+                  props.onChange(choice);
+                }
+                // props.onChange(choice);
+                !multiple && setOpen(false);
               }}
             >
               {choice}

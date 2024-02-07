@@ -50,9 +50,16 @@ export class AppService {
     const firebaseAudios = await listFirebaseStorageFiles("audios");
 
     const firebaseVideos = await listFirebaseStorageFiles("videos");
+    const audioDurations = {};
 
     const imagesNames = firebaseImages.map((image) => image.name);
-    const audiosNames = firebaseAudios.map((audio) => audio.name);
+    const audiosNames = firebaseAudios.map((audio) => {
+      audioDurations[audio.name] = Math.round(audio.size / 5000);
+      // log duration of audio
+
+      return audio.name;
+    });
+
     const videosNames = firebaseVideos.map((video) => video.name);
 
     const imagesToDelete = imagesWDFiles.filter(
@@ -121,6 +128,11 @@ export class AppService {
       await writeFile(path, Buffer.from(buffer));
       result.videos.downloaded.push(video.name);
     }
+    // write audio durations to json File
+    await writeFile(
+      "." + sep + "media" + sep + "audioDurations.json",
+      JSON.stringify(audioDurations)
+    );
     return result as FirebaseContentSyncResult;
   }
 }

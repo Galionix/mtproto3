@@ -128,6 +128,14 @@ export class BotResolver {
       chatNames,
     });
   }
+  // set photo
+  @Mutation(() => BotStateEntity, { name: "setPhoto" })
+  async setPhoto(
+    @Args("api_id", { type: () => Int }) api_id: number,
+    @Args("photoName") photoName: string
+  ) {
+    return await this.messagingSettingsService.setPhoto(api_id, photoName);
+  }
 
   @Mutation(() => BotEntity, { name: "restartBot" })
   async restartBot(@Args("api_id", { type: () => Int }) api_id: number) {
@@ -170,5 +178,11 @@ export class BotResolver {
     @Args("code") code: string
   ) {
     return await this.botProcessService.provide2FACode(api_id, code);
+  }
+
+  // removePhotos
+  @Mutation(() => BotStateEntity, { name: "removePhotos" })
+  async removePhotos(@Args("api_id", { type: () => Int }) api_id: number) {
+    return await this.messagingSettingsService.removePhotos(api_id);
   }
 }

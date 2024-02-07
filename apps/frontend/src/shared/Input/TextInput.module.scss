@@ -66,13 +66,19 @@
     width: 350px;
   }
   ul>li{
+    background-color: white;
+
     user-select: none;
     cursor: pointer;
     border: 1px solid transparent;
+
     &:hover{
         border: 1px solid rgb(211, 211, 211);
     //   background-color: rgb(196, 206, 214);
     }
+    &.selected{
+      border: 1px solid rgb(46, 158, 255);
+  }
   }
 }
 .invalid{
