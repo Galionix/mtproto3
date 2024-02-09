@@ -201,4 +201,9 @@ export class BotResolver {
       about
     );
   }
+
+  @Mutation(() => BotStateEntity, { name: "hidePhoneNumber" })
+  async hidePhoneNumber(@Args("api_id", { type: () => Int }) api_id: number) {
+    return await this.messagingSettingsService.hidePhoneNumber(api_id);
+  }
 }

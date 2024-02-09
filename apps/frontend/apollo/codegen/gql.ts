@@ -18,6 +18,7 @@ const documents = {
     "\n  mutation setPhoto($api_id: Int!, $photoName: String!) {\n    setPhoto(api_id: $api_id, photoName: $photoName) {\n      bot {\n        api_id\n      }\n    }\n  }\n": types.SetPhotoDocument,
     "\n  mutation removePhotos($api_id: Int!) {\n    removePhotos(api_id: $api_id) {\n      bot {\n        api_id\n      }\n    }\n  }\n": types.RemovePhotosDocument,
     "\n  mutation setBio($api_id: Int!, $firstName: String!, $lastName: String!, $about: String!) {\n    setBio(api_id: $api_id, firstName: $firstName, lastName: $lastName, about: $about) {\n      bot {\n        api_id\n      }\n    }\n  }\n": types.SetBioDocument,
+    "\n  mutation hidePhoneNumber($api_id: Int!) {\n    hidePhoneNumber(api_id: $api_id) {\n      bot {\n        api_id\n      }\n    }\n  }\n": types.HidePhoneNumberDocument,
     "\n  query Bots {\n    bots {\n      afterTaskDelay\n      afterTaskIdleTime\n      answersDb\n      api_hash\n      api_id\n      behaviorModel\n      botName\n      clientState\n      clientStateUpdateTime\n      copyFrom\n      readDelay\n      replacements\n      dmScenarioNames\n      sessionString\n      spamDBname\n      taskOrder\n      typeDelayMultiplier\n      voice\n    }\n  }\n": types.BotsDocument,
     "\n  mutation CreateBot($createBotInput: CreateBotInput!) {\n    createBot(createBotInput: $createBotInput) {\n      afterTaskDelay\n      afterTaskIdleTime\n      answersDb\n      api_hash\n      api_id\n      behaviorModel\n      botName\n      clientState\n      clientStateUpdateTime\n      copyFrom\n      readDelay\n      replacements\n      dmScenarioNames\n      sessionString\n      spamDBname\n      taskOrder\n      typeDelayMultiplier\n      voice\n    }\n  }\n": types.CreateBotDocument,
     "\n  mutation removeBot($api_id: Int!) {\n    removeBot(api_id: $api_id) {\n      api_id\n    }\n  }\n": types.RemoveBotDocument,
@@ -69,6 +70,10 @@ export function graphql(source: "\n  mutation removePhotos($api_id: Int!) {\n   
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(source: "\n  mutation setBio($api_id: Int!, $firstName: String!, $lastName: String!, $about: String!) {\n    setBio(api_id: $api_id, firstName: $firstName, lastName: $lastName, about: $about) {\n      bot {\n        api_id\n      }\n    }\n  }\n"): (typeof documents)["\n  mutation setBio($api_id: Int!, $firstName: String!, $lastName: String!, $about: String!) {\n    setBio(api_id: $api_id, firstName: $firstName, lastName: $lastName, about: $about) {\n      bot {\n        api_id\n      }\n    }\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  mutation hidePhoneNumber($api_id: Int!) {\n    hidePhoneNumber(api_id: $api_id) {\n      bot {\n        api_id\n      }\n    }\n  }\n"): (typeof documents)["\n  mutation hidePhoneNumber($api_id: Int!) {\n    hidePhoneNumber(api_id: $api_id) {\n      bot {\n        api_id\n      }\n    }\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

@@ -278,6 +278,7 @@ type Mutation {
   createMessage(createMessageInput: CreateMessageInput!): MessageEntity!
   createScenario(scenarioInput: CreateScenarioInput!): ScenarioEntity!
   createSpamMessage(createSpamMessageInput: CreateMessageInput!): MessageEntity!
+  hidePhoneNumber(api_id: Int!): BotStateEntity!
   joinGroups(JoinGroupsInput: JoinGroupsInput!): [BotStateEntity!]!
   leaveGroups(input: LeaveGroupsInput!): [BotStateEntity!]!
   provide2FACode(api_id: Int!, code: String!): BotStateEntity!

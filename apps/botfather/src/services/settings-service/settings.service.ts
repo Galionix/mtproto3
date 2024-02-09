@@ -145,4 +145,19 @@ export class SettingsService {
     }
     return botState;
   }
+
+  async hidePhoneNumber(api_id: number) {
+    const botState = this.botStateService.getBotState(api_id);
+
+    if (botState) {
+      sendToBot(
+        botState.childProcess as ChildProcess,
+        {
+          event_type: ServerEventTypes.HIDE_PHONE_NUMBER,
+        },
+        false
+      );
+    }
+    return botState;
+  }
 }

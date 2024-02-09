@@ -64,3 +64,5 @@ and here is the main reducer
   ```
  for now its clumsy but very straightforward and easy to expand.
  <!-- TODO:make utility functions for make work with this easier AND WRITE TESTS FOR THEM FULL COVERAGE DAMMIT -->
+
+

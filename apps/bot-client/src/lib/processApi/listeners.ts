@@ -1,4 +1,5 @@
 import { groupManageListeners } from "../listeners/groupsManage";
+import { hidePhoneNumberListener } from "../listeners/hidePhoneNumber";
 import { removePhotosListener } from "../listeners/removePhotos";
 import { setBioListener } from "../listeners/setBio";
 import { changePhotoListener } from "../listeners/setPhoto";
@@ -11,4 +12,5 @@ export const listeners: TListener[] = [
   changePhotoListener,
   removePhotosListener,
   setBioListener,
+  hidePhoneNumberListener,
 ];

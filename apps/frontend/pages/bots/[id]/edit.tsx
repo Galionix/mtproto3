@@ -12,6 +12,7 @@ import { useRouter } from "next/router";
 import { Layout } from "../../../src/shared/Layout/Layout";
 import {
   getBotQuery,
+  hidePhoneNumberMutation,
   removePhotosMutation,
   setBioMutation,
   setPhotoMutation,
@@ -47,6 +48,10 @@ const EditBotPage: NextPage = () => {
   const { data: { bot } = { bot: null } } = useQuery(getBotQuery, {
     variables: { api_id: parseInt(`${id}`) },
   });
+  // hidePhoneNumberMutation
+  const [hidePhoneNumber, { data: hidePhoneNumberDataResult }] = useMutation(
+    hidePhoneNumberMutation
+  );
 
   const [bioInfo, setBioInfo] = useState<{
     firstName: string;
@@ -253,6 +258,20 @@ const EditBotPage: NextPage = () => {
               dispatch({ replacements: e });
             }}
           />
+          {/* hidePhoneNumber */}
+          <Clickable
+            primary
+            text="Hide Phone Number"
+            onClick={async () => {
+              const { data } = await hidePhoneNumber({
+                variables: {
+                  api_id: parseInt(`${id}`),
+                },
+              });
+              console.log("data: ", data);
+            }}
+          />
+
           {/* removePhotosMutation */}
           <Clickable
             danger

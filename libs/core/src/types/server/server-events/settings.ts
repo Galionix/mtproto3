@@ -10,6 +10,7 @@ export enum ESettingsMessageType {
   JOIN_GROUPS = "JOIN_GROUPS",
   LEAVE_GROUPS = "LEAVE_GROUPS",
   SET_BIO = "SET_BIO",
+  HIDE_PHONE_NUMBER = "HIDE_PHONE_NUMBER",
 }
 
 export type TSetUsernameMessage = TGenericMessage<
@@ -18,6 +19,8 @@ export type TSetUsernameMessage = TGenericMessage<
 > & {
   username: string;
 };
+export type THidePhoneNumberMessage =
+  TGenericMessage<ESettingsMessageType.HIDE_PHONE_NUMBER>;
 
 export type TSetBioMessage = TGenericMessage<ESettingsMessageType.SET_BIO> & {
   firstName: string;
@@ -53,4 +56,5 @@ export type TSettingsMessage =
   | TLeaveGroupsMessage
   | TSetPhotoMessage
   | TRemovePhotosMessage
-  | TSetBioMessage;
+  | TSetBioMessage
+  | THidePhoneNumberMessage;

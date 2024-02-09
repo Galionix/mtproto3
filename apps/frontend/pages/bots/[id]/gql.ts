@@ -78,3 +78,14 @@ export const setBioMutation = graphql(`
     }
   }
 `);
+
+// hidePhoneNumber
+export const hidePhoneNumberMutation = graphql(`
+  mutation hidePhoneNumber($api_id: Int!) {
+    hidePhoneNumber(api_id: $api_id) {
+      bot {
+        api_id
+      }
+    }
+  }
+`);
