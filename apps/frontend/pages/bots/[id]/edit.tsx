@@ -13,6 +13,7 @@ import { Layout } from "../../../src/shared/Layout/Layout";
 import {
   getBotQuery,
   removePhotosMutation,
+  setBioMutation,
   setPhotoMutation,
   updateBotMutation,
 } from "./gql";
@@ -46,6 +47,34 @@ const EditBotPage: NextPage = () => {
   const { data: { bot } = { bot: null } } = useQuery(getBotQuery, {
     variables: { api_id: parseInt(`${id}`) },
   });
+
+  const [bioInfo, setBioInfo] = useState<{
+    firstName: string;
+    lastName: string;
+    about: string;
+  }>({
+    firstName: "",
+    lastName: "",
+    about: "",
+  });
+
+  useEffect(() => {
+    const parsedState = bot
+      ? JSON.parse(bot.clientState)
+      : {
+          bio: {
+            firstName: "",
+            lastName: "",
+            about: "",
+          },
+        };
+    setBioInfo({
+      firstName: parsedState?.bio?.firstName,
+      lastName: parsedState?.bio?.lastName,
+      about: parsedState?.bio?.about,
+    });
+  }, [bot]);
+
   console.log("bot: ", bot);
   console.log("bot?.typeDelayMultiplier: ", bot?.typeDelayMultiplier);
   const preparedBotData = {
@@ -90,6 +119,11 @@ const EditBotPage: NextPage = () => {
     }),
     preparedBotData
   );
+  // setBioMutation
+  const [
+    setBio,
+    { data: setBioDataResult, loading: setBioLoading, error: setBioError },
+  ] = useMutation(setBioMutation);
 
   useEffect(() => {
     dispatch(preparedBotData);
@@ -277,6 +311,61 @@ const EditBotPage: NextPage = () => {
             />
           </div>
         </section>
+      </div>
+      <div>
+        <TextInput
+          label="firstName"
+          type="text"
+          placeholder="firstName"
+          required
+          value={bioInfo.firstName}
+          onChange={(e) => {
+            setBioInfo({ ...bioInfo, firstName: e });
+          }}
+        />
+        <TextInput
+          label="lastName"
+          type="text"
+          placeholder="lastName"
+          required
+          value={bioInfo.lastName}
+          onChange={(e) => {
+            setBioInfo({ ...bioInfo, lastName: e });
+          }}
+        />
+        <TextInput
+          label="about"
+          type="text"
+          placeholder="about"
+          required
+          value={bioInfo.about}
+          onChange={(e) => {
+            setBioInfo({ ...bioInfo, about: e });
+          }}
+        />
+        <Clickable
+          primary
+          text="Update Bio"
+          onClick={async () => {
+            await setBio({
+              variables: {
+                api_id: parseInt(`${id}`),
+                firstName: bioInfo.firstName,
+                lastName: bioInfo.lastName,
+                about: bioInfo.about,
+              },
+              refetchQueries: [
+                {
+                  query: getBotStatesQuery,
+                },
+                {
+                  query: getBotQuery,
+                  variables: { api_id: parseInt(`${id}`) },
+                },
+              ],
+            });
+          }}
+        />
       </div>
       {/* <EditableList
         label="taskOrder"

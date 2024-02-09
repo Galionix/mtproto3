@@ -30,6 +30,9 @@ export default async function scenarioHandler({
   switch (sendableMessage.type) {
     case EMessageType.TEXT:
       if ("text" in sendableMessage.payload && sendableMessage.payload.text) {
+        if (sendableMessage.payload.text.includes("##link##")) {
+          logEvent("LINK_SENT", "link sent");
+        }
         await client.sendMessage(senderId, {
           message: applyReplacements(sendableMessage.payload.text),
         });

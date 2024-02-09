@@ -9,6 +9,8 @@ import { delayFactory, sendMessage } from "../../utils/messagingUtils";
 import { removeTaskFromQueue } from "../processor";
 import { state } from "../../state";
 import { logEvent } from "../../processApi/logEventTostate";
+import { addLeaveGroupTask } from "../addTask";
+import { RPCError } from "telegram/errors";
 
 const { readDelay, typeDelay } = delayFactory();
 
@@ -29,7 +31,19 @@ export const spamToGroup = async ({
     receiver: spamGroupId,
   };
 
-  await typeDelay(client, message);
+  await readDelay();
+  await typeDelay(client, message, async (error: RPCError) => {
+    logEvent("ERROR_SPAM_TO_GROUP", JSON.stringify({ error, message, task }));
+    // check for USER_BANNED_IN_CHANNEL
+    if (error.errorMessage.includes("USER_BANNED_IN_CHANNEL")) {
+      const entity = await client.getEntity(spamGroupId);
+      if (!("username" in entity)) return;
+      addLeaveGroupTask({
+        groupName: entity.username,
+      });
+    }
+  });
+
   try {
     const res = await sendMessage(client, message);
     console.log("res: ", res);

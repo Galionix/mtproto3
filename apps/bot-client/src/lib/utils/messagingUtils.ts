@@ -9,6 +9,7 @@ import {
 import { Api, TelegramClient } from "telegram";
 import { state } from "../state";
 import { getMediaPath } from "../../constants";
+import { RPCError } from "telegram/errors";
 
 export const findDmAnswer = (request: string) => {
   let res: string = null;
@@ -46,7 +47,8 @@ export const delayFactory = () => {
 
   const typeDelay = async (
     client: TelegramClient,
-    message: TSendableMessage
+    message: TSendableMessage,
+    onError: (error: any) => Promise<void>
     // senderId: bigInt.BigInteger
   ) => {
     const senderId = message.receiver;
@@ -96,7 +98,11 @@ export const delayFactory = () => {
     for (let i = 0; i < typingActionIntervalCount; i++) {
       await new Promise((resolve) =>
         setTimeout(async () => {
-          await client.invoke(typingAction);
+          try {
+            await client.invoke(typingAction);
+          } catch (error) {
+            await onError(error as RPCError);
+          }
           resolve(true);
         }, (typingActionInterval + getRandomInt(2)) * 1000)
       );

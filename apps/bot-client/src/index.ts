@@ -27,7 +27,7 @@ import { getCombinedListeners } from "./lib/processApi/combineListeners";
 import { generalReducer } from "./lib/processApi/composeReducer";
 import { listeners } from "./lib/processApi/listeners";
 import { logEvent } from "./lib/processApi/logEventTostate";
-import { state } from "./lib/state";
+import { sendStateToFatherProcess, state } from "./lib/state";
 import { addDmTask, addRespondToUnreadDmTask } from "./lib/tasksApi/addTask";
 import {
   delayFactory,
@@ -277,12 +277,13 @@ console.log("launching main thread");
     await client.connect();
     console.log(apiId, " connected.");
 
-    const result = await client.invoke(
-      new Api.photos.GetUserPhotos({
-        userId: new Api.InputPeerSelf(),
-      })
-    );
-    console.log(result);
+    // const :User = await client.getMe();
+    // const result = await client.invoke(
+    //   new Api.photos.GetUserPhotos({
+    //     userId: new Api.InputPeerSelf(),
+    //   })
+    // );
+    // console.log(result);
     // const result = await client.invoke(
     //   new Api.messages.GetAllChats({
     //     exceptIds: [],
@@ -316,6 +317,23 @@ console.log("launching main thread");
 
     const me = await client.getMe();
     state.me = me as Api.User;
+    const result = await client.invoke(
+      new Api.users.GetFullUser({
+        id: me,
+      })
+    );
+    if ("firstName" in result.users[0]) {
+      const firstName = result.users[0].firstName;
+      const lastName = result.users[0].lastName;
+      const about = result.fullUser.about;
+      state.bio = {
+        firstName,
+        lastName,
+        about,
+      };
+    }
+    console.log(result); // prints the result
+    sendStateToFatherProcess(state);
 
     const meAsInputPeer = await client.getInputEntity(me);
     console.log("meAsInputPeer: ", meAsInputPeer);

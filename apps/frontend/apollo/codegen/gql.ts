@@ -17,6 +17,7 @@ const documents = {
     "\n  mutation updateBot($api_id: Int!, $updateBotInput: UpdateBotInput!) {\n    updateBot(api_id: $api_id, updateBotInput: $updateBotInput) {\n      afterTaskDelay\n      afterTaskIdleTime\n      answersDb\n      api_hash\n      api_id\n      behaviorModel\n      botName\n      clientState\n      copyFrom\n      readDelay\n      replacements\n      dmScenarioNames\n      sessionString\n      spamDBname\n      taskOrder\n      voice\n    }\n  }\n": types.UpdateBotDocument,
     "\n  mutation setPhoto($api_id: Int!, $photoName: String!) {\n    setPhoto(api_id: $api_id, photoName: $photoName) {\n      bot {\n        api_id\n      }\n    }\n  }\n": types.SetPhotoDocument,
     "\n  mutation removePhotos($api_id: Int!) {\n    removePhotos(api_id: $api_id) {\n      bot {\n        api_id\n      }\n    }\n  }\n": types.RemovePhotosDocument,
+    "\n  mutation setBio($api_id: Int!, $firstName: String!, $lastName: String!, $about: String!) {\n    setBio(api_id: $api_id, firstName: $firstName, lastName: $lastName, about: $about) {\n      bot {\n        api_id\n      }\n    }\n  }\n": types.SetBioDocument,
     "\n  query Bots {\n    bots {\n      afterTaskDelay\n      afterTaskIdleTime\n      answersDb\n      api_hash\n      api_id\n      behaviorModel\n      botName\n      clientState\n      clientStateUpdateTime\n      copyFrom\n      readDelay\n      replacements\n      dmScenarioNames\n      sessionString\n      spamDBname\n      taskOrder\n      typeDelayMultiplier\n      voice\n    }\n  }\n": types.BotsDocument,
     "\n  mutation CreateBot($createBotInput: CreateBotInput!) {\n    createBot(createBotInput: $createBotInput) {\n      afterTaskDelay\n      afterTaskIdleTime\n      answersDb\n      api_hash\n      api_id\n      behaviorModel\n      botName\n      clientState\n      clientStateUpdateTime\n      copyFrom\n      readDelay\n      replacements\n      dmScenarioNames\n      sessionString\n      spamDBname\n      taskOrder\n      typeDelayMultiplier\n      voice\n    }\n  }\n": types.CreateBotDocument,
     "\n  mutation removeBot($api_id: Int!) {\n    removeBot(api_id: $api_id) {\n      api_id\n    }\n  }\n": types.RemoveBotDocument,
@@ -64,6 +65,10 @@ export function graphql(source: "\n  mutation setPhoto($api_id: Int!, $photoName
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(source: "\n  mutation removePhotos($api_id: Int!) {\n    removePhotos(api_id: $api_id) {\n      bot {\n        api_id\n      }\n    }\n  }\n"): (typeof documents)["\n  mutation removePhotos($api_id: Int!) {\n    removePhotos(api_id: $api_id) {\n      bot {\n        api_id\n      }\n    }\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  mutation setBio($api_id: Int!, $firstName: String!, $lastName: String!, $about: String!) {\n    setBio(api_id: $api_id, firstName: $firstName, lastName: $lastName, about: $about) {\n      bot {\n        api_id\n      }\n    }\n  }\n"): (typeof documents)["\n  mutation setBio($api_id: Int!, $firstName: String!, $lastName: String!, $about: String!) {\n    setBio(api_id: $api_id, firstName: $firstName, lastName: $lastName, about: $about) {\n      bot {\n        api_id\n      }\n    }\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

@@ -289,6 +289,7 @@ type Mutation {
   removePhotos(api_id: Int!): BotStateEntity!
   removeScenario(id: String!): String!
   restartBot(api_id: Int!): BotEntity!
+  setBio(about: String!, api_id: Int!, firstName: String!, lastName: String!): BotStateEntity!
   setPhoto(api_id: Int!, photoName: String!): BotStateEntity!
   setUsername(api_id: Int!, username: String!): String!
   stopBot(api_id: Int!): BotStateEntity!

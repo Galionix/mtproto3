@@ -10,7 +10,10 @@ import scenarioHandler from "../../behaviour/dm/scenarioHandler";
 import { removeTaskFromQueue } from "../processor";
 import { delayFactory } from "../../utils/messagingUtils";
 import { Api } from "telegram";
+import { randomInt } from "crypto";
+import { logEvent } from "../../processApi/logEventTostate";
 
+const reactionsString = "😊,💋,👍,❤️,👀,😘,☺️,😌,😉,🤗,🫠,🙄,😍,🤣,😬,✨";
 const { readDelay, typeDelay } = delayFactory();
 
 export const respondToDMMessage = async ({
@@ -35,28 +38,35 @@ export const respondToDMMessage = async ({
   } as TSendableMessage;
 
   try {
-    const reactions: Api.TypeReaction[] = [
-      new Api.ReactionEmoji({
-        emoticon: "👍",
-      }),
-    ];
-    if (originalMessageId > 0) {
-      const result = await client.invoke(
-        new Api.messages.SendReaction({
-          peer: senderId,
-          msgId: originalMessageId,
-          reaction: reactions,
-        })
-      );
+    if (randomInt(100) > 50) {
+      const reactionsArray = reactionsString.split(",");
+      const randomReaction =
+        reactionsArray[randomInt(reactionsArray.length - 1)];
+      console.log("randomReaction: ", randomReaction);
+      const reactions: Api.TypeReaction[] = [
+        new Api.ReactionEmoji({
+          emoticon: randomReaction,
+        }),
+      ];
+      if (originalMessageId > 0) {
+        const result = await client.invoke(
+          new Api.messages.SendReaction({
+            peer: senderId,
+            msgId: originalMessageId,
+            reaction: reactions,
+          })
+        );
 
-      console.log("result: ", result);
+        console.log("result: ", result);
+      }
     }
   } catch (error) {
     console.error("error: ", error);
   }
 
-  await typeDelay(client, sendableMessage);
-
+  await typeDelay(client, sendableMessage, async (error) => {
+    logEvent("ERROR_DIRECT_MESSAGE", JSON.stringify({ error, message }));
+  });
   // if (step === EDMMessageStep.FINISHED) {
   //   await dmHandler({
   //     step,

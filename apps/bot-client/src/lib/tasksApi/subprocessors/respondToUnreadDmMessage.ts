@@ -46,10 +46,10 @@ export const respondToUnreadDmMessage = async ({
           }
           console.log("messagesTexts: ", messagesTexts);
 
-          const responseMessage = getBotResponse(
-            state.dmScenario,
-            messagesTexts
-          );
+          const lastMessage = messagesTexts[messagesTexts.length - 1];
+          const responseMessage = getBotResponse(state.dmScenario, [
+            lastMessage,
+          ]);
           console.log("responseMessage: ", responseMessage);
 
           // const previousUserMessages = client.

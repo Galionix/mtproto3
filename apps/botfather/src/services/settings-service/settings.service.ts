@@ -122,4 +122,27 @@ export class SettingsService {
     }
     return botState;
   }
+
+  async setBio(
+    api_id: number,
+    firstName: string,
+    lastName: string,
+    about: string
+  ) {
+    const botState = this.botStateService.getBotState(api_id);
+
+    if (botState) {
+      sendToBot(
+        botState.childProcess as ChildProcess,
+        {
+          event_type: ServerEventTypes.SET_BIO,
+          firstName,
+          lastName,
+          about,
+        },
+        false
+      );
+    }
+    return botState;
+  }
 }

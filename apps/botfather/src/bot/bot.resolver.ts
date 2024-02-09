@@ -185,4 +185,20 @@ export class BotResolver {
   async removePhotos(@Args("api_id", { type: () => Int }) api_id: number) {
     return await this.messagingSettingsService.removePhotos(api_id);
   }
+
+  // setBio
+  @Mutation(() => BotStateEntity, { name: "setBio" })
+  async setBio(
+    @Args("api_id", { type: () => Int }) api_id: number,
+    @Args("firstName") firstName: string,
+    @Args("lastName") lastName: string,
+    @Args("about") about: string
+  ) {
+    return await this.messagingSettingsService.setBio(
+      api_id,
+      firstName,
+      lastName,
+      about
+    );
+  }
 }

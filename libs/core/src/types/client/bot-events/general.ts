@@ -8,6 +8,7 @@ export enum EGeneralBotEventTypes {
   STATISTICS = "STATISTICS",
   SEND_STATE_TO_SERVER = "SEND_STATE_TO_SERVER",
   PHOTO_SET = "PHOTO_SET",
+  LINK_SENT = "LINK_SENT",
 }
 
 export type TLogEvent = TGenericMessage<EGeneralBotEventTypes.LOG_EVENT> & {

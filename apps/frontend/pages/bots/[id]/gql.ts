@@ -68,3 +68,13 @@ export const removePhotosMutation = graphql(`
     }
   }
 `);
+// setBio
+export const setBioMutation = graphql(`
+  mutation setBio($api_id: Int!, $firstName: String!, $lastName: String!, $about: String!) {
+    setBio(api_id: $api_id, firstName: $firstName, lastName: $lastName, about: $about) {
+      bot {
+        api_id
+      }
+    }
+  }
+`);

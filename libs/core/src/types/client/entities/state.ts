@@ -17,6 +17,11 @@ type TGroupCounters = {
 };
 
 export type TState = {
+  bio: {
+    firstName: string;
+    lastName: string;
+    about: string;
+  };
   tasksTries: {
     [key: string]: number;
   };

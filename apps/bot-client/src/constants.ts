@@ -3,7 +3,7 @@ import { sep } from "path";
 import path from "path";
 
 type TSyncableStateKeys = (keyof TState)[];
-export const syncableStateKeys: TSyncableStateKeys = ["tasks"];
+export const syncableStateKeys: TSyncableStateKeys = ["tasks", "bio"];
 
 export const defaultSpamInterval = 3;
 export const mediaPathPrefix =
