@@ -8,6 +8,38 @@ import { logEvent } from "../../processApi/logEventTostate";
 import { addDmTask } from "../addTask";
 import { removeTaskFromQueue } from "../processor";
 import { responseMessageEmpty } from "../../messagesOrchestrator/utils";
+
+function reduceMessages(
+  messagesMap: {
+    text: string;
+    isOut: boolean;
+  }[]
+): string[] {
+  // Check if the messagesMap array is empty
+  if (messagesMap.length === 0) {
+    return [];
+  }
+
+  // Initialize an array to hold the reduced messages
+  const reducedMessages: {
+    text: string;
+    isOut: boolean;
+  }[] = [];
+
+  // Loop through the messagesMap array
+  for (let i = 0; i < messagesMap.length; i++) {
+    // Include the first message and any message that has a different isOut flag than the previous message
+    if (i === 0 || messagesMap[i].isOut !== messagesMap[i - 1].isOut) {
+      reducedMessages.push(messagesMap[i]);
+    }
+  }
+
+  // Filter out messages where isOut is true and map to extract the text
+  return reducedMessages
+    .filter((message) => !message.isOut)
+    .map((message) => message.text);
+}
+
 export const respondToUnreadDmMessage = async ({
   client,
   task,
@@ -37,19 +69,28 @@ export const respondToUnreadDmMessage = async ({
           const senderId = inputPeer.userId;
           // const messageText = message.message;
 
-          const messagesTexts: string[] = [];
+          const messagesMap: {
+            text: string;
+            isOut: boolean;
+          }[] = [];
+          // here we need to dedupe subsequent messages from user, reduce them to one.
           for await (const messageItem of client.iterMessages(inputPeer, {
             reverse: true,
           })) {
-            // console.log("messageItem: ", messageItem);
-            if (!messageItem.out) messagesTexts.push(messageItem.text);
+            messagesMap.push({
+              text: messageItem.text,
+              isOut: messageItem.out,
+            });
           }
+          const messagesTexts = reduceMessages(messagesMap);
+
           console.log("messagesTexts: ", messagesTexts);
 
-          const lastMessage = messagesTexts[messagesTexts.length - 1];
-          const responseMessage = getBotResponse(state.dmScenario, [
-            lastMessage,
-          ]);
+          // const lastMessage = messagesTexts[messagesTexts.length - 1];
+          const responseMessage = getBotResponse(
+            state.dmScenario,
+            messagesTexts
+          );
           console.log("responseMessage: ", responseMessage);
 
           // const previousUserMessages = client.

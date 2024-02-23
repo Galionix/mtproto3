@@ -100,4 +100,8 @@ export class CreateMessageInput {
   @Field(() => Number, { description: "index", nullable: true })
   @Column({ default: 0 })
   index?: number;
+  // isSpam
+  @Field(() => Boolean, { description: "isSpam", nullable: true })
+  @Column({ default: false })
+  isSpam?: boolean;
 }

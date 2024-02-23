@@ -159,6 +159,9 @@ input CreateMessageInput {
   """index"""
   index: Float
 
+  """isSpam"""
+  isSpam: Boolean
+
   """payload of photo for message"""
   photo: String = ""
 
@@ -250,6 +253,9 @@ type MessageEntity {
   """index"""
   index: Float
 
+  """isSpam"""
+  isSpam: Boolean
+
   """payload of photo for message"""
   photo: String
 
@@ -289,6 +295,7 @@ type Mutation {
   removeMessages(ids: [String!]!): Int!
   removePhotos(api_id: Int!): BotStateEntity!
   removeScenario(id: String!): String!
+  removeSpamMessage(id: String!): Float!
   restartBot(api_id: Int!): BotEntity!
   setBio(about: String!, api_id: Int!, firstName: String!, lastName: String!): BotStateEntity!
   setPhoto(api_id: Int!, photoName: String!): BotStateEntity!
@@ -315,8 +322,10 @@ type Query {
   scenarios: [ScenarioEntity!]!
   someAnswers(findSomeAnswersInput: UpdateAnswersRepositoryInput!): [AnswerEntity!]!
   spamMessages: [MessageEntity!]!
+  spamMessagesByDbName(db_name: String!): [MessageEntity!]!
   startBot(api_id: Int!): BotEntity!
   startBots: [BotEntity!]!
+  startBotsImmediately: [BotEntity!]!
   stopBots: [BotEntity!]!
 }
 
@@ -430,6 +439,9 @@ input UpdateMessageInput {
 
   """index"""
   index: Float
+
+  """isSpam"""
+  isSpam: Boolean
 
   """payload of photo for message"""
   photo: String = ""

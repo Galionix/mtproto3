@@ -158,6 +158,8 @@ export type CreateMessageInput = {
   description?: InputMaybe<Scalars['String']['input']>;
   /** index */
   index?: InputMaybe<Scalars['Float']['input']>;
+  /** isSpam */
+  isSpam?: InputMaybe<Scalars['Boolean']['input']>;
   /** payload of photo for message */
   photo?: InputMaybe<Scalars['String']['input']>;
   /** payload of reaction for message */
@@ -226,6 +228,8 @@ export type MessageEntity = {
   id?: Maybe<Scalars['ID']['output']>;
   /** index */
   index?: Maybe<Scalars['Float']['output']>;
+  /** isSpam */
+  isSpam?: Maybe<Scalars['Boolean']['output']>;
   /** payload of photo for message */
   photo?: Maybe<Scalars['String']['output']>;
   /** payload of reaction for message */
@@ -261,6 +265,7 @@ export type Mutation = {
   removeMessages: Scalars['Int']['output'];
   removePhotos: BotStateEntity;
   removeScenario: Scalars['String']['output'];
+  removeSpamMessage: Scalars['Float']['output'];
   restartBot: BotEntity;
   setBio: BotStateEntity;
   setPhoto: BotStateEntity;
@@ -372,6 +377,11 @@ export type MutationRemoveScenarioArgs = {
 };
 
 
+export type MutationRemoveSpamMessageArgs = {
+  id: Scalars['String']['input'];
+};
+
+
 export type MutationRestartBotArgs = {
   api_id: Scalars['Int']['input'];
 };
@@ -435,8 +445,10 @@ export type Query = {
   scenarios: Array<ScenarioEntity>;
   someAnswers: Array<AnswerEntity>;
   spamMessages: Array<MessageEntity>;
+  spamMessagesByDbName: Array<MessageEntity>;
   startBot: BotEntity;
   startBots: Array<BotEntity>;
+  startBotsImmediately: Array<BotEntity>;
   stopBots: Array<BotEntity>;
 };
 
@@ -473,6 +485,11 @@ export type QueryScenarioArgs = {
 
 export type QuerySomeAnswersArgs = {
   findSomeAnswersInput: UpdateAnswersRepositoryInput;
+};
+
+
+export type QuerySpamMessagesByDbNameArgs = {
+  db_name: Scalars['String']['input'];
 };
 
 
@@ -567,6 +584,8 @@ export type UpdateMessageInput = {
   description?: InputMaybe<Scalars['String']['input']>;
   /** index */
   index?: InputMaybe<Scalars['Float']['input']>;
+  /** isSpam */
+  isSpam?: InputMaybe<Scalars['Boolean']['input']>;
   /** payload of photo for message */
   photo?: InputMaybe<Scalars['String']['input']>;
   /** payload of reaction for message */
@@ -706,6 +725,54 @@ export type CreateScenarioMutationVariables = Exact<{
 
 export type CreateScenarioMutation = { __typename?: 'Mutation', createScenario: { __typename?: 'ScenarioEntity', id: string, branches: Array<{ __typename?: 'ScenarioBranchEntity', id?: string | null, description?: string | null, choices?: Array<{ __typename?: 'AnswerEntity', id?: string | null }> | null }> } };
 
+export type SpamMessagesQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type SpamMessagesQuery = { __typename?: 'Query', spamMessages: Array<{ __typename?: 'MessageEntity', id?: string | null, text?: string | null, type?: string | null, db_name?: string | null }> };
+
+export type CreateSpamMessageMutationVariables = Exact<{
+  createSpamMessageInput: CreateMessageInput;
+}>;
+
+
+export type CreateSpamMessageMutation = { __typename?: 'Mutation', createSpamMessage: { __typename?: 'MessageEntity', id?: string | null, text?: string | null, type?: string | null, db_name?: string | null } };
+
+export type RemoveSpamMessageMutationVariables = Exact<{
+  id: Scalars['String']['input'];
+}>;
+
+
+export type RemoveSpamMessageMutation = { __typename?: 'Mutation', removeSpamMessage: number };
+
+export type SpamMessagesByDbNameQueryVariables = Exact<{
+  db_name: Scalars['String']['input'];
+}>;
+
+
+export type SpamMessagesByDbNameQuery = { __typename?: 'Query', spamMessagesByDbName: Array<{ __typename?: 'MessageEntity', id?: string | null, text?: string | null, type?: string | null, db_name?: string | null }> };
+
+export type JoinGroupsMutationVariables = Exact<{
+  joinGroupsInput: JoinGroupsInput;
+}>;
+
+
+export type JoinGroupsMutation = { __typename?: 'Mutation', joinGroups: Array<{ __typename?: 'BotStateEntity', joining_groups?: boolean | null, bot?: { __typename?: 'BotEntity', api_id?: string | null } | null }> };
+
+export type StartBotsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type StartBotsQuery = { __typename?: 'Query', startBots: Array<{ __typename?: 'BotEntity', api_id?: string | null }> };
+
+export type StopBotsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type StopBotsQuery = { __typename?: 'Query', stopBots: Array<{ __typename?: 'BotEntity', api_id?: string | null }> };
+
+export type StartBotsImmediatelyQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type StartBotsImmediatelyQuery = { __typename?: 'Query', startBotsImmediately: Array<{ __typename?: 'BotEntity', api_id?: string | null }> };
+
 export type ProvidePhoneNumberMutationVariables = Exact<{
   api_id: Scalars['Int']['input'];
   phoneNumber: Scalars['String']['input'];
@@ -749,6 +816,14 @@ export const ScenariosDocument = {"kind":"Document","definitions":[{"kind":"Oper
 export const ScenarioDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"scenario"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"scenario"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"db_name"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}},{"kind":"Field","name":{"kind":"Name","value":"maxConversationLength"}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"branches"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"index"}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"choices"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"index"}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"request"}},{"kind":"Field","name":{"kind":"Name","value":"nextBranchId"}},{"kind":"Field","name":{"kind":"Name","value":"responses"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"index"}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"text"}},{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"Field","name":{"kind":"Name","value":"photo"}},{"kind":"Field","name":{"kind":"Name","value":"video"}},{"kind":"Field","name":{"kind":"Name","value":"audio"}}]}}]}}]}}]}}]}}]} as unknown as DocumentNode<ScenarioQuery, ScenarioQueryVariables>;
 export const RemoveScenarioDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"removeScenario"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"removeScenario"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}]}]}}]} as unknown as DocumentNode<RemoveScenarioMutation, RemoveScenarioMutationVariables>;
 export const CreateScenarioDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"createScenario"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"createScenarioInput"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"CreateScenarioInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"createScenario"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"scenarioInput"},"value":{"kind":"Variable","name":{"kind":"Name","value":"createScenarioInput"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"branches"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"choices"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]}}]}}]} as unknown as DocumentNode<CreateScenarioMutation, CreateScenarioMutationVariables>;
+export const SpamMessagesDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"spamMessages"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"spamMessages"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"text"}},{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"Field","name":{"kind":"Name","value":"db_name"}}]}}]}}]} as unknown as DocumentNode<SpamMessagesQuery, SpamMessagesQueryVariables>;
+export const CreateSpamMessageDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"createSpamMessage"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"createSpamMessageInput"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"CreateMessageInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"createSpamMessage"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"createSpamMessageInput"},"value":{"kind":"Variable","name":{"kind":"Name","value":"createSpamMessageInput"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"text"}},{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"Field","name":{"kind":"Name","value":"db_name"}}]}}]}}]} as unknown as DocumentNode<CreateSpamMessageMutation, CreateSpamMessageMutationVariables>;
+export const RemoveSpamMessageDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"removeSpamMessage"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"removeSpamMessage"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}]}]}}]} as unknown as DocumentNode<RemoveSpamMessageMutation, RemoveSpamMessageMutationVariables>;
+export const SpamMessagesByDbNameDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"spamMessagesByDbName"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"db_name"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"spamMessagesByDbName"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"db_name"},"value":{"kind":"Variable","name":{"kind":"Name","value":"db_name"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"text"}},{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"Field","name":{"kind":"Name","value":"db_name"}}]}}]}}]} as unknown as DocumentNode<SpamMessagesByDbNameQuery, SpamMessagesByDbNameQueryVariables>;
+export const JoinGroupsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"joinGroups"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"joinGroupsInput"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"JoinGroupsInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"joinGroups"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"JoinGroupsInput"},"value":{"kind":"Variable","name":{"kind":"Name","value":"joinGroupsInput"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"bot"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"api_id"}}]}},{"kind":"Field","name":{"kind":"Name","value":"joining_groups"}}]}}]}}]} as unknown as DocumentNode<JoinGroupsMutation, JoinGroupsMutationVariables>;
+export const StartBotsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"startBots"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"startBots"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"api_id"}}]}}]}}]} as unknown as DocumentNode<StartBotsQuery, StartBotsQueryVariables>;
+export const StopBotsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"stopBots"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"stopBots"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"api_id"}}]}}]}}]} as unknown as DocumentNode<StopBotsQuery, StopBotsQueryVariables>;
+export const StartBotsImmediatelyDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"startBotsImmediately"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"startBotsImmediately"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"api_id"}}]}}]}}]} as unknown as DocumentNode<StartBotsImmediatelyQuery, StartBotsImmediatelyQueryVariables>;
 export const ProvidePhoneNumberDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"providePhoneNumber"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"api_id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"phoneNumber"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"providePhoneNumber"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"api_id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"api_id"}}},{"kind":"Argument","name":{"kind":"Name","value":"phoneNumber"},"value":{"kind":"Variable","name":{"kind":"Name","value":"phoneNumber"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"bot"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"api_id"}},{"kind":"Field","name":{"kind":"Name","value":"api_hash"}}]}},{"kind":"Field","name":{"kind":"Name","value":"requestedPhoneNumber"}},{"kind":"Field","name":{"kind":"Name","value":"requestedPhoneCode"}},{"kind":"Field","name":{"kind":"Name","value":"isRunning"}},{"kind":"Field","name":{"kind":"Name","value":"isStarted"}},{"kind":"Field","name":{"kind":"Name","value":"isStopped"}},{"kind":"Field","name":{"kind":"Name","value":"eventLogs"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"log_event"}},{"kind":"Field","name":{"kind":"Name","value":"event_date"}},{"kind":"Field","name":{"kind":"Name","value":"event_message"}}]}},{"kind":"Field","name":{"kind":"Name","value":"childProcess"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"pid"}}]}}]}}]}}]} as unknown as DocumentNode<ProvidePhoneNumberMutation, ProvidePhoneNumberMutationVariables>;
 export const ProvidePhoneCodeDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"providePhoneCode"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"api_id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"phoneCode"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"providePhoneCode"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"api_id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"api_id"}}},{"kind":"Argument","name":{"kind":"Name","value":"phoneCode"},"value":{"kind":"Variable","name":{"kind":"Name","value":"phoneCode"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"bot"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"api_id"}},{"kind":"Field","name":{"kind":"Name","value":"api_hash"}}]}},{"kind":"Field","name":{"kind":"Name","value":"requestedPhoneNumber"}},{"kind":"Field","name":{"kind":"Name","value":"requestedPhoneCode"}},{"kind":"Field","name":{"kind":"Name","value":"isRunning"}},{"kind":"Field","name":{"kind":"Name","value":"isStarted"}},{"kind":"Field","name":{"kind":"Name","value":"isStopped"}},{"kind":"Field","name":{"kind":"Name","value":"eventLogs"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"log_event"}},{"kind":"Field","name":{"kind":"Name","value":"event_date"}},{"kind":"Field","name":{"kind":"Name","value":"event_message"}}]}},{"kind":"Field","name":{"kind":"Name","value":"childProcess"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"pid"}}]}}]}}]}}]} as unknown as DocumentNode<ProvidePhoneCodeMutation, ProvidePhoneCodeMutationVariables>;
 export const Provide2FaCodeDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"provide2FACode"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"api_id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"code"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"provide2FACode"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"api_id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"api_id"}}},{"kind":"Argument","name":{"kind":"Name","value":"code"},"value":{"kind":"Variable","name":{"kind":"Name","value":"code"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"bot"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"api_id"}},{"kind":"Field","name":{"kind":"Name","value":"api_hash"}}]}},{"kind":"Field","name":{"kind":"Name","value":"requestedPhoneNumber"}},{"kind":"Field","name":{"kind":"Name","value":"requestedPhoneCode"}},{"kind":"Field","name":{"kind":"Name","value":"isRunning"}},{"kind":"Field","name":{"kind":"Name","value":"isStarted"}},{"kind":"Field","name":{"kind":"Name","value":"isStopped"}},{"kind":"Field","name":{"kind":"Name","value":"eventLogs"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"log_event"}},{"kind":"Field","name":{"kind":"Name","value":"event_date"}},{"kind":"Field","name":{"kind":"Name","value":"event_message"}}]}},{"kind":"Field","name":{"kind":"Name","value":"childProcess"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"pid"}}]}}]}}]}}]} as unknown as DocumentNode<Provide2FaCodeMutation, Provide2FaCodeMutationVariables>;

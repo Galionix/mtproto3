@@ -63,7 +63,7 @@ async function listenForBotToRequestDB({
 
     const bot = await botRepositoryService.findOne(api_id);
     // const db = await answersRepositoryService.findByDbName(database);
-    // const spamDb = await spamRepositoryService.findByDbName(spamDBname);
+    const spamDb = await spamRepositoryService.findByDbName(spamDBname);
     const scenarios = await scenarioRepositoryService.findAllByNames(
       dmScenarioNames
     );
@@ -78,7 +78,8 @@ async function listenForBotToRequestDB({
       // spamDb: messageTransformer(spamDb),
       replacements: bot.replacements.replaceAll("\n", ""),
       db: [],
-      spamDb: [],
+      // transform MessageEntity[] to type TClientMessage[]
+      spamDb: messageTransformer(spamDb),
       scenarios: scenarios,
     };
   } catch (error) {

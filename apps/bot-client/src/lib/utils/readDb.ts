@@ -58,10 +58,14 @@ export async function readDbSequence({
   }
 
   if (res.event_type === EGetDatabaseResponseTypes.DB_GET_SUCCESS) {
-    logEvent(BotEventTypes.LOG_EVENT, "db response success");
+    logEvent(BotEventTypes.LOG_EVENT, `db response success.`);
 
     try {
       const { db, spamDb, scenarios, replacements } = res;
+      logEvent(
+        BotEventTypes.LOG_EVENT,
+        `db(${db.length}), spamDb(${spamDb.length}), scenarios(${scenarios.length}), replacements(${replacements.length})`
+      );
       // console.log("spamDb: ", spamDb);
 
       const { dmDb, groupDb, channelDb } = readDb(db);

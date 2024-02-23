@@ -19,12 +19,16 @@ export const spamToGroup = async ({
   task,
 }: TTaskProcessorArgs<TGroupSpamTask>) => {
   const { spamGroupId } = task.payload;
+  console.log("spamGroupId: ", spamGroupId);
 
   // pick random message from state.spamDb
 
   const messageIndex = Math.floor(Math.random() * state.spamDb.length);
+  console.log("messageIndex: ", messageIndex);
 
   const tempMessageToSend = state.spamDb[messageIndex];
+  console.log("state.spamDb: ", state.spamDb);
+  console.log("tempMessageToSend: ", tempMessageToSend);
 
   const message: TSendableMessage = {
     ...tempMessageToSend,

@@ -70,6 +70,11 @@ export class BotResolver {
   startBots() {
     return this.botProcessService.startBots();
   }
+  // startBotsImmediately
+  @Query(() => [BotEntity], { name: "startBotsImmediately" })
+  startBotsImmediately() {
+    return this.botProcessService.startBotsImmediately();
+  }
 
   @Query(() => BotEntity, { name: "startBot" })
   startBot(@Args("api_id", { type: () => Int }) api_id: number) {

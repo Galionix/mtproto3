@@ -10,7 +10,7 @@ import { useModal } from "../../Modal/Modal";
 const cx = classNames.bind(styles);
 type TClickableProps = {
   children?: React.ReactNode;
-  onClick?: () => void;
+  onClick?: (e?: any) => void;
 
   comp?: "button" | "link";
 
@@ -64,11 +64,11 @@ export const Clickable = ({
       }
     : onClick;
 
-  const preparedOnCLickHandler = () => {
+  const preparedOnCLickHandler = (e) => {
     if (onClickMessage) {
       showModal();
     } else {
-      onClickHandler();
+      onClickHandler(e);
     }
   };
 

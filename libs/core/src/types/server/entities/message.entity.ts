@@ -31,6 +31,7 @@ export type TMessageEntity = {
   coefficient: string;
   db_name: string;
   answer: AnswerEntity;
+  isSpam: boolean;
 };
 
 @Entity()
@@ -141,5 +142,9 @@ export class MessageEntity implements TMessageEntity {
   @Field(() => Number, { description: "index", nullable: true })
   @Column({ default: 0 })
   index: number;
+
+  @Field(() => Boolean, { description: "isSpam", nullable: true })
+  @Column({ default: false })
+  isSpam: boolean;
 }
 

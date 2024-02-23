@@ -157,6 +157,8 @@ export async function messageOrchestrator(event: NewMessageEvent) {
         message: responseMessage,
         originalMessageId: message.id,
       });
+    } else {
+      await client.markAsRead(senderId);
     }
     // code below is to move to task handlers
     //

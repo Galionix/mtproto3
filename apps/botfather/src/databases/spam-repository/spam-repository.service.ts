@@ -18,11 +18,15 @@ export class SpamRepositoryService {
   }
 
   async findAll() {
-    const spamMessages = await this.spamRepository.find();
+    const spamMessages = await this.spamRepository.find({
+      where: {
+        isSpam: true,
+      },
+    });
     return spamMessages;
   }
   async findByDbName(db_name: string) {
-    const spamMessages = await this.spamRepository.find({ where: { db_name } });
+    const spamMessages = await this.spamRepository.find({ where: { db_name,isSpam: true } });
     return spamMessages;
   }
 
@@ -48,8 +52,8 @@ export class SpamRepositoryService {
   //   return res;
   // }
 
-  // async remove(id: string) {
-  //   const { affected } = await this.spamRepository.delete(id);
-  //   return affected;
-  // }
+  async remove(id: string) {
+    const { affected } = await this.spamRepository.delete(id);
+    return affected;
+  }
 }

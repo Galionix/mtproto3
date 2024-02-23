@@ -4,11 +4,11 @@
   "license": "MIT",
   "scripts": {
     "botfather:serve": "nx serve botfather",
+    "bot-client:build:watch": "nodemon",
     "frontend:dev": "nx serve frontend",
     "codegen": "graphql-codegen --config codegen.ts --watch",
     "compileTailwind": "npx tailwindcss -i ./apps/frontend/pages/styles.css -o ./apps/frontend/styles/tailwind-output.css --watch",
     "botclient:run:watch": "nodemon --config watch-client-nodemon-config.json client-dist.test.ts",
-    "bot-client:build:watch": "nodemon",
     "botfather:test:watch": "nx test botfather --watch --verbose",
     "botfather:e2e": "nx e2e botfather-e2e",
     "botfather:e2e:watch": "nx e2e botfather-e2e --watch",

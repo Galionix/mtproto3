@@ -22,6 +22,7 @@ import { useEffect, useState } from "react";
 import { IoList } from "react-icons/io5";
 import { BotStateLogsList } from "../../src/domains/bots/EventsList/EventsList";
 import s from "./Index.module.scss";
+import { BotsIndexPanel } from "../../src/domains/bots/BotsIndexPanel/BotsIndexPanel";
 
 const BotsPage: NextPage = () => {
   const { data } = useQuery(getBotsQuery);
@@ -35,12 +36,11 @@ const BotsPage: NextPage = () => {
   });
 
   useEffect(() => {
-    // if at least one bot is running
-    if (botStates?.getBotStates.some((botState) => botState.isRunning)) {
-      startPolling(5000);
-    } else {
-      stopPolling();
-    }
+    // if (botStates?.getBotStates.some((botState) => botState.isRunning)) {
+    startPolling(5000);
+    // } else {
+    //   stopPolling();
+    // }
     return () => {
       stopPolling();
     };
@@ -107,23 +107,56 @@ const BotsPage: NextPage = () => {
       };
     }) || [];
 
+  const [selectedBots, setSelectedBots] = useState<
+    {
+      api_id: string;
+      botName: string;
+    }[]
+  >([]);
+  // queryStartBotsDelayed
+
   return (
     <Layout>
       <h1>Bots</h1>
+      {selectedBots.length > 0 && (
+        <span>
+          Selected bots: {selectedBots.map((bot) => bot.botName).join(", ")}
+        </span>
+      )}
       {ViewLogsModal}
       {DeleteModal}
       <Clickable primary text="Create New Bot" href="/bots/create" />
+
+      <BotsIndexPanel
+        selectedBots={
+          data?.bots.filter(
+            ({ api_id }) =>
+              selectedBots.map(({ api_id }) => api_id).includes(api_id) &&
+              botStates.getBotStates.find(
+                (botState) => botState.bot.api_id === api_id
+              )?.isRunning
+          ) || []
+        }
+      />
       <Table
+        onSelectRow={(selectedRows) => {
+          setSelectedBots(
+            selectedRows.map((i) => ({
+              api_id: botsForTable[i].api_id,
+              botName: botsForTable[i].botName,
+            }))
+          );
+        }}
         columns={["api_id", "botName", "api_hash", "behaviorModel"]}
         data={botsForTable}
         rowLeftControls={(bot) => [
           <SessionStringRestore
-            key={bot.api_id}
+            key={`restore ${bot.api_id}`}
             api_id={bot.api_id}
             requestedPhone={bot.botState.requestedPhoneCode}
           />,
           <Clickable
-            key={bot.api_id}
+            key={`start/stop ${bot.api_id}`}
             danger={!bot.botState?.isRunning}
             primary={bot.botState?.isRunning}
             icon={bot.botState?.isRunning ? BsStopCircle : VscDebugStart}
@@ -158,7 +191,7 @@ const BotsPage: NextPage = () => {
         ]}
         rowControls={(bot) => [
           <Clickable
-            key={bot.api_id}
+            key={`view logs ${bot.api_id}`}
             primary
             title="view logs"
             icon={IoList}
@@ -168,14 +201,14 @@ const BotsPage: NextPage = () => {
             }}
           />,
           <Clickable
-            key={bot.api_id}
+            key={`edit ${bot.api_id}`}
             primary
             icon={CiEdit}
             href={`/bots/${bot.api_id}/edit`}
             title="edit"
           />,
           <Clickable
-            key={"delete"}
+            key={`delete ${bot.api_id}`}
             danger
             icon={FaTrash}
             title="delete"

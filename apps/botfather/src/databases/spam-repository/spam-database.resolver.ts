@@ -2,6 +2,8 @@ import { CreateMessageInput, MessageEntity } from "@core/types/server";
 import { Args, Mutation, Query, Resolver } from "@nestjs/graphql";
 import { SpamRepositoryService } from "./spam-repository.service";
 import { validateMessageInputByType } from "./utils";
+import { Logger } from "@nestjs/common";
+const l = new Logger("SpamRepositoryResolver");
 
 @Resolver(() => MessageEntity)
 export class SpamRepositoryResolver {
@@ -11,6 +13,10 @@ export class SpamRepositoryResolver {
   async createSpamMessage(
     @Args("createSpamMessageInput") createSpamMessageInput: CreateMessageInput
   ) {
+    if (!createSpamMessageInput.isSpam)
+      throw new Error(
+        "This message is not spam but you try to save it as spam. Set isSpam to true. or use another method."
+      );
 
     validateMessageInputByType(createSpamMessageInput);
 
@@ -19,8 +25,33 @@ export class SpamRepositoryResolver {
 
   @Query(() => [MessageEntity], { name: "spamMessages" })
   async findAll() {
-    return this.spamRepositoryService.findAll();
+    const res = await this.spamRepositoryService.findAll();
+    l.log(res);
+    return res;
   }
+  @Query(() => [MessageEntity], { name: "spamMessagesByDbName" })
+  async findByDbName(@Args("db_name") db_name: string) {
+    const res = await this.spamRepositoryService.findByDbName(db_name);
+    l.log(res);
+    return res;
+  }
+  // createMany
+  // @Mutation(() => [MessageEntity], { name: "createManySpamMessages" })
+  // async createManySpamMessages(
+  //   @Args("createManySpamMessagesInput")
+  //   createManySpamMessagesInput: CreateMessageInput[]
+  // ) {
+  //   createManySpamMessagesInput.forEach((input) => {
+  //     if (!input.isSpam)
+  //       throw new Error(
+  //         "This message is not spam but you try to save it as spam. Set isSpam to true. or use another method."
+  //       );
+  //     validateMessageInputByType(input);
+  //   });
+
+  //   return this.spamRepositoryService.createMany(createManySpamMessagesInput);
+  // }
+  // async findByDbName(db_name: string) {
 
   // // findSome
   // @Query(() => [SpamEntity], { name: "someAnswers" })
@@ -40,4 +71,9 @@ export class SpamRepositoryResolver {
   // removeAnswer(@Args("id", { type: () => String }) id: string) {
   //   return this.spamDatabaseRepositoryService.remove(id);
   // }
+  //remove
+  @Mutation(() => Number)
+  async removeSpamMessage(@Args("id", { type: () => String }) id: string) {
+    return this.spamRepositoryService.remove(id);
+  }
 }

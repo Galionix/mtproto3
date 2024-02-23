@@ -159,6 +159,12 @@ export class BotProcessService {
     // this.
     return bot;
   }
+  async startBotsImmediately() {
+    const loginDetailsList = await this.botRepositoryService.findAll();
+    return loginDetailsList.map((loginDetails) =>
+      this.startBot(loginDetails.api_id)
+    );
+  }
 
   async startBots() {
     const loginDetailsList = await this.botRepositoryService.findAll();
@@ -185,22 +191,22 @@ export class BotProcessService {
     // return loginDetailsList;
   }
 
-  async restartBot(api_id: number) {
-    const botState = await this.botStateService.getBotState(api_id);
-    if (botState) {
-      botState.childProcess.kill();
-    }
-    return this.startBot(api_id);
-  }
+  // async restartBot(api_id: number) {
+  //   const botState = await this.botStateService.getBotState(api_id);
+  //   if (botState) {
+  //     botState.childProcess.kill();
+  //   }
+  //   return this.startBot(api_id);
+  // }
 
-  async restartBots() {
-    this.botStateService.getBotStates().forEach((botState) => {
-      botState.childProcess.kill();
-    });
-    return this.botStateService.getBotStates().map((botState) => {
-      return this.startBot(botState.bot.api_id);
-    });
-  }
+  // async restartBots() {
+  //   this.botStateService.getBotStates().forEach((botState) => {
+  //     botState.childProcess.kill();
+  //   });
+  //   return this.botStateService.getBotStates().map((botState) => {
+  //     return this.startBot(botState.bot.api_id);
+  //   });
+  // }
 
   botsErrorsReducer(error: Error, api_id: number) {
     console.log("api_id: " + api_id + ", error: ", error);

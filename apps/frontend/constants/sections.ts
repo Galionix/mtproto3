@@ -1,6 +1,7 @@
 import { BiUser } from "react-icons/bi";
 import { FaFileAlt } from "react-icons/fa";
 import { PiFilmScriptFill } from "react-icons/pi";
+import { FcBiohazard } from "react-icons/fc";
 
 export const sections = [
   {
@@ -23,6 +24,14 @@ export const sections = [
     url: "/resources/view",
     icon: FaFileAlt,
     description: "Create and manage resources",
+  },
+  // spam
+  {
+    key: "spam",
+    title: "Spam",
+    url: "/spam",
+    icon: FcBiohazard,
+    description: "Create and manage spam",
   },
 ];
 
