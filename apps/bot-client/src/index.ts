@@ -28,7 +28,11 @@ import { generalReducer } from "./lib/processApi/composeReducer";
 import { listeners } from "./lib/processApi/listeners";
 import { logEvent } from "./lib/processApi/logEventTostate";
 import { sendStateToFatherProcess, state } from "./lib/state";
-import { addDmTask, addRespondToUnreadDmTask } from "./lib/tasksApi/addTask";
+import {
+  addDmTask,
+  addRespondToUnreadDmTask,
+  listGroupsTask,
+} from "./lib/tasksApi/addTask";
 import {
   delayFactory,
   // getDMMessageStep
@@ -314,6 +318,7 @@ console.log("launching main thread");
     });
 
     addRespondToUnreadDmTask();
+    listGroupsTask();
 
     const me = await client.getMe();
     state.me = me as Api.User;

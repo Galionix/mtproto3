@@ -1,6 +1,7 @@
 import { client, Api } from "telegram";
 import { TTaskProcessorArgs } from ".";
 import {
+  BotEventTypes,
   ETaskType,
   TGroupSpamTask,
   TSendableMessage,
@@ -51,6 +52,18 @@ export const spamToGroup = async ({
   try {
     const res = await sendMessage(client, message);
     console.log("res: ", res);
+
+    process.send({
+      event_type: BotEventTypes.LIST_GROUPS,
+      // should I pass here apiId?
+      // botId: task.botId,
+      groups: [
+        {
+          chat_id: `-100${spamGroupId.toString()}`,
+          last_message_sent_at: new Date(),
+        },
+      ],
+    });
   } catch (error) {
     logEvent("ERROR_SPAM_TO_GROUP", JSON.stringify({ error, message, task }));
   }

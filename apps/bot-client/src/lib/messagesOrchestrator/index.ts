@@ -173,7 +173,9 @@ export async function messageOrchestrator(event: NewMessageEvent) {
   }
   if (isGroup) {
     const { message, client, chat } = event;
+    console.log("event: ", event);
     const { originalArgs } = message.peerId;
+    console.log("message: ", message);
     // if channelId - then it is a group
     if ("channelId" in originalArgs) {
       const channelIdString = originalArgs.channelId.toString();
@@ -194,8 +196,9 @@ export async function messageOrchestrator(event: NewMessageEvent) {
       state.groupCounters[channelIdString].messagesSinceLastSpam++;
 
       if (
+        !message.mentioned &&
         state.groupCounters[channelIdString].messagesSinceLastSpam >=
-        state.groupCounters[channelIdString].spamInterval
+          state.groupCounters[channelIdString].spamInterval
       ) {
         state.groupCounters[channelIdString].messagesSinceLastSpam = 0;
         addGroupSpamTask({
@@ -205,6 +208,54 @@ export async function messageOrchestrator(event: NewMessageEvent) {
         // await client.sendMessage(channelIdString, {
         //   message: "answer",
         // });
+      }
+      if (message.mentioned) {
+        // const { senderId } = message;
+        // console.log("message: ", message);
+        const rootMessageList = await client.getMessages(message.peerId, {
+          ids: [message.replyTo.replyToTopId],
+        });
+        const rootMessageText = rootMessageList[0].message;
+        console.log("rootMessageText: ", rootMessageText);
+        // group conversations....
+        // get history of messages
+        const replies = await client.getMessages(message.peerId, {
+          replyTo: message.replyTo.replyToTopId,
+          limit: 100,
+          reverse: true,
+          // fromUser: message.senderId,
+        });
+        const userTexts: string[] = [];
+        // console.log("replies: ", replies);
+        // const userTexts = replies
+        //   .filter((reply) => reply.fromId.userId === message.fromId.userId)
+        //   .map((reply) => reply.text);
+        // console.log("userTexts: ", userTexts);
+        for await (const reply of replies) {
+          // we need to get all messages from this user
+          // console.log("reply.fromId: ", reply.fromId);
+          //
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          if (reply.fromId.userId.value === message.fromId.userId.value) {
+            userTexts.push(reply.text);
+            // console.log("reply: ", reply);
+          }
+          // console.log("reply.fromId,userId:", reply.fromId.userId);
+
+          // if (reply.fromId === senderId.userId) {
+          //   console.log("reply: ", reply);
+          // }
+        }
+        console.log("userTexts: ", userTexts);
+
+        // reply to incoming message with some text
+        await client.sendMessage(channelIdString, {
+          message: "answer",
+          replyTo: message.id,
+        });
+
+        // const originalMessage = replies[0];
       }
     }
     // await client.getEntity(channelIdString);

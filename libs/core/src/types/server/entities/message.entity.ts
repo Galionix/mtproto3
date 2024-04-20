@@ -32,6 +32,8 @@ export type TMessageEntity = {
   db_name: string;
   answer: AnswerEntity;
   isSpam: boolean;
+  // hasScenario?: boolean;
+  scenarioIdForSpam?: string;
 };
 
 @Entity()
@@ -146,5 +148,9 @@ export class MessageEntity implements TMessageEntity {
   @Field(() => Boolean, { description: "isSpam", nullable: true })
   @Column({ default: false })
   isSpam: boolean;
+
+  @Field(() => String, { description: "scenarioIdForSpam", nullable: true })
+  @Column({ default: "" })
+  scenarioIdForSpam: string;
 }
 

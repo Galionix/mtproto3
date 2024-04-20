@@ -1,5 +1,5 @@
 import bigInt from "big-integer";
-import { MessageEntity } from "../../server";
+import { GroupEntity, MessageEntity } from "../../server";
 
 export enum ETaskType {
   RESPOND_TO_DM_MESSAGE = "RESPOND_TO_DM_MESSAGE",
@@ -8,6 +8,7 @@ export enum ETaskType {
   GROUP_JOIN = "GROUP_JOIN",
   GROUP_LEAVE = "GROUP_LEAVE",
   RESPOND_TO_UNREAD_DM_MESSAGE = "RESPOND_TO_UNREAD_DM_MESSAGE",
+  LIST_GROUPS = "LIST_GROUPS",
 }
 export type TAnyTaskType = keyof typeof ETaskType;
 
@@ -110,13 +111,26 @@ export type TGroupSpamTask = TGenericTask<
   TGroupSpamTaskPayload
 >;
 
+// LIST_GROUPS
+export type TListGroupsTask = TGenericTask<ETaskType.LIST_GROUPS, null>;
+
+export type TListGroupsPayload = {
+  groups: Partial<GroupEntity>[];
+};
+
+export type TListGroupsResponse = TGenericTask<
+  ETaskType.LIST_GROUPS,
+  TListGroupsPayload
+>;
+
 export type TTask =
   | TRespondToDMMessage
   | TRespondToGroupMessage
   | TGroupJoinTask
   | TGroupLeaveTask
   | TGroupSpamTask
-  | TRespondToUnread;
+  | TRespondToUnread
+  | TListGroupsTask;
 
 export type TTaskOrder = TAnyTaskType[];
 
@@ -126,4 +140,5 @@ export type TAnyTaskPayload =
   | TRespondToGroupMessagePayload
   | TRespondToDMMessagePayload
   | TGroupSpamTaskPayload
-  | null;
+  | null
+  | TListGroupsPayload;

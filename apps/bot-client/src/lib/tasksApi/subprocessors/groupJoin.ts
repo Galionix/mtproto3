@@ -86,6 +86,29 @@ seq: 0
       event_type: BotEventTypes.CHAT_JOINED,
       chatName: joinGroupName,
     });
+
+    /*
+    Property 'chats' does not exist on type 'TypeUpdates'.
+  Property 'chats' does not exist on type 'UpdatesTooLong'.
+    */
+    if (res instanceof Api.Updates) {
+      process.send({
+        event_type: BotEventTypes.LIST_GROUPS,
+
+        groups: [
+          {
+            chat_id: res.chats[0].id[0],
+            name: "title" in res.chats[0] ? res.chats[0].title : "",
+            username: "username" in res.chats[0] ? res.chats[0].username : "",
+            total_members:
+              "participantsCount" in res.chats[0]
+                ? res.chats[0].participantsCount || 0
+                : -1,
+          },
+        ],
+      });
+    }
+
     state.latestGroupJoinDate = Date.now();
     removeTaskFromQueue(task);
   } else {
@@ -96,4 +119,6 @@ seq: 0
     console.log("join groups time:" + (Date.now() - state.groupJoinInterval));
   }
   console.log("group join processed");
+
+
 };

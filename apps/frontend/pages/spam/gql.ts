@@ -8,6 +8,7 @@ export const querySpamMessages = graphql(`
       text
       type
       db_name
+      scenarioIdForSpam
     }
   }
 `);

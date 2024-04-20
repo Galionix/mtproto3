@@ -262,6 +262,9 @@ type MessageEntity {
   """payload of reaction for message"""
   reaction: String
 
+  """scenarioIdForSpam"""
+  scenarioIdForSpam: String
+
   """payload of sticker for message"""
   sticker: String
 

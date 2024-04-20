@@ -10,6 +10,7 @@ export enum processMessagesTypes {
   GET_DATABASE = "GET_DATABASE",
   // GET_GENERAL_SETTINGS = "GET_GENERAL_SETTINGS",
   GET_SPAM_DATABASE = "GET_SPAM_DATABASE",
+  LIST_GROUPS = "LIST_GROUPS",
 }
 
 type TStarted = TGenericMessage<processMessagesTypes.STARTED>;

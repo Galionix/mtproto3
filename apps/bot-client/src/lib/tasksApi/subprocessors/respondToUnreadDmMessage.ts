@@ -84,14 +84,12 @@ export const respondToUnreadDmMessage = async ({
           }
           const messagesTexts = reduceMessages(messagesMap);
 
-          console.log("messagesTexts: ", messagesTexts);
 
           // const lastMessage = messagesTexts[messagesTexts.length - 1];
           const responseMessage = getBotResponse(
             state.dmScenario,
             messagesTexts
           );
-          console.log("responseMessage: ", responseMessage);
 
           // const previousUserMessages = client.
           logEvent(

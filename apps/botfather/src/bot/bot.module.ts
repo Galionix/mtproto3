@@ -9,6 +9,7 @@ import {
   // StoredAnswerEntity,
   ScenarioEntity,
   ScenarioBranchEntity,
+  GroupEntity,
   // AnswerMessageEntity,
 } from "@core/types/server";
 import { BotProcessService } from "../services/bot-process-service/bot-process.service";
@@ -21,6 +22,7 @@ import { SpamRepositoryService } from "../databases/spam-repository/spam-reposit
 import { MessagesRepositoryService } from "../databases/messages-repository/messages-repository.service";
 import { ScenarioRepositoryService } from "../databases/scenario-repository/scenario-repository.service";
 import { AnswersRepositoryService } from "../databases/answers-repository/answers-repository.service";
+import { GroupsRepositoryService } from "../databases/groups-repository/groups-repository.service";
 
 @Module({
   imports: [
@@ -31,6 +33,7 @@ import { AnswersRepositoryService } from "../databases/answers-repository/answer
       BotEntity,
       MessageEntity,
       AnswerEntity,
+      GroupEntity,
       // AnswerMessageEntity,
     ]),
   ],
@@ -46,6 +49,7 @@ import { AnswersRepositoryService } from "../databases/answers-repository/answer
     SpamRepositoryService,
     MessagesRepositoryService,
     ScenarioRepositoryService,
+    GroupsRepositoryService,
   ],
   exports: [
     BotService,

@@ -27,7 +27,7 @@ function listenChatLeave({
   message,
   api_id,
 }: TListenerArgs<TChatJoined>) {
-  const { botStateService } = services;
+  const { botStateService, groupsRepositoryService } = services;
   const { chatName } = message;
 
   const { leaving_groups_chat_ids } = botStateService.getBotState(api_id);
@@ -40,8 +40,12 @@ function listenChatLeave({
     leaving_groups_chat_ids: newLeavingGroupsChatIds,
     leaving_groups: newLeavingGroupsChatIds.length > 0,
   });
+  // for now i cant delete by name, cuz in db i can have multiple groups with same name
+  // they would be from different bots! here i need to know chat_id!!
+  // groupsRepositoryService.deleteOneByName(chatName);
 }
 
+// list
 export const chatManageListeners: TListener[] = [
   {
     event_type: BotEventTypes.CHAT_JOINED,

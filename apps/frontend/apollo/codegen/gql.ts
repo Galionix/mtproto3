@@ -31,7 +31,7 @@ const documents = {
     "\n  query scenario($id: String!) {\n    scenario(id: $id) {\n      db_name\n      updatedAt\n      maxConversationLength\n      id\n      description\n      createdAt\n      branches {\n        index\n        id\n        choices {\n          index\n          id\n          request\n          nextBranchId\n          responses {\n            index\n            id\n            text\n            type\n            photo\n            video\n            audio\n          }\n        }\n      }\n    }\n  }\n": types.ScenarioDocument,
     "\n  mutation removeScenario($id: String!) {\n    removeScenario(id: $id)\n  }\n": types.RemoveScenarioDocument,
     "\n  mutation createScenario($createScenarioInput: CreateScenarioInput!) {\n    createScenario(scenarioInput: $createScenarioInput) {\n      id\n      branches {\n        id\n        description\n        choices {\n          id\n        }\n      }\n    }\n  }\n": types.CreateScenarioDocument,
-    "\n  query spamMessages {\n    spamMessages {\n      id\n      text\n      type\n      db_name\n    }\n  }\n": types.SpamMessagesDocument,
+    "\n  query spamMessages {\n    spamMessages {\n      id\n      text\n      type\n      db_name\n      scenarioIdForSpam\n    }\n  }\n": types.SpamMessagesDocument,
     "\n  mutation createSpamMessage($createSpamMessageInput: CreateMessageInput!) {\n    createSpamMessage(createSpamMessageInput: $createSpamMessageInput) {\n      id\n      text\n      type\n      db_name\n    }\n  }\n": types.CreateSpamMessageDocument,
     "\n  mutation removeSpamMessage($id: String!) {\n    removeSpamMessage(id: $id)\n  }\n": types.RemoveSpamMessageDocument,
     "\n  query spamMessagesByDbName($db_name: String!) {\n    spamMessagesByDbName(db_name: $db_name) {\n      id\n      text\n      type\n      db_name\n    }\n  }\n": types.SpamMessagesByDbNameDocument,
@@ -133,7 +133,7 @@ export function graphql(source: "\n  mutation createScenario($createScenarioInpu
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "\n  query spamMessages {\n    spamMessages {\n      id\n      text\n      type\n      db_name\n    }\n  }\n"): (typeof documents)["\n  query spamMessages {\n    spamMessages {\n      id\n      text\n      type\n      db_name\n    }\n  }\n"];
+export function graphql(source: "\n  query spamMessages {\n    spamMessages {\n      id\n      text\n      type\n      db_name\n      scenarioIdForSpam\n    }\n  }\n"): (typeof documents)["\n  query spamMessages {\n    spamMessages {\n      id\n      text\n      type\n      db_name\n      scenarioIdForSpam\n    }\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

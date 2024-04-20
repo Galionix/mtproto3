@@ -17,6 +17,7 @@ import {
   MessageEntity,
   ScenarioEntity,
   ScenarioBranchEntity,
+  GroupEntity,
   // ScenarioChoiceEntity,
   // AnswerMessageEntity,
 } from "@core/types/server";
@@ -59,6 +60,7 @@ import { ScenarioRepositoryModule } from "../databases/scenario-repository/scena
         entities: [
           BotEntity,
           AnswerEntity,
+          GroupEntity,
           // AnswerMessageEntity,
           StatisticEntity,
           MessageEntity,

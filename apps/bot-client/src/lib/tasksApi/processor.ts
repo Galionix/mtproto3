@@ -12,6 +12,7 @@ import {
   removeTaskFromTries,
 } from "./taskArranger";
 import { logEvent } from "../processApi/logEventTostate";
+import { listGroups } from "./subprocessors/listGroups";
 
 export type TTaskProcessor = (
   task: TTask,
@@ -54,6 +55,9 @@ export const taskProcessor: TTaskProcessor = async (task, client) => {
       // if ("spamGroupId" in payload) {
       await spamToGroup({ client, task });
       // }
+      break;
+    case ETaskType.LIST_GROUPS:
+      await listGroups({ client, task });
       break;
     default:
       throw new Error(`Unknown task type`);

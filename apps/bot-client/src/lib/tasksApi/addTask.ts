@@ -3,6 +3,7 @@ import {
   TGroupJoinTask,
   TGroupLeaveTask,
   TGroupSpamTask,
+  TListGroupsTask,
   TRespondToDMMessage,
   TRespondToDMMessagePayload,
   TRespondToUnreadMessageTask,
@@ -39,7 +40,6 @@ export const addRespondToUnreadDmTask = async () => {
   state.tasks.push(task);
   sendStateToFatherProcess(state);
 };
-
 
 export const addJoinGroupTask = async ({
   joinGroupName,
@@ -90,6 +90,18 @@ export const addGroupSpamTask = async ({
       spamGroupId,
       spamGroupIdString: spamGroupId.toString(),
     },
+  };
+
+  state.tasks.push(task);
+  sendStateToFatherProcess(state);
+};
+
+export const listGroupsTask = async () => {
+  const task: TListGroupsTask = {
+    id: uuid(),
+    type: ETaskType.LIST_GROUPS,
+    date: Date.now(),
+    payload: null,
   };
 
   state.tasks.push(task);

@@ -1,4 +1,10 @@
-import { processMessagesTypes, TBotErrorMessage } from "@core/types/client";
+import {
+  processMessagesTypes,
+  TBotErrorMessage,
+  TListGroups,
+  TListGroupsPayload,
+  TListGroupsResponse,
+} from "@core/types/client";
 import { TListenerArgs } from "../bot-events.service";
 import { TListener } from "../listeners";
 
@@ -34,6 +40,28 @@ function listenError({
     error: message.error.message,
   });
 }
+// listeng groupsList
+function listenGroupsList({
+  services,
+  message,
+  api_id,
+}: TListenerArgs<TListGroups>) {
+  console.log("message: ", message);
+  const { groupsRepositoryService, l } = services;
+  const { groups } = message;
+  // here groups are raw data from client. it has no set correct id, only chat_id. so here we create an id, which is chat_id + api_id
+  const preparedGroups = groups.map((group) => ({
+    ...group,
+    id: `${group.chat_id}_${api_id}`,
+  }));
+  groupsRepositoryService.updateMany(preparedGroups);
+
+  l.log("Bot groups list: ", api_id);
+
+  // botStateService.updateBotState(api_id, {
+  //   groupsList,
+  // });
+}
 
 export const infoListeners: TListener[] = [
   {
@@ -47,5 +75,9 @@ export const infoListeners: TListener[] = [
   {
     event_type: processMessagesTypes.ERROR,
     listener: listenError,
+  },
+  {
+    event_type: processMessagesTypes.LIST_GROUPS,
+    listener: listenGroupsList,
   },
 ];
