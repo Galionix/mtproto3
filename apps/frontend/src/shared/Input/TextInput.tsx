@@ -5,6 +5,7 @@ import { GiCancel } from "react-icons/gi";
 import { ImCancelCircle } from "react-icons/im";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { AiOutlineArrowDown, AiOutlineArrowUp } from "react-icons/ai";
+import { Skeleton } from "../Skeleton/Skeleton";
 
 const cx = classNames.bind(s);
 
@@ -26,6 +27,7 @@ type TTextInputProps = {
   style?: any;
   width?: number;
   onCtrlEnter?: () => void;
+  loading?: boolean;
 };
 export const TextInput = ({
   onCtrlEnter,
@@ -41,6 +43,7 @@ export const TextInput = ({
   required = false,
   showClear = true,
   fullWidth = false,
+  loading = false,
   width,
   defaultValue = "",
   ariaLabel,
@@ -76,34 +79,36 @@ export const TextInput = ({
         ...style,
       }}
     >
-      <label>{label || renderedPlaceholder}</label>
-      <Component
-        ref={inputRef}
-        type={type}
-        value={value}
-        onKeyUp={onKeyUpHandler}
-        onChange={onChangeHandler}
-        placeholder={renderedPlaceholder}
-        disabled={disabled}
-        required={required}
-        aria-label={ariaLabel}
-      />
-      {showClear && !disabled && value !== "" && (
-        <ImCancelCircle
-          className={s.clearIcon}
-          onClick={() => {
-            if (!onChange) return;
-            onChange("");
-            inputRef.current?.focus();
-          }}
+      <Skeleton enabled={loading}>
+        <label>{label || renderedPlaceholder}</label>
+        <Component
+          ref={inputRef}
+          type={type}
+          value={value}
+          onKeyUp={onKeyUpHandler}
+          onChange={onChangeHandler}
+          placeholder={renderedPlaceholder}
+          disabled={disabled}
+          required={required}
+          aria-label={ariaLabel}
         />
-      )}
-      {required && value === "" && (
-        <FaStarOfLife
-          title={`${label} is required field!`}
-          className={s.requiredStar}
-        />
-      )}
+        {showClear && !disabled && value !== "" && (
+          <ImCancelCircle
+            className={s.clearIcon}
+            onClick={() => {
+              if (!onChange) return;
+              onChange("");
+              inputRef.current?.focus();
+            }}
+          />
+        )}
+        {required && value === "" && (
+          <FaStarOfLife
+            title={`${label} is required field!`}
+            className={s.requiredStar}
+          />
+        )}
+      </Skeleton>
     </div>
   );
 };
@@ -121,6 +126,8 @@ export const TextInputWithChoicesList = ({
   onClearError,
   style,
   multiple,
+  // loading = false,
+
   ...props
 }: TTextInputWithChoicesProps) => {
   const { defaultValue } = props;
@@ -153,40 +160,45 @@ export const TextInputWithChoicesList = ({
 
   return (
     <div className={classNames} style={style}>
-      <TextInput {...props} style={style} />
-      {open ? (
-        <AiOutlineArrowUp className={s.arrow} onClick={() => setOpen(!open)} />
-      ) : (
-        <AiOutlineArrowDown
-          className={s.arrow}
-          onClick={() => setOpen(!open)}
-        />
-      )}
-      {open && (
-        <ul>
-          {choices.map((choice) => (
-            <li
-              className={cx({ selected: checkedItems.includes(choice) })}
-              key={choice}
-              onClick={() => {
-                if (!props.onChange) return;
-                if (multiple) {
-                  const newItems = checkedItems.includes(choice)
-                    ? checkedItems.filter((item) => item !== choice)
-                    : [...checkedItems, choice];
-                  props.onChange(newItems.join(","));
-                } else {
-                  props.onChange(choice);
-                }
-                // props.onChange(choice);
-                !multiple && setOpen(false);
-              }}
-            >
-              {choice}
-            </li>
-          ))}
-        </ul>
-      )}
+      <Skeleton enabled={props.loading}>
+        <TextInput {...props} style={style} />
+        {open ? (
+          <AiOutlineArrowUp
+            className={s.arrow}
+            onClick={() => setOpen(!open)}
+          />
+        ) : (
+          <AiOutlineArrowDown
+            className={s.arrow}
+            onClick={() => setOpen(!open)}
+          />
+        )}
+        {open && (
+          <ul>
+            {choices.map((choice) => (
+              <li
+                className={cx({ selected: checkedItems.includes(choice) })}
+                key={choice}
+                onClick={() => {
+                  if (!props.onChange) return;
+                  if (multiple) {
+                    const newItems = checkedItems.includes(choice)
+                      ? checkedItems.filter((item) => item !== choice)
+                      : [...checkedItems, choice];
+                    props.onChange(newItems.join(","));
+                  } else {
+                    props.onChange(choice);
+                  }
+                  // props.onChange(choice);
+                  !multiple && setOpen(false);
+                }}
+              >
+                {choice}
+              </li>
+            ))}
+          </ul>
+        )}
+      </Skeleton>
     </div>
   );
 };

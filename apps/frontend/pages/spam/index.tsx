@@ -19,6 +19,7 @@ import { AScenarioElementType, EScenarioElementType } from "@core/types/client";
 import { Clickable } from "../../src/shared/Clickable/Clickable";
 import { debounce } from "lodash";
 import { NoData } from "../../src/shared/NoData/NoData";
+import { getBasicScenariosDetailsQuery } from "../scenarios/gql";
 
 const SpamPage: NextPage = () => {
   // querySpamMessages
@@ -30,6 +31,7 @@ const SpamPage: NextPage = () => {
     type: EScenarioElementType.TEXT,
     isSpam: true,
     db_name: "group_spam_db",
+    scenarioIdForSpam: "",
   });
 
   const [filterDbName, setFilterDbName] = useState<string>("");
@@ -69,6 +71,14 @@ const SpamPage: NextPage = () => {
     []
   );
 
+  const { data: basicScenariosInfo, loading } = useQuery(
+    getBasicScenariosDetailsQuery
+  );
+
+  const scenaroisChoices = basicScenariosInfo?.scenarios?.map(
+    (scenario) => scenario.id
+  );
+
   return (
     <Layout>
       <h1>Spam</h1>
@@ -104,6 +114,24 @@ const SpamPage: NextPage = () => {
             setCreateSpamMessageInput({ ...createSpamMessageInput, text: e });
           }}
         />
+        {!loading && (
+          <TextInputWithChoicesList
+            // required
+            loading={loading}
+            label="Scenario Id For Spam"
+            defaultValue={""}
+            choices={scenaroisChoices}
+            value={createSpamMessageInput.scenarioIdForSpam}
+            // choices={AScenarioElementType}
+            // value={createSpamMessageInput.type}
+            onChange={(e) => {
+              setCreateSpamMessageInput({
+                ...createSpamMessageInput,
+                scenarioIdForSpam: e,
+              });
+            }}
+          />
+        )}
         <Clickable
           primary
           text="Create"

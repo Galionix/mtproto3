@@ -1,0 +1,32 @@
+.spinner{
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+    background-color: transparent;
+    // background-color: rgba(0, 0, 0, 0.5);
+
+    // position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 9999;
+
+}
+.spinner__icon{
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: 2px solid #5252528a;
+    border-top: 2px solid #fff;
+    animation: spin 1s linear infinite;
+    margin-left: auto;
+    margin-bottom: auto;
+
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}

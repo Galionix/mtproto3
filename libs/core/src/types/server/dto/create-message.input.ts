@@ -104,4 +104,9 @@ export class CreateMessageInput {
   @Field(() => Boolean, { description: "isSpam", nullable: true })
   @Column({ default: false })
   isSpam?: boolean;
+
+  // scenarioIdForSpam
+  @Field(() => String, { description: "scenarioIdForSpam", nullable: true })
+  @Column({ default: "" })
+  scenarioIdForSpam?: string;
 }

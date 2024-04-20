@@ -164,6 +164,8 @@ export type CreateMessageInput = {
   photo?: InputMaybe<Scalars['String']['input']>;
   /** payload of reaction for message */
   reaction?: InputMaybe<Scalars['String']['input']>;
+  /** scenarioIdForSpam */
+  scenarioIdForSpam?: InputMaybe<Scalars['String']['input']>;
   /** payload of sticker for message */
   sticker?: InputMaybe<Scalars['String']['input']>;
   /** payload of text for message */
@@ -592,6 +594,8 @@ export type UpdateMessageInput = {
   photo?: InputMaybe<Scalars['String']['input']>;
   /** payload of reaction for message */
   reaction?: InputMaybe<Scalars['String']['input']>;
+  /** scenarioIdForSpam */
+  scenarioIdForSpam?: InputMaybe<Scalars['String']['input']>;
   /** payload of sticker for message */
   sticker?: InputMaybe<Scalars['String']['input']>;
   /** payload of text for message */
