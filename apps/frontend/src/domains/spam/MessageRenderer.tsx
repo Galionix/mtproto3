@@ -132,7 +132,7 @@ export const MessageRenderer = ({
           )}
           <Clickable
             title="Edit"
-            primary
+            warning
             icon={CiEdit}
             onClick={() => {
               loadScenarios();

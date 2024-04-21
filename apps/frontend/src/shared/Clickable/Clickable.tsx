@@ -22,6 +22,7 @@ type TClickableProps = {
   title?: string;
   danger?: boolean;
   primary?: boolean;
+  warning?: boolean;
   disabled?: boolean;
   onClickMessage?: React.ReactNode;
   modalId?: string;
@@ -38,6 +39,7 @@ export const Clickable = ({
   icon,
   danger,
   primary,
+  warning,
   disabled,
   title,
   onClickMessage,
@@ -52,6 +54,7 @@ export const Clickable = ({
     base: true,
     danger,
     primary,
+    warning,
     gap: icon && text,
     disabled,
   });
