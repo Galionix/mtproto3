@@ -23,7 +23,7 @@ export const Table = <T extends object>({
   // }, [onSelectRow, selectedRows]);
 
   return (
-    <table className="table-auto">
+    <table className="table-auto w-full">
       <thead>
         <tr className="divide-x divide-gray-200 ">
           <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -104,7 +104,7 @@ export const Table = <T extends object>({
               </td>
             ))}
             {rowControls && (
-              <td className="px-4 py-2 divide-x divide-gray-200 flex gap-2 align-center justify-between text-center">
+              <td className="px-4 py-2  flex gap-2 align-center justify-between text-center">
                 {rowControlsElements[index]}
               </td>
             )}

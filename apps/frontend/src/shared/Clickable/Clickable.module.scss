@@ -25,6 +25,15 @@
   &.danger {
     color: rgb(255, 0, 0);
   }
+  position: relative;
+  .linkIcon{
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    right: 0px;
+    top: -2px;
+    color: rgb(115, 202, 252);
+  }
 }
 
 .button {

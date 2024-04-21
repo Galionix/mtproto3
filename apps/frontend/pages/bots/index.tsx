@@ -125,7 +125,12 @@ const BotsPage: NextPage = () => {
       )}
       {ViewLogsModal}
       {DeleteModal}
-      <Clickable primary text="Create New Bot" href="/bots/create" />
+      <Clickable
+        comp="link"
+        // primary
+        text="Create New Bot"
+        href="/bots/create"
+      />
 
       <BotsIndexPanel
         selectedBots={
@@ -201,8 +206,9 @@ const BotsPage: NextPage = () => {
             }}
           />,
           <Clickable
+            text="Edit"
+            comp="link"
             key={`edit ${bot.api_id}`}
-            primary
             icon={CiEdit}
             href={`/bots/${bot.api_id}/edit`}
             title="edit"

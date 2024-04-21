@@ -40,7 +40,9 @@ const ScenariosIndexPage = () => {
             </span>
             <Clickable
               className="ml-auto"
-              primary
+              // primary
+              comp="link"
+              text="Edit"
               //   onClick={() => {
               //     navigate(`/scenarios/${scenario.id}/edit`);
               //   }}
@@ -49,10 +51,12 @@ const ScenariosIndexPage = () => {
               title="edit"
             />
             <Clickable
-              primary
+              // primary
               //   onClick={() => {
               //     navigate(`/scenarios/${scenario.id}/test`);
               //   }}
+              comp="link"
+              text="Test"
               icon={VscDebugStart}
               href={`/scenarios/${scenario.id}/test`}
               title="test"

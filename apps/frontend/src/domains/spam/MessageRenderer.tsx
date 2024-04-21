@@ -146,7 +146,9 @@ export const MessageRenderer = ({
         <>
           {scenarioIdForSpam && (
             <Clickable
+              text="Edit scenario"
               // className="ml-auto"
+              comp="link"
               title="Edit scenario"
               icon={PiFilmScriptFill}
               href={"scenarios/" + id + "/edit"}

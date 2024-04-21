@@ -6,6 +6,9 @@ import classNames from "classnames/bind";
 import { useEffect, useRef, useState } from "react";
 import { flushSync } from "react-dom";
 import { useModal } from "../../Modal/Modal";
+// import { FaExternalLinkAlt } from "react-icons/fa";
+import { IoArrowRedoOutline } from "react-icons/io5";
+
 
 const cx = classNames.bind(styles);
 type TClickableProps = {
@@ -111,6 +114,7 @@ export const Clickable = ({
         {<IconComponent />}
         <span suppressHydrationWarning={true}>{text}</span>
         {children}
+        {comp === "link" && <IoArrowRedoOutline className={styles.linkIcon} />}
       </Component>
       {onClickMessage && ConfirmModal}
     </>
