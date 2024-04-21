@@ -22,7 +22,7 @@ import { TextInput } from "../../../src/shared/Input/TextInput";
 import { EditableList } from "../../../src/shared/EditableList/EditableList";
 import { Clickable } from "../../../src/shared/Clickable/Clickable";
 import s from "./Edit.module.scss";
-import { getBotStatesQuery } from "../gql";
+import { getBotStatesQuery, getBotsQuery } from "../gql";
 import { getPhotoUrlByPath } from "../../resources/resourcesUtils";
 import { useFirebaseStorageUrl } from "../../../src/utils/hooks/useFileUrl";
 
@@ -529,12 +529,16 @@ const EditBotPage: NextPage = () => {
               updateBotInput: preparedUpdateBotData,
             },
             refetchQueries: [
-              {
-                query: getBotStatesQuery,
-              },
+              // {
+              //   query: getBotStatesQuery,
+              // },
               {
                 query: getBotQuery,
                 variables: { api_id: parseInt(`${id}`) },
+              },
+              {
+                query: getBotsQuery,
+                // variables: { api_id: parseInt(`${id}`) },
               },
             ],
           });
