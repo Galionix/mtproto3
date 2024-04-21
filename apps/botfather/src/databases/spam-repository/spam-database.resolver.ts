@@ -35,42 +35,16 @@ export class SpamRepositoryResolver {
     l.log(res);
     return res;
   }
-  // createMany
-  // @Mutation(() => [MessageEntity], { name: "createManySpamMessages" })
-  // async createManySpamMessages(
-  //   @Args("createManySpamMessagesInput")
-  //   createManySpamMessagesInput: CreateMessageInput[]
-  // ) {
-  //   createManySpamMessagesInput.forEach((input) => {
-  //     if (!input.isSpam)
-  //       throw new Error(
-  //         "This message is not spam but you try to save it as spam. Set isSpam to true. or use another method."
-  //       );
-  //     validateMessageInputByType(input);
-  //   });
+  // update
+  @Mutation(() => MessageEntity)
+  async updateSpamMessage(
+    @Args("id", { type: () => String }) id: string,
+    @Args("updateSpamMessageInput") updateSpamMessageInput: CreateMessageInput
+  ) {
+    validateMessageInputByType(updateSpamMessageInput);
+    return this.spamRepositoryService.update(id, updateSpamMessageInput);
+  }
 
-  //   return this.spamRepositoryService.createMany(createManySpamMessagesInput);
-  // }
-  // async findByDbName(db_name: string) {
-
-  // // findSome
-  // @Query(() => [SpamEntity], { name: "someAnswers" })
-  // async someAnswers(
-  //   @Args("findSomeAnswersInput")
-  //   findSomeAnswersInput: UpdateDatabaseInput
-  // ) {
-  //   return this.spamDatabaseRepositoryService.findSome(findSomeAnswersInput);
-  // }
-
-  // @Query(() => SpamEntity, { name: "answer", nullable: true })
-  // findOne(@Args("name", { type: () => String }) name: string) {
-  //   return this.spamDatabaseRepositoryService.findOne(name);
-  // }
-
-  // @Mutation(() => Int)
-  // removeAnswer(@Args("id", { type: () => String }) id: string) {
-  //   return this.spamDatabaseRepositoryService.remove(id);
-  // }
   //remove
   @Mutation(() => Number)
   async removeSpamMessage(@Args("id", { type: () => String }) id: string) {

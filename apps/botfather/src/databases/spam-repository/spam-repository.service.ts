@@ -26,31 +26,20 @@ export class SpamRepositoryService {
     return spamMessages;
   }
   async findByDbName(db_name: string) {
-    const spamMessages = await this.spamRepository.find({ where: { db_name,isSpam: true } });
+    const spamMessages = await this.spamRepository.find({
+      where: { db_name, isSpam: true },
+    });
     return spamMessages;
   }
 
-  // async findSome(input: Partial<MessageEntity>): Promise<MessageEntity[]> {
-  //   return await this.spamRepository.find({
-  //     where: input,
-  //   });
-  // }
-
-  // async findSome(input: Partial<MessageEntity>): Promise<MessageEntity[]> {
-  //   return await this.spamRepository.find({
-  //     where: input,
-  //   });
-  // }
-  // async findAll() {
-  //   const answers = await this.spamRepository.find();
-
-  //   return answers;
-  // }
-
-  // async findOne(id: string): Promise<MessageEntity> {
-  //   const res = await this.spamRepository.findOne({ where: { id } });
-  //   return res;
-  // }
+  // update
+  async update(id: string, updateSpamMessageInput: CreateMessageInput) {
+    const updatedSpamMessage = await this.spamRepository.update(
+      id,
+      updateSpamMessageInput
+    );
+    return updatedSpamMessage;
+  }
 
   async remove(id: string) {
     const { affected } = await this.spamRepository.delete(id);

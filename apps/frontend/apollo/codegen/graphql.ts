@@ -278,6 +278,7 @@ export type Mutation = {
   updateAnswer: AnswerEntity;
   updateBot: BotEntity;
   updateMessage: MessageEntity;
+  updateSpamMessage: MessageEntity;
 };
 
 
@@ -430,6 +431,12 @@ export type MutationUpdateBotArgs = {
 export type MutationUpdateMessageArgs = {
   id: Scalars['String']['input'];
   updateMessageInput: UpdateMessageInput;
+};
+
+
+export type MutationUpdateSpamMessageArgs = {
+  id: Scalars['String']['input'];
+  updateSpamMessageInput: CreateMessageInput;
 };
 
 export type Query = {
@@ -743,6 +750,14 @@ export type CreateSpamMessageMutationVariables = Exact<{
 
 export type CreateSpamMessageMutation = { __typename?: 'Mutation', createSpamMessage: { __typename?: 'MessageEntity', id?: string | null, text?: string | null, type?: string | null, db_name?: string | null } };
 
+export type UpdateSpamMessageMutationVariables = Exact<{
+  id: Scalars['String']['input'];
+  updateSpamMessageInput: CreateMessageInput;
+}>;
+
+
+export type UpdateSpamMessageMutation = { __typename?: 'Mutation', updateSpamMessage: { __typename?: 'MessageEntity', id?: string | null, text?: string | null, type?: string | null, db_name?: string | null } };
+
 export type RemoveSpamMessageMutationVariables = Exact<{
   id: Scalars['String']['input'];
 }>;
@@ -824,6 +839,7 @@ export const RemoveScenarioDocument = {"kind":"Document","definitions":[{"kind":
 export const CreateScenarioDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"createScenario"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"createScenarioInput"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"CreateScenarioInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"createScenario"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"scenarioInput"},"value":{"kind":"Variable","name":{"kind":"Name","value":"createScenarioInput"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"branches"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"choices"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]}}]}}]} as unknown as DocumentNode<CreateScenarioMutation, CreateScenarioMutationVariables>;
 export const SpamMessagesDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"spamMessages"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"spamMessages"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"text"}},{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"Field","name":{"kind":"Name","value":"db_name"}},{"kind":"Field","name":{"kind":"Name","value":"scenarioIdForSpam"}}]}}]}}]} as unknown as DocumentNode<SpamMessagesQuery, SpamMessagesQueryVariables>;
 export const CreateSpamMessageDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"createSpamMessage"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"createSpamMessageInput"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"CreateMessageInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"createSpamMessage"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"createSpamMessageInput"},"value":{"kind":"Variable","name":{"kind":"Name","value":"createSpamMessageInput"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"text"}},{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"Field","name":{"kind":"Name","value":"db_name"}}]}}]}}]} as unknown as DocumentNode<CreateSpamMessageMutation, CreateSpamMessageMutationVariables>;
+export const UpdateSpamMessageDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"updateSpamMessage"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"updateSpamMessageInput"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"CreateMessageInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"updateSpamMessage"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}},{"kind":"Argument","name":{"kind":"Name","value":"updateSpamMessageInput"},"value":{"kind":"Variable","name":{"kind":"Name","value":"updateSpamMessageInput"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"text"}},{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"Field","name":{"kind":"Name","value":"db_name"}}]}}]}}]} as unknown as DocumentNode<UpdateSpamMessageMutation, UpdateSpamMessageMutationVariables>;
 export const RemoveSpamMessageDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"removeSpamMessage"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"removeSpamMessage"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}]}]}}]} as unknown as DocumentNode<RemoveSpamMessageMutation, RemoveSpamMessageMutationVariables>;
 export const SpamMessagesByDbNameDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"spamMessagesByDbName"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"db_name"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"spamMessagesByDbName"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"db_name"},"value":{"kind":"Variable","name":{"kind":"Name","value":"db_name"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"text"}},{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"Field","name":{"kind":"Name","value":"db_name"}}]}}]}}]} as unknown as DocumentNode<SpamMessagesByDbNameQuery, SpamMessagesByDbNameQueryVariables>;
 export const JoinGroupsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"joinGroups"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"joinGroupsInput"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"JoinGroupsInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"joinGroups"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"JoinGroupsInput"},"value":{"kind":"Variable","name":{"kind":"Name","value":"joinGroupsInput"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"bot"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"api_id"}}]}},{"kind":"Field","name":{"kind":"Name","value":"joining_groups"}}]}}]}}]} as unknown as DocumentNode<JoinGroupsMutation, JoinGroupsMutationVariables>;

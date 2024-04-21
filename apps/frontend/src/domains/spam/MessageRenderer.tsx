@@ -1,5 +1,8 @@
-import { TMessageEntity } from "@core/types/server";
-import { querySpamMessages } from "../../../pages/spam/gql";
+import { CreateMessageInput, TMessageEntity } from "@core/types/server";
+import {
+  mutationUpdateSpamMessage,
+  querySpamMessages,
+} from "../../../pages/spam/gql";
 import { Clickable } from "../../shared/Clickable/Clickable";
 import { FaTrash } from "react-icons/fa";
 import { PiFilmScriptFill } from "react-icons/pi";
@@ -12,7 +15,7 @@ import {
   TextInputWithChoicesList,
 } from "../../shared/Input/TextInput";
 import { AScenarioElementType, EScenarioElementType } from "@core/types/client";
-import { useLazyQuery, useQuery } from "@apollo/client";
+import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
 import { getBasicScenariosDetailsQuery } from "../../../pages/scenarios/gql";
 
 export const MessageRenderer = ({
@@ -22,7 +25,9 @@ export const MessageRenderer = ({
   message: Partial<TMessageEntity>;
   removeFunction: (id: string) => void;
 }) => {
-  const { type, text, audio, db_name, scenarioIdForSpam, id } = message;
+  const { type, text, audio, db_name, scenarioIdForSpam } = message;
+  // updateSpamMessage
+  const [updateSpamMessage] = useMutation(mutationUpdateSpamMessage);
   const [editingMessage, setEditingMessage] = useState(false);
   const [editedMessage, setEditedMessage] =
     useState<Partial<TMessageEntity>>(message);
@@ -33,6 +38,10 @@ export const MessageRenderer = ({
     (scenario) => scenario.id
   );
 
+  // we need to extract __typename and id from editedMessage
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  const { __typename, id, ...updateMessageData } = editedMessage;
   return (
     <div className="flex items-center justify-between p-2 border-b gap-1">
       {!editingMessage ? (
@@ -107,7 +116,21 @@ export const MessageRenderer = ({
             title="Save"
             primary
             icon={FaRegSave}
-            onClick={() => setEditingMessage(!editingMessage)}
+            onClick={async () => {
+              await updateSpamMessage({
+                variables: {
+                  id: message.id,
+                  updateSpamMessageInput:
+                    updateMessageData as CreateMessageInput,
+                },
+                refetchQueries: [
+                  {
+                    query: querySpamMessages,
+                  },
+                ],
+              });
+              setEditingMessage(!editingMessage);
+            }}
           />
           <Clickable
             title="Cancel"

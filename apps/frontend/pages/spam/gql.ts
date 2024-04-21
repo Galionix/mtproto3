@@ -24,6 +24,20 @@ export const mutationCreateSpamMessage = graphql(`
     }
   }
 `);
+// updateSpamMessage
+export const mutationUpdateSpamMessage = graphql(`
+  mutation updateSpamMessage(
+    $id: String!
+    $updateSpamMessageInput: CreateMessageInput!
+  ) {
+    updateSpamMessage(id: $id, updateSpamMessageInput: $updateSpamMessageInput) {
+      id
+      text
+      type
+      db_name
+    }
+  }
+`);
 
 // removeSpamMessage
 export const mutationRemoveSpamMessage = graphql(`
