@@ -68,6 +68,7 @@ export default async function scenarioHandler({
           file: filePath,
           voiceNote: true,
           caption: sendableMessage.payload.text,
+          replyTo,
         });
       }
       break;

@@ -23,6 +23,8 @@ import { IoList } from "react-icons/io5";
 import { BotStateLogsList } from "../../src/domains/bots/EventsList/EventsList";
 import s from "./Index.module.scss";
 import { BotsIndexPanel } from "../../src/domains/bots/BotsIndexPanel/BotsIndexPanel";
+import { TextInputWithChoicesList } from "../../src/shared/Input/TextInput";
+import { useBotsPageStore } from "./botsPageStore";
 
 const BotsPage: NextPage = () => {
   const { data } = useQuery(getBotsQuery);
@@ -113,7 +115,20 @@ const BotsPage: NextPage = () => {
       botName: string;
     }[]
   >([]);
+  const availableColumnsNames = botsForTable[0]
+    ? Object.keys(botsForTable[0])
+    : [];
+
+  // useBotsPageStore
+  const {
+    visibleColumns: selectedColumns,
+    setVisibleColumns: setSelectedColumns,
+  } = useBotsPageStore();
+
   // queryStartBotsDelayed
+  // const [selectedColumns, setSelectedColumns] = useState<
+  //   (keyof (typeof botsForTable)[0])[]
+  // >(["api_id", "botName", "api_hash", "behaviorModel"]);
 
   return (
     <Layout>
@@ -143,6 +158,20 @@ const BotsPage: NextPage = () => {
           ) || []
         }
       />
+      {botsForTable[0] && (
+        <TextInputWithChoicesList
+          multiple
+          label="Select columns"
+          choices={availableColumnsNames}
+          value={selectedColumns.join(",")}
+          onChange={(val) => {
+            if (!val) return;
+            setSelectedColumns(val.split(",") as any);
+          }}
+          // selected={selectedColumns}
+          // setSelected={setSelectedColumns}
+        />
+      )}
       <Table
         onSelectRow={(selectedRows) => {
           setSelectedBots(
@@ -152,7 +181,7 @@ const BotsPage: NextPage = () => {
             }))
           );
         }}
-        columns={["api_id", "botName", "api_hash", "behaviorModel"]}
+        columns={selectedColumns}
         data={botsForTable}
         rowLeftControls={(bot) => [
           <SessionStringRestore
