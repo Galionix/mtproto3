@@ -167,7 +167,7 @@ export class ScenarioRepositoryService {
     const choice = await this.answersRepositoryService.create(
       createChoiceInput
     );
-      console.log("choice: ", choice);
+    console.log("choice: ", choice);
 
     branch.choices.push(choice);
 
@@ -200,6 +200,15 @@ export class ScenarioRepositoryService {
     // });
 
     return branch;
+  }
+
+  async findAllByIds(ids: string[]) {
+    const scenarios = await this.scenarioRepository.find({
+      where: { id: In(ids) },
+      relations: ["branches", "branches.choices", "branches.choices.responses"],
+    });
+
+    return orderByIndexScenarioEntities(scenarios);
   }
 
   // addBranchToScenario(

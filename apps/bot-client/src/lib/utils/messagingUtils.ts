@@ -51,6 +51,7 @@ export const delayFactory = () => {
     onError: (error: any) => Promise<void>
     // senderId: bigInt.BigInteger
   ) => {
+    // message.
     const senderId = message.receiver;
     let delay = 5;
     let action: any = new Api.SendMessageTypingAction();

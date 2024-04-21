@@ -42,6 +42,7 @@ export type TState = {
   read_delay: number;
   type_delay_multiplier: number;
   dmScenario: ScenarioEntity;
+  spamScenarios: ScenarioEntity[];
 
   // message_probability: this is a number between 0 and 1
   // that represents the probability of a message being sent

@@ -14,12 +14,14 @@ import { applyReplacements } from "../../utils/messagingUtils";
 export type TScenarioHandlerArgs = {
   sendableMessage: TSendableMessage;
   client: TelegramClient;
-  senderId: bigInt.BigInteger;
+  senderId: bigInt.BigInteger | string;
+  replyTo?: number;
 };
 export default async function scenarioHandler({
   sendableMessage,
   client,
   senderId,
+  replyTo,
 }: TScenarioHandlerArgs) {
   if (!sendableMessage) {
     logEvent("ERROR_SCENARIO_HANDLER", "sendableMessage is undefined");
@@ -35,8 +37,18 @@ export default async function scenarioHandler({
         }
         await client.sendMessage(senderId, {
           message: applyReplacements(sendableMessage.payload.text),
+          replyTo,
         });
       }
+      // if (("replyToMessageId" in sendableMessage.payload)&&"text" in sendableMessage.payload && sendableMessage.payload.text) {
+      //   if (sendableMessage.payload.text.includes("##link##")) {
+      //     logEvent("LINK_SENT", "link sent");
+      //   }
+      //   await client.sendMessage(senderId, {
+      //     message: applyReplacements(sendableMessage.payload.text),
+      //     replyTo: sendableMessage.payload.replyToMessageId
+      //   });
+      // }
       break;
     case EMessageType.AUDIO:
       if ("audio" in sendableMessage.payload) {

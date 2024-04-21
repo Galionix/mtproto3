@@ -13,6 +13,7 @@ import {
 } from "./taskArranger";
 import { logEvent } from "../processApi/logEventTostate";
 import { listGroups } from "./subprocessors/listGroups";
+import { respondToGroupMessage } from "./subprocessors/respondToGroupMessage";
 
 export type TTaskProcessor = (
   task: TTask,
@@ -50,6 +51,7 @@ export const taskProcessor: TTaskProcessor = async (task, client) => {
       break;
 
     case ETaskType.RESPOND_TO_GROUP_MESSAGE:
+      await respondToGroupMessage({ client, task });
       break;
     case ETaskType.SPAM_TO_GROUP:
       // if ("spamGroupId" in payload) {

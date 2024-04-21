@@ -10,6 +10,7 @@ export enum EMessageType {
 export const MessageTypeValues = Object.values(EMessageType);
 
 type TTextMessagePayload = {
+  scenarioIdForSpam?: string;
   text: string;
 };
 type TReactionMessagePayload = {
@@ -60,7 +61,6 @@ export type TClientMessage =
   | TAudioMessage
   | TStickerMessage;
 
-
 const myMessage: TClientMessage = {
   type: EMessageType.TEXT,
   payload: {
@@ -70,6 +70,6 @@ const myMessage: TClientMessage = {
 // TODO: create graphql schema instead of this
 
 export type TSendableMessage = TClientMessage & {
-  receiver: number | bigInt.BigInteger;
+  receiver: bigInt.BigInteger | string;
   replyToMessageId?: number;
 };

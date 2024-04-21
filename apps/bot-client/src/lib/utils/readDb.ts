@@ -61,7 +61,7 @@ export async function readDbSequence({
     logEvent(BotEventTypes.LOG_EVENT, `db response success.`);
 
     try {
-      const { db, spamDb, scenarios, replacements } = res;
+      const { db, spamDb, scenarios, replacements, spamScenarios } = res;
       logEvent(
         BotEventTypes.LOG_EVENT,
         `db(${db.length}), spamDb(${spamDb.length}), scenarios(${scenarios.length}), replacements(${replacements.length})`
@@ -71,6 +71,7 @@ export async function readDbSequence({
       const { dmDb, groupDb, channelDb } = readDb(db);
 
       state.dmDb = dmDb;
+      state.spamScenarios = spamScenarios;
       state.replacements = JSON.parse(replacements);
       state.groupDb = groupDb;
       state.channelDb = channelDb;

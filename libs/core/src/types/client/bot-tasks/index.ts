@@ -56,10 +56,18 @@ export interface TRespondToDMMessage {
   payload: TRespondToDMMessagePayload;
 }
 
+// export type TRespondToGroupMessagePayload = {
+//   message: MessageEntity;
+//   senderId: bigInt.BigInteger;
+//   originalMessageId: number;
+// };
+
 export type TRespondToGroupMessagePayload = {
-  message: string;
-  senderId: bigInt.BigInteger;
-  chatId: bigInt.BigInteger;
+  message: MessageEntity;
+  channelIdString: string;
+  replyTo: number;
+  originalMessageId: number;
+  // chatId: bigInt.BigInteger;
 };
 
 // export type TRespondToGroupMessage = TGenericTask<

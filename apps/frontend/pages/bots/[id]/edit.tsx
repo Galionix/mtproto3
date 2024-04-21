@@ -209,7 +209,24 @@ const EditBotPage: NextPage = () => {
             type="text"
             placeholder="answersDb"
             required
-            value={bot.answersDb}
+            // value={bot.answersDb}
+
+            value={updateBotData.answersDb}
+            onChange={(e) => {
+              dispatch({ answersDb: e });
+            }}
+          />
+          {/* spamDbName */}
+          <TextInput
+            label="spamDbName"
+            type="text"
+            placeholder="spamDbName"
+            required
+            // value={bot.spamDbName}
+            value={updateBotData.spamDBname}
+            onChange={(e) => {
+              dispatch({ spamDBname: e });
+            }}
           />
           {/* behaviorModel */}
           <TextInput
@@ -500,6 +517,7 @@ const EditBotPage: NextPage = () => {
             clientStateUpdateTime,
             ...rest
           } = updateBotData;
+          console.log("updateBotData: ", updateBotData);
 
           const preparedUpdateBotData = {
             ...rest,
@@ -520,7 +538,7 @@ const EditBotPage: NextPage = () => {
               },
             ],
           });
-          router.push("/bots");
+          // router.push("/bots");
         }}
       />
     </Layout>

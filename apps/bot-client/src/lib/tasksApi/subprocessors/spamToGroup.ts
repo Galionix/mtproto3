@@ -37,6 +37,7 @@ export const spamToGroup = async ({
   };
 
   await readDelay();
+  await client.markAsRead(spamGroupId);
   await typeDelay(client, message, async (error: RPCError) => {
     logEvent("ERROR_SPAM_TO_GROUP", JSON.stringify({ error, message, task }));
     // check for USER_BANNED_IN_CHANNEL

@@ -6,6 +6,8 @@ import {
   TListGroupsTask,
   TRespondToDMMessage,
   TRespondToDMMessagePayload,
+  TRespondToGroupMessage,
+  TRespondToGroupMessagePayload,
   TRespondToUnreadMessageTask,
 } from "@core/types/client";
 import { v4 as uuid } from "uuid";
@@ -24,6 +26,28 @@ export const addDmTask = async ({
       originalMessageId,
       message: message,
       senderId,
+    },
+  };
+  state.tasks.push(task);
+  sendStateToFatherProcess(state);
+};
+export const addGroupResponseTask = async ({
+  message,
+  channelIdString,
+  replyTo,
+  originalMessageId,
+}: // chatId,
+TRespondToGroupMessagePayload) => {
+  const task: TRespondToGroupMessage = {
+    id: uuid(),
+    type: ETaskType.RESPOND_TO_GROUP_MESSAGE,
+    date: Date.now(),
+    payload: {
+      message,
+      channelIdString,
+      replyTo,
+      originalMessageId,
+      // chatId,
     },
   };
   state.tasks.push(task);

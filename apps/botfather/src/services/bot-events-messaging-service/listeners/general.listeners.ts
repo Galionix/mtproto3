@@ -64,6 +64,17 @@ async function listenForBotToRequestDB({
     const bot = await botRepositoryService.findOne(api_id);
     // const db = await answersRepositoryService.findByDbName(database);
     const spamDb = await spamRepositoryService.findByDbName(spamDBname);
+
+    // get scenarios by ids containing in spamDb MessageEntities
+    const scenarioIds = spamDb
+      .map((message) => message.scenarioIdForSpam)
+      .filter(Boolean);
+    console.log("scenarioIds: ", scenarioIds);
+    const spamScenarios = await scenarioRepositoryService.findAllByIds(
+      scenarioIds
+    );
+    console.log("spamScenarios: ", spamScenarios);
+
     const scenarios = await scenarioRepositoryService.findAllByNames(
       dmScenarioNames
     );
@@ -78,6 +89,7 @@ async function listenForBotToRequestDB({
       // spamDb: messageTransformer(spamDb),
       replacements: bot.replacements.replaceAll("\n", ""),
       db: [],
+      spamScenarios,
       // transform MessageEntity[] to type TClientMessage[]
       spamDb: messageTransformer(spamDb),
       scenarios: scenarios,

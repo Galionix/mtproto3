@@ -14,6 +14,7 @@ export type TGetDatabaseSuccess =
     db: TDatabase;
     spamDb: TClientMessage[];
     scenarios: ScenarioEntity[];
+    spamScenarios: ScenarioEntity[];
     replacements: string;
   };
 

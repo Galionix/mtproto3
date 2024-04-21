@@ -39,6 +39,7 @@ export const state: TState = {
   afterTaskIdleTime: 10000,
   replacements: {},
   groupCounters: {},
+  spamScenarios: [],
 };
 
 // use this with caution!
