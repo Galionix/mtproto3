@@ -11,6 +11,8 @@ import { useState } from "react";
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 import { useModal } from "../../src/Modal/Modal";
 import { ScenarioEntity } from "@core/types/server";
+import { FaRegCopy } from "react-icons/fa6";
+
 const ScenariosIndexPage = () => {
   const { data, loading } = useQuery(getBasicScenariosDetailsQuery);
 
@@ -72,7 +74,7 @@ const ScenariosIndexPage = () => {
       <div className="flex flex-col w-full divide-y divide-solid divide-neutral-300">
         {data?.scenarios?.map((scenario, index) => (
           <div
-            className="flex flex-row items-center gap-1 p-2 "
+            className="flex flex-row items-center gap-3 p-2 "
             key={scenario.id}
           >
             <span
@@ -85,6 +87,18 @@ const ScenariosIndexPage = () => {
             <span className="text-neutral-500">
               branches: {scenario.branches?.length}
             </span>
+            {/* copy id */}
+            <Clickable
+              // primary
+              icon={FaRegCopy}
+              comp="link"
+              href=""
+              text={scenario.id}
+              onClick={() => {
+                navigator.clipboard.writeText(scenario.id);
+              }}
+              title="copy id"
+            />
             <Clickable
               className="ml-auto"
               // primary
