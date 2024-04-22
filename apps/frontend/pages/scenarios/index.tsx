@@ -101,6 +101,16 @@ const ScenariosIndexPage = () => {
             />
             <Clickable
               className="ml-auto"
+              primary
+              text="View"
+              onClick={() => {
+                showModal();
+                setPreviewScenario(scenario as ScenarioEntity);
+              }}
+              icon={AiFillEye}
+              title="view"
+            />
+            <Clickable
               // primary
               comp="link"
               text="Edit"
@@ -110,16 +120,6 @@ const ScenariosIndexPage = () => {
               icon={CiEdit}
               href={`/scenarios/${scenario.id}/edit`}
               title="edit"
-            />
-            <Clickable
-              primary
-              text="View"
-              onClick={() => {
-                showModal();
-                setPreviewScenario(scenario as ScenarioEntity);
-              }}
-              icon={AiFillEye}
-              title="view"
             />
 
             <Clickable

@@ -76,7 +76,7 @@ export function convertToFlowChartData(
         id: choice.id,
         type: "input-output",
         position: {
-          x: 200 + index * 600,
+          x: 200 + index * 400,
           y: 100 + branchIndex * 2 * 150,
         },
         ports: choicePorts,
