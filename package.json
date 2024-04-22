@@ -23,6 +23,7 @@
   "private": true,
   "dependencies": {
     "@apollo/client": "^3.7.16",
+    "@mrblenny/react-flow-chart": "^0.0.14",
     "@mtproto/core": "^6.2.0",
     "@nestjs/apollo": "^10.2.0",
     "@nestjs/common": "^9.0.0",

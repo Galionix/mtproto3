@@ -11,8 +11,10 @@ export const getBasicScenariosDetailsQuery = graphql(`
         choices {
           id
           request
+          nextBranchId
           responses {
             text
+            audio
           }
         }
       }

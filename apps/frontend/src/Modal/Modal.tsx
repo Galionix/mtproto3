@@ -13,6 +13,7 @@ type TModalProps<T = null> = {
   actionProps?: T;
   className?: string;
   title?: string;
+  titleElement?: (args?: T) => React.ReactNode;
 };
 export function Modal<T = null>({
   id,
@@ -23,6 +24,7 @@ export function Modal<T = null>({
   actionProps = null,
   danger = false,
   title,
+  titleElement,
 }: TModalProps<T>) {
   const ref = useRef(null);
 
@@ -32,6 +34,7 @@ export function Modal<T = null>({
     e.preventDefault();
     e.stopPropagation();
   };
+  const TitleElement = titleElement && titleElement();
   return (
     <dialog
       ref={ref}
@@ -39,7 +42,8 @@ export function Modal<T = null>({
       className={cx(className, s.modal)}
       onScroll={preventMouseScroll}
     >
-      {title && <h1>{title}</h1>}
+      {title && !titleElement && <h1>{title}</h1>}
+      {TitleElement}
       <div className={s.modalContent}>
         {ChildrenElement}
         <div className={s.modalFooter}>
@@ -77,7 +81,7 @@ export function useModal<T>(
   modal: JSX.Element,
   options: {
     showModal: (props?: T) => void;
-    hideModal: () => void;
+    hideModal: (destroy?: boolean) => void;
     setActionProps: (args: T) => void;
   }
 ] {
@@ -112,6 +116,7 @@ export function useModal<T>(
       actionProps={actionProps}
       className={props.className}
       title={props.title || "Just one more thing before you proceed..."}
+      titleElement={props.titleElement}
     >
       {children}
     </Modal>
