@@ -7,24 +7,6 @@ export function convertToFlowChartData(
   console.log("input: ", input);
   const nodes: IChart["nodes"] = {};
   const links: IChart["links"] = {};
-  // const firstNode = input.branches[0];
-  // const firstNodePorts: { [id: string]: IPort } =
-  //   input.branches[0].choices.reduce((acc, choice) => {
-  //     acc[choice.id] = {
-  //       id: choice.id,
-  //       type: "output",
-  //     };
-  //     return acc;
-  //   }, {} as { [id: string]: IPort });
-  // nodes[firstNode.id] = {
-  //   id: firstNode.id,
-  //   type: "output-only",
-  //   position: {
-  //     x: 300,
-  //     y: 100,
-  //   },
-  //   ports: firstNodePorts,
-  // };
 
   input.branches.forEach((branch, branchIndex) => {
     // create node From branch
@@ -48,22 +30,26 @@ export function convertToFlowChartData(
       ports: branchPorts,
     };
     branch.choices.forEach((choice, index) => {
+      console.log("choice: ", choice);
+      const choiceId = `${choice.id}_${branch.id}`;
       const choicePorts: { [id: string]: IPort } = {
-        [choice.id]: {
-          id: choice.id,
+        [choiceId]: {
+          id: choiceId,
           type: "input-output",
         },
       };
-      const requestText = choice.request.join(", ");
+      if (!choice.request) return;
+      // console.log("choice.request: ", choice.request);
+      // const requestText = choice.request.join(", ");
       const responseText = choice.responses
         .map((r) => r.text || r.audio)
         .join(", ");
-      nodes[choice.id] = {
+      nodes[choiceId] = {
         properties: {
           request: choice.request.length
-            ? requestText.length > 40
-              ? requestText.slice(0, 40) + "..."
-              : requestText
+            ? choice.request.length > 40
+              ? choice.request.slice(0, 40) + "..."
+              : choice.request
             : "Any",
           response:
             responseText.length > 40
@@ -73,7 +59,7 @@ export function convertToFlowChartData(
           //   ? choice.request.join(", ")
           //   : choice.responses.map((r) => r.text || r.audio).join(", "),
         },
-        id: choice.id,
+        id: choiceId,
         type: "input-output",
         position: {
           x: 200 + index * 400,
@@ -81,26 +67,26 @@ export function convertToFlowChartData(
         },
         ports: choicePorts,
       };
-      links[`${choice.id}-${branch.id}`] = {
-        id: `${choice.id}-${branch.id}`,
+      links[`${choiceId}-${branch.id}`] = {
+        id: `${choiceId}-${branch.id}`,
         from: {
-          nodeId: choice.id,
-          portId: choice.id,
+          nodeId: choiceId,
+          portId: choiceId,
         },
         to: {
           nodeId: choice.nextBranchId,
           portId: choice.nextBranchId,
         },
       };
-      links[`${branch.id}-${choice.id}`] = {
-        id: `${branch.id}-${choice.id}`,
+      links[`${branch.id}-${choiceId}`] = {
+        id: `${branch.id}-${choiceId}`,
         from: {
           nodeId: branch.id,
           portId: branch.id,
         },
         to: {
-          nodeId: choice.id,
-          portId: choice.id,
+          nodeId: choiceId,
+          portId: choiceId,
         },
       };
     });

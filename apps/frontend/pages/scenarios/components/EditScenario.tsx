@@ -56,6 +56,10 @@ import { EScenarioElementType, AScenarioElementType } from "@core/types/client";
 import { TestScenario } from "./TestScenario";
 import { useResourcesStore } from "../../resources/resourcesStore";
 import s from "./EditScenario.module.scss";
+import { parseInstructions } from "./utils";
+import { useModal } from "../../../src/Modal/Modal";
+import { ScenarioRenderer } from "./ScenarioRenderer/ScenarioRenderer";
+import { convertToFlowChartData } from "./ScenarioRenderer/utils";
 export type TChoice = {
   key: string;
   responses: TResponse[];
@@ -82,7 +86,33 @@ export const EditScenario = ({
   scenarioString,
 }: TEditScenarioProps) => {
   const { resources } = useResourcesStore();
-  console.log("resources: ", resources);
+
+  const instructionasfds = `
+  b1
+  c1
+  q*
+  r1:а ты что думал, в сказку попал?
+  n:b2
+
+  c2
+  q:дура
+  r1:сам такой
+  n:b3
+
+  b2
+  c1
+  q*
+  r1:ого а ты у нас самый умный?
+  r2:что правда?
+  r3:ого ладно
+  n:b3
+
+  b3
+  `;
+  // console.log("parsedScenario: ", parsedScenario);
+
+  // console.log("resources: ", resources);
+
   // const
   const router = useRouter();
   const [testScenario, setTestScenario] = useState(false);
@@ -103,6 +133,114 @@ export const EditScenario = ({
   const [createScenario, { data, loading, error }] = useMutation(
     createScenarioMutation
   );
+
+  // const [previewScenario, setPreviewScenario] = useState<ScenarioEntity | null>(
+  //   null
+  // );
+
+  const [instructions, setInstructions] = useState<string>("");
+  console.log("instructions: ", instructions);
+
+  const parsedScenario = parseInstructions(instructions);
+
+  console.log("parsedScenario: ", parsedScenario);
+  // const flowChartData = convertToFlowChartData(parsedScenario as ScenarioEntity);
+  // const [showMarkup, setShowMarkup] = useState(false);
+
+  const [isMounted, setIsMounted] = useState(true);
+
+  const handleRemount = () => {
+    setIsMounted(false);
+    setTimeout(() => {
+      setIsMounted(true);
+    }, 0);
+  };
+
+  const [initialMarkupModal, { showModal, hideModal }] = useModal({
+    className: "w-[70vw] h-[90vh]",
+    id: "preview_scenario_markup",
+    // title: `Preview ${previewScenario.description} scenario `,
+    titleElement: () => (
+      <div className="flex justify-between flex-row items-center">
+        <h1>Preview {parsedScenario?.description} scenario</h1>
+
+        <Clickable
+          danger
+          className="ml-auto"
+          icon={AiFillEyeInvisible}
+          text="Close"
+          onClick={() => {
+            // setPreviewScenario(null);
+            hideModal();
+          }}
+        />
+      </div>
+    ),
+    // titleElement
+    children: () => (
+      <div className="flex flex-row gap-2">
+        <div className="w-1/2 flex flex-col gap-2">
+          <TextInput
+            area
+            fullWidth
+            label="Script Instructions"
+            value={instructions}
+            onChange={(value) => {
+              setInstructions(value);
+              handleRemount();
+            }}
+          />
+          <Clickable
+            primary
+            text="Parse Instructions"
+            onClick={() => {
+              const correctScenario = {
+                ...parsedScenario,
+                branches: parsedScenario.branches.map((branch) => {
+                  return {
+                    ...branch,
+                    choices: branch.choices.map((choice) => {
+                      return {
+                        ...choice,
+                        responses: choice.responses.map((response) => {
+                          return {
+                            ...response,
+                            key: uuidv3(
+                              response.text || JSON.stringify(response),
+                              uuidv3.URL
+                            ),
+                          };
+                        }),
+
+                        request:
+                          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                          // @ts-ignore
+                          choice.request === "*"
+                            ? []
+                            : // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                              // @ts-ignore
+                              choice.request.split(","),
+                      };
+                    }),
+                  };
+                }),
+              };
+              setArbitraryRawData(JSON.stringify(correctScenario));
+              setShowRawData(true);
+              hideModal();
+            }}
+          />
+        </div>
+
+        {isMounted && <ScenarioRenderer scenario={parsedScenario} />}
+      </div>
+    ),
+    onCancel: () => {
+      // setPreviewScenario(null);
+      hideModal();
+    },
+  });
+
   const ErrorModal = useErrorModal(error);
   const { scenario, setScenario, clearScenario } = useCreateScenarioStore();
 
@@ -229,6 +367,16 @@ export const EditScenario = ({
       >
         <div className="flex justify-between gap-2 flex-row items-center">
           <h1>Create Scenario Page</h1>
+          <Clickable
+            icon={AiFillEye}
+            text="Markup"
+            primary
+            onClick={() => {
+              // setPreviewScenario(formData);
+              showModal();
+            }}
+          />
+          {initialMarkupModal}
           {/* clear scenario */}
           <Clickable
             danger

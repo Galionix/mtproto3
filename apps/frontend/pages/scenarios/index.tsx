@@ -19,6 +19,7 @@ const ScenariosIndexPage = () => {
   const noScenarios = !data?.scenarios?.length;
   const [previewScenario, setPreviewScenario] = useState<ScenarioEntity>(null);
   // modal containing the preview of the scenario using useModal
+
   const [PreviewModal, { showModal, hideModal }] = useModal({
     id: "preview_scenario",
     // title: `Preview ${previewScenario.description} scenario `,
@@ -48,8 +49,6 @@ const ScenariosIndexPage = () => {
       setPreviewScenario(null);
       hideModal();
     },
-    // onCancel: hideModal,
-    // onSubmit: hideModal,
   });
   return (
     <Layout loading={loading}>
