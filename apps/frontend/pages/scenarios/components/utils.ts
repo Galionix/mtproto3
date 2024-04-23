@@ -73,6 +73,8 @@ export function parseInstructions(instructions: string): ScenarioEntity {
 
         case "q":
           if (currentBranch) {
+            console.log('currentBranch: ', currentBranch);
+            console.log('currentBranch.choices.length - 1: ', currentBranch.choices.length - 1);
             currentBranch.choices[currentBranch.choices.length - 1].request =
               value || "";
           } else {
@@ -84,6 +86,7 @@ export function parseInstructions(instructions: string): ScenarioEntity {
         case "r":
           if (currentBranch) {
             const responsesTexts: string[] = value.split("|");
+            console.log("responsesTexts: ", responsesTexts);
             responsesTexts.forEach((responseText, index) => {
               currentBranch.choices[
                 currentBranch.choices.length - 1

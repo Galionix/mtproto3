@@ -56,13 +56,7 @@ const ScenariosIndexPage = () => {
       {PreviewModal}
       {/* <ScenarioRenderer /> */}
       <div className="flex justify-between flex-row items-center">
-        <h1>
-          Scenarios and here is{" "}
-          <DocumentationSlice slice="Cоздание бота">
-            some info
-          </DocumentationSlice>{" "}
-          lorem ipsum
-        </h1>
+        <h1>Scenarios</h1>
 
         <Clickable
           icon={AiOutlinePlus}

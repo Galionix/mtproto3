@@ -47,33 +47,39 @@ export const DocumentationSlice = ({
     .replaceAll(":", "")
     .replaceAll(",", "");
   const [hovered, setHovered] = useState(false);
+  const openIconClassNames = hovered ? "text-orange-400 text-sm" : "";
   return (
-    <span
-      className="relative text-gray-600 underline cursor-pointer"
-      onClick={() => {
-        setHovered(!hovered);
-      }}
-    >
-      {children}
-      {hovered && (
-        <div
-          onClick={() => {
-            router.push(`/docs#${linkUrl}`);
-          }}
-          className="absolute p-4 bg-white shadow-md rounded-md max-w-lg text-sm"
-        >
-          {content.length > 400 && (
-            <p className="text-orange-500">Click here to read more...</p>
-          )}
-          {/* {slice} */}
-          <ReactMarkdown>{slicedContent}</ReactMarkdown>
-        </div>
-      )}
-      <IoInformationCircleOutline
-        className="
-      absolute top-[-5px] right-[-5px] text-blue-400 text-sm
-      "
-      />
-    </span>
+    <>
+      {" "}
+      <span
+        className="relative text-gray-600 underline cursor-pointer"
+        onClick={() => {
+          setHovered(!hovered);
+        }}
+      >
+        {children}
+        {hovered && (
+          <div
+            // className="absolute p-4 bg-white shadow-md rounded-md max-w-lg text-sm"
+            onClick={() => {
+              router.push(`/docs#${linkUrl}`);
+            }}
+            className="absolute p-4 bg-white shadow-md rounded-md w-[300px] text-sm z-10"
+          >
+            {content.length > 400 && (
+              <p className="text-orange-500">Click here to read more...</p>
+            )}
+            {/* {slice} */}
+            <ReactMarkdown>{slicedContent}</ReactMarkdown>
+          </div>
+        )}
+        <IoInformationCircleOutline
+          className={
+            "      absolute top-[-5px] right-[-5px] text-blue-400 text-sm " +
+            openIconClassNames
+          }
+        />
+      </span>{" "}
+    </>
   );
 };

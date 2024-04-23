@@ -76,6 +76,7 @@ export function getBotResponses(
   scenarioData: ScenarioEntity,
   userRequests: string[]
 ) {
+  // console.log("scenarioData: ", scenarioData);
   if (!scenarioData) return null;
   let currentBranch = scenarioData?.branches[0];
 
@@ -83,6 +84,7 @@ export function getBotResponses(
   const responses: AnswerEntity["responses"] = [];
 
   for (const userRequest of userRequests) {
+    // console.log("userRequest: ", userRequest);
     if (!currentBranch) {
       return responses;
     }
@@ -91,9 +93,11 @@ export function getBotResponses(
       currentBranch.choices.findLast((choice) =>
         checkIfRequestMatches(choice.request, userRequest)
       ) ?? currentBranch.choices[0];
+    // console.log("currentChoice: ", currentChoice);
+    if (!currentChoice) continue;
 
     const nextBranch = scenarioData.branches.find(
-      (branch) => branch.id === currentChoice.nextBranchId
+      (branch) => branch.id === currentChoice?.nextBranchId
     );
     currentBranch = nextBranch;
 

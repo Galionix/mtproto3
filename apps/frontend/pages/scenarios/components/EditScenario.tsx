@@ -60,6 +60,7 @@ import { parseInstructions } from "./utils";
 import { useModal } from "../../../src/Modal/Modal";
 import { ScenarioRenderer } from "./ScenarioRenderer/ScenarioRenderer";
 import { convertToFlowChartData } from "./ScenarioRenderer/utils";
+import { DocumentationSlice } from "../../../src/shared/DocumentationSlice/DocumentationSlice";
 export type TChoice = {
   key: string;
   responses: TResponse[];
@@ -87,28 +88,6 @@ export const EditScenario = ({
 }: TEditScenarioProps) => {
   const { resources } = useResourcesStore();
 
-  const instructionasfds = `
-  b1
-  c1
-  q*
-  r1:а ты что думал, в сказку попал?
-  n:b2
-
-  c2
-  q:дура
-  r1:сам такой
-  n:b3
-
-  b2
-  c1
-  q*
-  r1:ого а ты у нас самый умный?
-  r2:что правда?
-  r3:ого ладно
-  n:b3
-
-  b3
-  `;
   // console.log("parsedScenario: ", parsedScenario);
 
   // console.log("resources: ", resources);
@@ -134,18 +113,9 @@ export const EditScenario = ({
     createScenarioMutation
   );
 
-  // const [previewScenario, setPreviewScenario] = useState<ScenarioEntity | null>(
-  //   null
-  // );
-
   const [instructions, setInstructions] = useState<string>("");
-  console.log("instructions: ", instructions);
 
   const parsedScenario = parseInstructions(instructions);
-
-  console.log("parsedScenario: ", parsedScenario);
-  // const flowChartData = convertToFlowChartData(parsedScenario as ScenarioEntity);
-  // const [showMarkup, setShowMarkup] = useState(false);
 
   const [isMounted, setIsMounted] = useState(true);
 
@@ -159,10 +129,13 @@ export const EditScenario = ({
   const [initialMarkupModal, { showModal, hideModal }] = useModal({
     className: "w-[70vw] h-[90vh]",
     id: "preview_scenario_markup",
-    // title: `Preview ${previewScenario.description} scenario `,
     titleElement: () => (
       <div className="flex justify-between flex-row items-center">
-        <h1>Preview {parsedScenario?.description} scenario</h1>
+        <h1>
+          <DocumentationSlice slice="Quick prototyping scenario with scripting">
+            Prototype scenario
+          </DocumentationSlice>
+        </h1>
 
         <Clickable
           danger
@@ -202,6 +175,7 @@ export const EditScenario = ({
                     choices: branch.choices.map((choice) => {
                       return {
                         ...choice,
+                        nextBranchId: choice.nextBranchId || branch.id,
                         responses: choice.responses.map((response) => {
                           return {
                             ...response,
@@ -209,6 +183,7 @@ export const EditScenario = ({
                               response.text || JSON.stringify(response),
                               uuidv3.URL
                             ),
+                            type: EScenarioElementType.TEXT,
                           };
                         }),
 
