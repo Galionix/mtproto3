@@ -12,6 +12,7 @@ import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 import { useModal } from "../../src/Modal/Modal";
 import { ScenarioEntity } from "@core/types/server";
 import { FaRegCopy } from "react-icons/fa6";
+import { DocumentationSlice } from "../../src/shared/DocumentationSlice/DocumentationSlice";
 
 const ScenariosIndexPage = () => {
   const { data, loading } = useQuery(getBasicScenariosDetailsQuery);
@@ -55,7 +56,14 @@ const ScenariosIndexPage = () => {
       {PreviewModal}
       {/* <ScenarioRenderer /> */}
       <div className="flex justify-between flex-row items-center">
-        <h1>Scenarios</h1>
+        <h1>
+          Scenarios and here is{" "}
+          <DocumentationSlice slice="Cоздание бота">
+            some info
+          </DocumentationSlice>{" "}
+          lorem ipsum
+        </h1>
+
         <Clickable
           icon={AiOutlinePlus}
           primary

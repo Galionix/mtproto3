@@ -2,6 +2,7 @@ import { BiUser } from "react-icons/bi";
 import { FaFileAlt } from "react-icons/fa";
 import { PiFilmScriptFill } from "react-icons/pi";
 import { FcBiohazard } from "react-icons/fc";
+import { IoInformationCircleOutline } from "react-icons/io5";
 
 export const sections = [
   {
@@ -32,6 +33,14 @@ export const sections = [
     url: "/spam",
     icon: FcBiohazard,
     description: "Create and manage spam",
+  },
+  // docs
+  {
+    key: "docs",
+    title: "Docs",
+    url: "/docs",
+    icon: IoInformationCircleOutline,
+    description: "Read the documentation",
   },
 ];
 
