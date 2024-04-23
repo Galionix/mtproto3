@@ -63,7 +63,7 @@ export const DocumentationSlice = ({
           className="absolute p-4 bg-white shadow-md rounded-md max-w-lg text-sm"
         >
           {content.length > 400 && (
-            <p className="text-orange-500">Click to read more...</p>
+            <p className="text-orange-500">Click here to read more...</p>
           )}
           {/* {slice} */}
           <ReactMarkdown>{slicedContent}</ReactMarkdown>
