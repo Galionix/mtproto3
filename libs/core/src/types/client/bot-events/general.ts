@@ -21,7 +21,9 @@ export type TLogEvent = TGenericMessage<EGeneralBotEventTypes.LOG_EVENT> & {
 export type TLogGlobal = TGenericMessage<EGeneralBotEventTypes.LOG_GLOBAL> & {
   event_message: string;
   log_event: keyof typeof BotEventTypes;
-  event_date: number;
+  // event_date: number;
+  details?: object;
+  api_id: string;
 };
 
 export type TSendStateToServer =

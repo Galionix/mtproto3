@@ -43,6 +43,8 @@ const documents = {
     "\n  mutation providePhoneNumber($api_id: Int!, $phoneNumber: String!) {\n    providePhoneNumber(api_id: $api_id, phoneNumber: $phoneNumber) {\n      bot {\n        api_id\n        api_hash\n      }\n      requestedPhoneNumber\n      requestedPhoneCode\n      isRunning\n      isStarted\n      isStopped\n      eventLogs {\n        log_event\n        event_date\n        event_message\n      }\n      childProcess {\n        pid\n      }\n    }\n  }\n": types.ProvidePhoneNumberDocument,
     "\n  mutation providePhoneCode($api_id: Int!, $phoneCode: String!) {\n    providePhoneCode(api_id: $api_id, phoneCode: $phoneCode) {\n      bot {\n        api_id\n        api_hash\n      }\n      requestedPhoneNumber\n      requestedPhoneCode\n      isRunning\n      isStarted\n      isStopped\n      eventLogs {\n        log_event\n        event_date\n        event_message\n      }\n      childProcess {\n        pid\n      }\n    }\n  }\n": types.ProvidePhoneCodeDocument,
     "\n  mutation provide2FACode($api_id: Int!, $code: String!) {\n    provide2FACode(api_id: $api_id, code: $code) {\n      bot {\n        api_id\n        api_hash\n      }\n      requestedPhoneNumber\n      requestedPhoneCode\n      isRunning\n      isStarted\n      isStopped\n      eventLogs {\n        log_event\n        event_date\n        event_message\n      }\n      childProcess {\n        pid\n      }\n    }\n  }\n": types.Provide2FaCodeDocument,
+    "\n  query globalLog($limit: Int!) {\n    globalLog(limit: $limit) {\n      id\n      event_message\n      log_event\n      event_date\n      details\n      api_id\n    }\n  }\n": types.GlobalLogDocument,
+    "\n  query globalLogFromDate($date: DateTime!) {\n    globalLogFromDate(date: $date) {\n      id\n      event_message\n      log_event\n      event_date\n      details\n      api_id\n    }\n  }\n": types.GlobalLogFromDateDocument,
 };
 
 /**
@@ -179,6 +181,14 @@ export function graphql(source: "\n  mutation providePhoneCode($api_id: Int!, $p
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(source: "\n  mutation provide2FACode($api_id: Int!, $code: String!) {\n    provide2FACode(api_id: $api_id, code: $code) {\n      bot {\n        api_id\n        api_hash\n      }\n      requestedPhoneNumber\n      requestedPhoneCode\n      isRunning\n      isStarted\n      isStopped\n      eventLogs {\n        log_event\n        event_date\n        event_message\n      }\n      childProcess {\n        pid\n      }\n    }\n  }\n"): (typeof documents)["\n  mutation provide2FACode($api_id: Int!, $code: String!) {\n    provide2FACode(api_id: $api_id, code: $code) {\n      bot {\n        api_id\n        api_hash\n      }\n      requestedPhoneNumber\n      requestedPhoneCode\n      isRunning\n      isStarted\n      isStopped\n      eventLogs {\n        log_event\n        event_date\n        event_message\n      }\n      childProcess {\n        pid\n      }\n    }\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  query globalLog($limit: Int!) {\n    globalLog(limit: $limit) {\n      id\n      event_message\n      log_event\n      event_date\n      details\n      api_id\n    }\n  }\n"): (typeof documents)["\n  query globalLog($limit: Int!) {\n    globalLog(limit: $limit) {\n      id\n      event_message\n      log_event\n      event_date\n      details\n      api_id\n    }\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  query globalLogFromDate($date: DateTime!) {\n    globalLogFromDate(date: $date) {\n      id\n      event_message\n      log_event\n      event_date\n      details\n      api_id\n    }\n  }\n"): (typeof documents)["\n  query globalLogFromDate($date: DateTime!) {\n    globalLogFromDate(date: $date) {\n      id\n      event_message\n      log_event\n      event_date\n      details\n      api_id\n    }\n  }\n"];
 
 export function graphql(source: string) {
   return (documents as any)[source] ?? {};

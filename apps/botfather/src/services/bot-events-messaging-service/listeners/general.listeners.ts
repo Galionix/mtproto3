@@ -6,6 +6,7 @@ import {
   TClientMessage,
   TSendStateToServer,
   TStatisticsEvent,
+  TLogGlobal,
 } from "@core/types/client";
 import {
   AnswerEntity,
@@ -124,6 +125,25 @@ async function listenBotSyncState({
 
   await botRepositoryService.updateClientState(api_id, state);
 }
+async function listenGlobalLog({
+  services,
+  message,
+  api_id,
+}: TListenerArgs<TLogGlobal>) {
+  const { globalLogService, l } = services;
+
+  const { event_message, log_event, details } = message;
+
+  await globalLogService.create(
+    {
+      event_message,
+      log_event,
+      details: JSON.stringify(details),
+      api_id,
+    } as any
+    // cant fix auto generated column error. it actually creates it but i dont know how to set types
+  );
+}
 
 // async function listenBotToRequestGeneralSettings({
 //   services,
@@ -162,7 +182,10 @@ export const generalListeners = [
     listener: listenBotSyncState,
   },
   //  LOG_GLOBAL
-
+  {
+    event_type: BotEventTypes.LOG_GLOBAL,
+    listener: listenGlobalLog,
+  },
   // {
   //   event_type: BotEventTypes.GET_GENERAL_SETTINGS,
   //   listener: listenBotToRequestGeneralSettings

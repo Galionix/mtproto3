@@ -145,6 +145,13 @@ export type CreateBotInput = {
   voice?: InputMaybe<Scalars['String']['input']>;
 };
 
+export type CreateGlobalLogInputDto = {
+  api_id?: InputMaybe<Scalars['Int']['input']>;
+  details?: InputMaybe<Scalars['String']['input']>;
+  event_message?: InputMaybe<Scalars['String']['input']>;
+  log_event?: InputMaybe<Scalars['String']['input']>;
+};
+
 export type CreateMessageInput = {
   /** payload of audio for message */
   audio?: InputMaybe<Scalars['String']['input']>;
@@ -196,6 +203,16 @@ export type CreateScenarioInput = {
   description?: InputMaybe<Scalars['String']['input']>;
   /** maxConversationLength */
   maxConversationLength?: InputMaybe<Scalars['Float']['input']>;
+};
+
+export type GlobalLogEntity = {
+  __typename?: 'GlobalLogEntity';
+  api_id?: Maybe<Scalars['String']['output']>;
+  details?: Maybe<Scalars['String']['output']>;
+  event_date?: Maybe<Scalars['DateTime']['output']>;
+  event_message?: Maybe<Scalars['String']['output']>;
+  id?: Maybe<Scalars['String']['output']>;
+  log_event?: Maybe<Scalars['String']['output']>;
 };
 
 export type JoinGroupsInput = {
@@ -254,6 +271,7 @@ export type Mutation = {
   addChoiceToBranch: ScenarioBranchEntity;
   createAnswer: AnswerEntity;
   createBot: BotEntity;
+  createGlobalLog: GlobalLogEntity;
   createManyMessages: Array<MessageEntity>;
   createMessage: MessageEntity;
   createScenario: ScenarioEntity;
@@ -266,6 +284,7 @@ export type Mutation = {
   providePhoneNumber: BotStateEntity;
   removeAnswer: Scalars['Int']['output'];
   removeBot: BotEntity;
+  removeGlobalLog: GlobalLogEntity;
   removeMessages: Scalars['Int']['output'];
   removePhotos: BotStateEntity;
   removeScenario: Scalars['String']['output'];
@@ -301,6 +320,11 @@ export type MutationCreateAnswerArgs = {
 
 export type MutationCreateBotArgs = {
   createBotInput: CreateBotInput;
+};
+
+
+export type MutationCreateGlobalLogArgs = {
+  createGlobalLogInput: CreateGlobalLogInputDto;
 };
 
 
@@ -364,6 +388,11 @@ export type MutationRemoveAnswerArgs = {
 
 export type MutationRemoveBotArgs = {
   api_id: Scalars['Int']['input'];
+};
+
+
+export type MutationRemoveGlobalLogArgs = {
+  id: Scalars['Int']['input'];
 };
 
 
@@ -449,6 +478,8 @@ export type Query = {
   getBotState: BotStateEntity;
   getBotStates: Array<BotStateEntity>;
   getProcessesCount: Scalars['Int']['output'];
+  globalLog: Array<GlobalLogEntity>;
+  globalLogFromDate: Array<GlobalLogEntity>;
   message: MessageEntity;
   messages: Array<MessageEntity>;
   reloadStates: Array<BotStateEntity>;
@@ -481,6 +512,16 @@ export type QueryBotArgs = {
 
 export type QueryGetBotStateArgs = {
   id: Scalars['Int']['input'];
+};
+
+
+export type QueryGlobalLogArgs = {
+  limit?: Scalars['Int']['input'];
+};
+
+
+export type QueryGlobalLogFromDateArgs = {
+  date: Scalars['DateTime']['input'];
 };
 
 
@@ -818,6 +859,20 @@ export type Provide2FaCodeMutationVariables = Exact<{
 
 export type Provide2FaCodeMutation = { __typename?: 'Mutation', provide2FACode: { __typename?: 'BotStateEntity', requestedPhoneNumber?: boolean | null, requestedPhoneCode?: boolean | null, isRunning?: boolean | null, isStarted?: boolean | null, isStopped?: boolean | null, bot?: { __typename?: 'BotEntity', api_id?: string | null, api_hash?: string | null } | null, eventLogs?: Array<{ __typename?: 'BotEvent', log_event?: string | null, event_date?: number | null, event_message?: string | null }> | null, childProcess?: { __typename?: 'ChildProcessEntity', pid?: number | null } | null } };
 
+export type GlobalLogQueryVariables = Exact<{
+  limit: Scalars['Int']['input'];
+}>;
+
+
+export type GlobalLogQuery = { __typename?: 'Query', globalLog: Array<{ __typename?: 'GlobalLogEntity', id?: string | null, event_message?: string | null, log_event?: string | null, event_date?: any | null, details?: string | null, api_id?: string | null }> };
+
+export type GlobalLogFromDateQueryVariables = Exact<{
+  date: Scalars['DateTime']['input'];
+}>;
+
+
+export type GlobalLogFromDateQuery = { __typename?: 'Query', globalLogFromDate: Array<{ __typename?: 'GlobalLogEntity', id?: string | null, event_message?: string | null, log_event?: string | null, event_date?: any | null, details?: string | null, api_id?: string | null }> };
+
 
 export const BotDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"Bot"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"api_id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"bot"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"api_id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"api_id"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"afterTaskDelay"}},{"kind":"Field","name":{"kind":"Name","value":"afterTaskIdleTime"}},{"kind":"Field","name":{"kind":"Name","value":"answersDb"}},{"kind":"Field","name":{"kind":"Name","value":"api_hash"}},{"kind":"Field","name":{"kind":"Name","value":"api_id"}},{"kind":"Field","name":{"kind":"Name","value":"behaviorModel"}},{"kind":"Field","name":{"kind":"Name","value":"botName"}},{"kind":"Field","name":{"kind":"Name","value":"clientState"}},{"kind":"Field","name":{"kind":"Name","value":"clientStateUpdateTime"}},{"kind":"Field","name":{"kind":"Name","value":"copyFrom"}},{"kind":"Field","name":{"kind":"Name","value":"readDelay"}},{"kind":"Field","name":{"kind":"Name","value":"replacements"}},{"kind":"Field","name":{"kind":"Name","value":"dmScenarioNames"}},{"kind":"Field","name":{"kind":"Name","value":"sessionString"}},{"kind":"Field","name":{"kind":"Name","value":"spamDBname"}},{"kind":"Field","name":{"kind":"Name","value":"taskOrder"}},{"kind":"Field","name":{"kind":"Name","value":"typeDelayMultiplier"}},{"kind":"Field","name":{"kind":"Name","value":"voice"}}]}}]}}]} as unknown as DocumentNode<BotQuery, BotQueryVariables>;
 export const UpdateBotDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"updateBot"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"api_id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"updateBotInput"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"UpdateBotInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"updateBot"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"api_id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"api_id"}}},{"kind":"Argument","name":{"kind":"Name","value":"updateBotInput"},"value":{"kind":"Variable","name":{"kind":"Name","value":"updateBotInput"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"afterTaskDelay"}},{"kind":"Field","name":{"kind":"Name","value":"afterTaskIdleTime"}},{"kind":"Field","name":{"kind":"Name","value":"answersDb"}},{"kind":"Field","name":{"kind":"Name","value":"api_hash"}},{"kind":"Field","name":{"kind":"Name","value":"api_id"}},{"kind":"Field","name":{"kind":"Name","value":"behaviorModel"}},{"kind":"Field","name":{"kind":"Name","value":"botName"}},{"kind":"Field","name":{"kind":"Name","value":"clientState"}},{"kind":"Field","name":{"kind":"Name","value":"copyFrom"}},{"kind":"Field","name":{"kind":"Name","value":"readDelay"}},{"kind":"Field","name":{"kind":"Name","value":"replacements"}},{"kind":"Field","name":{"kind":"Name","value":"dmScenarioNames"}},{"kind":"Field","name":{"kind":"Name","value":"sessionString"}},{"kind":"Field","name":{"kind":"Name","value":"spamDBname"}},{"kind":"Field","name":{"kind":"Name","value":"taskOrder"}},{"kind":"Field","name":{"kind":"Name","value":"voice"}}]}}]}}]} as unknown as DocumentNode<UpdateBotMutation, UpdateBotMutationVariables>;
@@ -849,3 +904,5 @@ export const StartBotsImmediatelyDocument = {"kind":"Document","definitions":[{"
 export const ProvidePhoneNumberDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"providePhoneNumber"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"api_id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"phoneNumber"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"providePhoneNumber"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"api_id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"api_id"}}},{"kind":"Argument","name":{"kind":"Name","value":"phoneNumber"},"value":{"kind":"Variable","name":{"kind":"Name","value":"phoneNumber"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"bot"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"api_id"}},{"kind":"Field","name":{"kind":"Name","value":"api_hash"}}]}},{"kind":"Field","name":{"kind":"Name","value":"requestedPhoneNumber"}},{"kind":"Field","name":{"kind":"Name","value":"requestedPhoneCode"}},{"kind":"Field","name":{"kind":"Name","value":"isRunning"}},{"kind":"Field","name":{"kind":"Name","value":"isStarted"}},{"kind":"Field","name":{"kind":"Name","value":"isStopped"}},{"kind":"Field","name":{"kind":"Name","value":"eventLogs"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"log_event"}},{"kind":"Field","name":{"kind":"Name","value":"event_date"}},{"kind":"Field","name":{"kind":"Name","value":"event_message"}}]}},{"kind":"Field","name":{"kind":"Name","value":"childProcess"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"pid"}}]}}]}}]}}]} as unknown as DocumentNode<ProvidePhoneNumberMutation, ProvidePhoneNumberMutationVariables>;
 export const ProvidePhoneCodeDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"providePhoneCode"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"api_id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"phoneCode"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"providePhoneCode"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"api_id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"api_id"}}},{"kind":"Argument","name":{"kind":"Name","value":"phoneCode"},"value":{"kind":"Variable","name":{"kind":"Name","value":"phoneCode"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"bot"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"api_id"}},{"kind":"Field","name":{"kind":"Name","value":"api_hash"}}]}},{"kind":"Field","name":{"kind":"Name","value":"requestedPhoneNumber"}},{"kind":"Field","name":{"kind":"Name","value":"requestedPhoneCode"}},{"kind":"Field","name":{"kind":"Name","value":"isRunning"}},{"kind":"Field","name":{"kind":"Name","value":"isStarted"}},{"kind":"Field","name":{"kind":"Name","value":"isStopped"}},{"kind":"Field","name":{"kind":"Name","value":"eventLogs"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"log_event"}},{"kind":"Field","name":{"kind":"Name","value":"event_date"}},{"kind":"Field","name":{"kind":"Name","value":"event_message"}}]}},{"kind":"Field","name":{"kind":"Name","value":"childProcess"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"pid"}}]}}]}}]}}]} as unknown as DocumentNode<ProvidePhoneCodeMutation, ProvidePhoneCodeMutationVariables>;
 export const Provide2FaCodeDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"provide2FACode"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"api_id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"code"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"provide2FACode"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"api_id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"api_id"}}},{"kind":"Argument","name":{"kind":"Name","value":"code"},"value":{"kind":"Variable","name":{"kind":"Name","value":"code"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"bot"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"api_id"}},{"kind":"Field","name":{"kind":"Name","value":"api_hash"}}]}},{"kind":"Field","name":{"kind":"Name","value":"requestedPhoneNumber"}},{"kind":"Field","name":{"kind":"Name","value":"requestedPhoneCode"}},{"kind":"Field","name":{"kind":"Name","value":"isRunning"}},{"kind":"Field","name":{"kind":"Name","value":"isStarted"}},{"kind":"Field","name":{"kind":"Name","value":"isStopped"}},{"kind":"Field","name":{"kind":"Name","value":"eventLogs"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"log_event"}},{"kind":"Field","name":{"kind":"Name","value":"event_date"}},{"kind":"Field","name":{"kind":"Name","value":"event_message"}}]}},{"kind":"Field","name":{"kind":"Name","value":"childProcess"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"pid"}}]}}]}}]}}]} as unknown as DocumentNode<Provide2FaCodeMutation, Provide2FaCodeMutationVariables>;
+export const GlobalLogDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"globalLog"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"limit"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"globalLog"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"limit"},"value":{"kind":"Variable","name":{"kind":"Name","value":"limit"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"event_message"}},{"kind":"Field","name":{"kind":"Name","value":"log_event"}},{"kind":"Field","name":{"kind":"Name","value":"event_date"}},{"kind":"Field","name":{"kind":"Name","value":"details"}},{"kind":"Field","name":{"kind":"Name","value":"api_id"}}]}}]}}]} as unknown as DocumentNode<GlobalLogQuery, GlobalLogQueryVariables>;
+export const GlobalLogFromDateDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"globalLogFromDate"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"date"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"DateTime"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"globalLogFromDate"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"date"},"value":{"kind":"Variable","name":{"kind":"Name","value":"date"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"event_message"}},{"kind":"Field","name":{"kind":"Name","value":"log_event"}},{"kind":"Field","name":{"kind":"Name","value":"event_date"}},{"kind":"Field","name":{"kind":"Name","value":"details"}},{"kind":"Field","name":{"kind":"Name","value":"api_id"}}]}}]}}]} as unknown as DocumentNode<GlobalLogFromDateQuery, GlobalLogFromDateQueryVariables>;

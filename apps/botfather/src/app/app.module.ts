@@ -18,6 +18,7 @@ import {
   ScenarioEntity,
   ScenarioBranchEntity,
   GroupEntity,
+  GlobalLogEntity,
   // ScenarioChoiceEntity,
   // AnswerMessageEntity,
 } from "@core/types/server";
@@ -26,6 +27,7 @@ import { MulterModule } from "@nestjs/platform-express";
 import { SpamMessageModule } from "../databases/spam-repository/spam-database.module";
 import { MessagesRepositoryModule } from "../databases/messages-repository/messages-repository.module";
 import { ScenarioRepositoryModule } from "../databases/scenario-repository/scenario-repository.module";
+import { GlobalLogModule } from "../databases/global-log/global-log.module";
 
 @Module({
   imports: [
@@ -67,6 +69,7 @@ import { ScenarioRepositoryModule } from "../databases/scenario-repository/scena
           MessageEntity,
           ScenarioEntity,
           ScenarioBranchEntity,
+          GlobalLogEntity,
         ],
         synchronize: true,
         autoLoadEntities: true,
@@ -87,6 +90,7 @@ import { ScenarioRepositoryModule } from "../databases/scenario-repository/scena
     BotModule,
     SpamMessageModule,
     ScenarioRepositoryModule,
+    GlobalLogModule,
   ],
   controllers: [AppController],
   providers: [AppService],

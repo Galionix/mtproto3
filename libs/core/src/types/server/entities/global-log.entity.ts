@@ -1,0 +1,46 @@
+import { ObjectType, Field, Int } from "@nestjs/graphql";
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  PrimaryGeneratedColumn,
+} from "typeorm";
+
+@Entity()
+@ObjectType()
+export class GlobalLogEntity {
+  @Field(() => String, { nullable: true })
+  @PrimaryGeneratedColumn("uuid")
+  id: number;
+
+  @Field(() => String, { nullable: true })
+  @Column()
+  event_message: string;
+
+  @Field(() => String, { nullable: true })
+  @Column()
+  log_event: string;
+
+  @Field(() => Date, { nullable: true })
+  @CreateDateColumn({
+    type: "timestamp",
+    default: () => "CURRENT_TIMESTAMP(6)",
+  })
+  event_date: Date;
+
+  @Field(() => String, { nullable: true })
+  @Column()
+  api_id: number;
+
+  @Field(() => String, { nullable: true })
+  @Column()
+  details: string;
+}
+
+export type CreateGlobalLogInput = {
+  event_message: string;
+  log_event: string;
+  details: string;
+  api_id: number;
+  event_date: Date;
+};

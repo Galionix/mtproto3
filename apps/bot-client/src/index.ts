@@ -26,7 +26,7 @@ import scenarioHandler from "./lib/behaviour/dm/scenarioHandler";
 import { getCombinedListeners } from "./lib/processApi/combineListeners";
 import { generalReducer } from "./lib/processApi/composeReducer";
 import { listeners } from "./lib/processApi/listeners";
-import { logEvent } from "./lib/processApi/logEventTostate";
+import { logEvent, logGlobal } from "./lib/processApi/logEventTostate";
 import { sendStateToFatherProcess, state } from "./lib/state";
 import {
   addDmTask,
@@ -302,6 +302,7 @@ console.log("launching main thread");
 
     process.send({ event_type: "STARTED" });
     logEvent(BotEventTypes.STARTED);
+    logGlobal(BotEventTypes.STARTED);
 
     // client.addEventHandler((update) => {
     //   console.log("Received new Update");

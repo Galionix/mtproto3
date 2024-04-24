@@ -4,14 +4,19 @@ import { Layout } from "../src/shared/Layout/Layout";
 import { Section, sections } from "../constants/sections";
 import { Clickable } from "../src/shared/Clickable/Clickable";
 import { useMainPageStore } from "./scenarios/mainPageStore";
+import { DisplayGlobalLog } from "../src/shared/DisplayGlobalLog/DisplayGlobalLog";
 
 export function Index() {
   const { sectionsInHeader, toggleSectionInHeader } = useMainPageStore();
 
   return (
     <Layout>
-      <div className={styles.page}>
-        <div>
+      <div
+        className={`${styles.page}
+       flex flex-col
+      `}
+      >
+        <div className="p-4 border-2 border-gray-200 rounded-md shadow-md">
           <h1>Sections:</h1>
           <div className="grid grid-cols-1 gap-4 md:grid-cols-3 lg:grid-cols-4">
             {sections.map((section) => {
@@ -26,6 +31,7 @@ export function Index() {
             })}
           </div>
         </div>
+        <DisplayGlobalLog />
         {/* <div className="flex">test nextjs</div> */}
       </div>
     </Layout>

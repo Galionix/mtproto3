@@ -10,6 +10,7 @@ import {
   ScenarioEntity,
   ScenarioBranchEntity,
   GroupEntity,
+  GlobalLogEntity,
   // AnswerMessageEntity,
 } from "@core/types/server";
 import { BotProcessService } from "../services/bot-process-service/bot-process.service";
@@ -23,6 +24,7 @@ import { MessagesRepositoryService } from "../databases/messages-repository/mess
 import { ScenarioRepositoryService } from "../databases/scenario-repository/scenario-repository.service";
 import { AnswersRepositoryService } from "../databases/answers-repository/answers-repository.service";
 import { GroupsRepositoryService } from "../databases/groups-repository/groups-repository.service";
+import { GlobalLogService } from "../databases/global-log/global-log.service";
 
 @Module({
   imports: [
@@ -34,6 +36,7 @@ import { GroupsRepositoryService } from "../databases/groups-repository/groups-r
       MessageEntity,
       AnswerEntity,
       GroupEntity,
+      GlobalLogEntity,
       // AnswerMessageEntity,
     ]),
   ],
@@ -50,6 +53,7 @@ import { GroupsRepositoryService } from "../databases/groups-repository/groups-r
     MessagesRepositoryService,
     ScenarioRepositoryService,
     GroupsRepositoryService,
+    GlobalLogService,
   ],
   exports: [
     BotService,

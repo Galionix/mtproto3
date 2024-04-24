@@ -3,6 +3,7 @@
 - [x] Ananlyze again scripting, for response we can use | to separate responses, it will be much intuitive
 
 - [ ] make instrumentary to find event when bot sent to group spam and after that it has been banned in this chat. It is important to know, because we can use this information to improve the bot.
+- [ ] Clear old GlobalEvents in database.
 
 # Scenarios
 

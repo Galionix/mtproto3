@@ -140,6 +140,13 @@ input CreateBotInput {
   voice: String
 }
 
+input CreateGlobalLogInputDTO {
+  api_id: Int
+  details: String
+  event_message: String
+  log_event: String
+}
+
 input CreateMessageInput {
   """payload of audio for message"""
   audio: String = ""
@@ -217,6 +224,15 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 """
 scalar DateTime
 
+type GlobalLogEntity {
+  api_id: String
+  details: String
+  event_date: DateTime
+  event_message: String
+  id: String
+  log_event: String
+}
+
 input JoinGroupsInput {
   api_ids: [Int!]!
   behavior_model: String = "default"
@@ -286,6 +302,7 @@ type Mutation {
   addChoiceToBranch(createScenarioBranchInput: CreateAnswerEntityInput!, scenarioBranchId: String!): ScenarioBranchEntity!
   createAnswer(createAnswerInput: CreateAnswerEntityInput!): AnswerEntity!
   createBot(createBotInput: CreateBotInput!): BotEntity!
+  createGlobalLog(createGlobalLogInput: CreateGlobalLogInputDTO!): GlobalLogEntity!
   createManyMessages(createManyMessagesInput: [CreateMessageInput!]!): [MessageEntity!]!
   createMessage(createMessageInput: CreateMessageInput!): MessageEntity!
   createScenario(scenarioInput: CreateScenarioInput!): ScenarioEntity!
@@ -298,6 +315,7 @@ type Mutation {
   providePhoneNumber(api_id: Int!, phoneNumber: String!): BotStateEntity!
   removeAnswer(id: String!): Int!
   removeBot(api_id: Int!): BotEntity!
+  removeGlobalLog(id: Int!): GlobalLogEntity!
   removeMessages(ids: [String!]!): Int!
   removePhotos(api_id: Int!): BotStateEntity!
   removeScenario(id: String!): String!
@@ -322,6 +340,8 @@ type Query {
   getBotState(id: Int!): BotStateEntity!
   getBotStates: [BotStateEntity!]!
   getProcessesCount: Int!
+  globalLog(limit: Int! = 10): [GlobalLogEntity!]!
+  globalLogFromDate(date: DateTime!): [GlobalLogEntity!]!
   message(id: String!): MessageEntity!
   messages: [MessageEntity!]!
   reloadStates: [BotStateEntity!]!

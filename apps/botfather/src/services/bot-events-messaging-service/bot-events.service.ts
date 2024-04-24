@@ -7,6 +7,7 @@ import { AnswersRepositoryService } from "../../databases/answers-repository/ans
 import { SpamRepositoryService } from "../../databases/spam-repository/spam-repository.service";
 import { ScenarioRepositoryService } from "../../databases/scenario-repository/scenario-repository.service";
 import { GroupsRepositoryService } from "../../databases/groups-repository/groups-repository.service";
+import { GlobalLogService } from "../../databases/global-log/global-log.service";
 
 const l = new Logger("BotEventsService");
 
@@ -17,6 +18,8 @@ export interface IServiceArgs {
   spamRepositoryService: SpamRepositoryService;
   scenarioRepositoryService: ScenarioRepositoryService;
   groupsRepositoryService: GroupsRepositoryService;
+  globalLogService: GlobalLogService;
+
   // add statistics service
   l: Logger;
 }
@@ -35,7 +38,8 @@ export class BotEventsService {
     private readonly answersRepositoryService: AnswersRepositoryService,
     private readonly spamRepositoryService: SpamRepositoryService,
     private readonly scenarioRepositoryService: ScenarioRepositoryService,
-    private readonly groupsRepositoryService: GroupsRepositoryService
+    private readonly groupsRepositoryService: GroupsRepositoryService,
+    private readonly globalLogService: GlobalLogService
   ) {}
 
   async botsMessagesReducer(message: TProcessMessages, api_id: number) {
@@ -50,6 +54,7 @@ export class BotEventsService {
       spamRepositoryService: this.spamRepositoryService,
       scenarioRepositoryService: this.scenarioRepositoryService,
       groupsRepositoryService: this.groupsRepositoryService,
+      globalLogService: this.globalLogService,
       l,
     };
     if (botState) {
