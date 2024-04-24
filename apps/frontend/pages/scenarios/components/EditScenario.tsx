@@ -130,13 +130,55 @@ export const EditScenario = ({
     className: "w-[70vw] h-[90vh]",
     id: "preview_scenario_markup",
     titleElement: () => (
-      <div className="flex justify-between flex-row items-center">
+      <div className="flex gap-4 justify-between flex-row items-center">
         <h1>
           <DocumentationSlice slice="Quick prototyping scenario with scripting">
             Prototype scenario
           </DocumentationSlice>
         </h1>
 
+        <Clickable
+          primary
+          text="Parse Instructions"
+          onClick={() => {
+            const correctScenario = {
+              ...parsedScenario,
+              branches: parsedScenario.branches.map((branch) => {
+                return {
+                  ...branch,
+                  choices: branch.choices.map((choice) => {
+                    return {
+                      ...choice,
+                      nextBranchId: choice.nextBranchId || branch.id,
+                      responses: choice.responses.map((response) => {
+                        return {
+                          ...response,
+                          key: uuidv3(
+                            response.text || JSON.stringify(response),
+                            uuidv3.URL
+                          ),
+                          type: EScenarioElementType.TEXT,
+                        };
+                      }),
+
+                      request:
+                        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                        // @ts-ignore
+                        choice.request === "*"
+                          ? []
+                          : // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                            // @ts-ignore
+                            choice.request.split(","),
+                    };
+                  }),
+                };
+              }),
+            };
+            setArbitraryRawData(JSON.stringify(correctScenario));
+            setShowRawData(true);
+            hideModal();
+          }}
+        />
         <Clickable
           danger
           className="ml-auto"
@@ -154,6 +196,7 @@ export const EditScenario = ({
       <div className="flex flex-row gap-2">
         <div className="w-1/2 flex flex-col gap-2">
           <TextInput
+            rows={30}
             area
             fullWidth
             label="Script Instructions"
@@ -161,48 +204,6 @@ export const EditScenario = ({
             onChange={(value) => {
               setInstructions(value);
               handleRemount();
-            }}
-          />
-          <Clickable
-            primary
-            text="Parse Instructions"
-            onClick={() => {
-              const correctScenario = {
-                ...parsedScenario,
-                branches: parsedScenario.branches.map((branch) => {
-                  return {
-                    ...branch,
-                    choices: branch.choices.map((choice) => {
-                      return {
-                        ...choice,
-                        nextBranchId: choice.nextBranchId || branch.id,
-                        responses: choice.responses.map((response) => {
-                          return {
-                            ...response,
-                            key: uuidv3(
-                              response.text || JSON.stringify(response),
-                              uuidv3.URL
-                            ),
-                            type: EScenarioElementType.TEXT,
-                          };
-                        }),
-
-                        request:
-                          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                          // @ts-ignore
-                          choice.request === "*"
-                            ? []
-                            : // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                              // @ts-ignore
-                              choice.request.split(","),
-                      };
-                    }),
-                  };
-                }),
-              };
-              setArbitraryRawData(JSON.stringify(correctScenario));
-              setShowRawData(true);
-              hideModal();
             }}
           />
         </div>

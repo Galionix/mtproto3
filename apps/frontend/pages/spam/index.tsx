@@ -20,11 +20,14 @@ import { Clickable } from "../../src/shared/Clickable/Clickable";
 import { debounce } from "lodash";
 import { NoData } from "../../src/shared/NoData/NoData";
 import { getBasicScenariosDetailsQuery } from "../scenarios/gql";
+import { ScenarioEntity } from "@core/types/server";
+import { ScenarioPicker } from "../../src/domains/scenarios/ScenarioPicker/ScenarioPicker";
 
 const SpamPage: NextPage = () => {
   // querySpamMessages
   const { data } = useQuery(querySpamMessages);
-
+  // getBasicScenariosDetailsQuery useLazyQuery
+  // const [getBasicScenariosDetailsQuery, { data: basicScenariosInfo, loading }] = useLazyQuery(getBasicScenariosDetailsQuery);
   const [createSpamMessageInput, setCreateSpamMessageInput] = useState<
     Partial<CreateMessageInput>
   >({
@@ -83,7 +86,7 @@ const SpamPage: NextPage = () => {
     <Layout>
       <h1>Spam</h1>
 
-      <form className="flex gap-2 items-center">
+      <div className="flex gap-2 items-center">
         <TextInputWithChoicesList
           required
           label="Type"
@@ -115,22 +118,31 @@ const SpamPage: NextPage = () => {
           }}
         />
         {!loading && (
-          <TextInputWithChoicesList
-            // required
-            loading={loading}
-            label="Scenario Id For Spam"
-            defaultValue={""}
-            choices={scenaroisChoices}
-            value={createSpamMessageInput.scenarioIdForSpam}
-            // choices={AScenarioElementType}
-            // value={createSpamMessageInput.type}
-            onChange={(e) => {
+          <ScenarioPicker
+            scenarios={basicScenariosInfo?.scenarios as ScenarioEntity[]}
+            setScenarioId={(scenarioId) => {
               setCreateSpamMessageInput({
                 ...createSpamMessageInput,
-                scenarioIdForSpam: e,
+                scenarioIdForSpam: scenarioId,
               });
             }}
           />
+          // <TextInputWithChoicesList
+          //   // required
+          //   loading={loading}
+          //   label="Scenario Id For Spam"
+          //   defaultValue={""}
+          //   choices={scenaroisChoices}
+          //   value={createSpamMessageInput.scenarioIdForSpam}
+          //   // choices={AScenarioElementType}
+          //   // value={createSpamMessageInput.type}
+          //   onChange={(e) => {
+          //     setCreateSpamMessageInput({
+          //       ...createSpamMessageInput,
+          //       scenarioIdForSpam: e,
+          //     });
+          //   }}
+          // />
         )}
         <Clickable
           primary
@@ -152,7 +164,7 @@ const SpamPage: NextPage = () => {
             setCreateSpamMessageInput({ ...createSpamMessageInput, text: "" });
           }}
         />
-      </form>
+      </div>
       <section>
         <TextInput
           label="Filter by DB Name"
@@ -169,6 +181,8 @@ const SpamPage: NextPage = () => {
           messagesToShow.map((spamMessage) => (
             <li key={spamMessage.id}>
               <MessageRenderer
+                // showDescription
+                scenarios={basicScenariosInfo?.scenarios as ScenarioEntity[]}
                 message={spamMessage}
                 removeFunction={removeFunction}
               />

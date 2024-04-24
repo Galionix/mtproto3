@@ -13,47 +13,48 @@ import { useModal } from "../../src/Modal/Modal";
 import { ScenarioEntity } from "@core/types/server";
 import { FaRegCopy } from "react-icons/fa6";
 import { DocumentationSlice } from "../../src/shared/DocumentationSlice/DocumentationSlice";
+import { PreviewScenarioButton } from '../../src/domains/scenarios/PreviewScenarioButton/PreviewScenarioButton';
 
 const ScenariosIndexPage = () => {
   const { data, loading } = useQuery(getBasicScenariosDetailsQuery);
 
   const noScenarios = !data?.scenarios?.length;
-  const [previewScenario, setPreviewScenario] = useState<ScenarioEntity>(null);
+  // const [previewScenario, setPreviewScenario] = useState<ScenarioEntity>(null);
   // modal containing the preview of the scenario using useModal
 
-  const [PreviewModal, { showModal, hideModal }] = useModal({
-    id: "preview_scenario",
-    // title: `Preview ${previewScenario.description} scenario `,
-    titleElement: () => (
-      <div className="flex justify-between flex-row items-center">
-        <h1>Preview {previewScenario?.description} scenario</h1>
+  // const [PreviewModal, { showModal, hideModal }] = useModal({
+  //   id: "preview_scenario",
+  //   // title: `Preview ${previewScenario.description} scenario `,
+  //   titleElement: () => (
+  //     <div className="flex justify-between flex-row items-center">
+  //       <h1>Preview {previewScenario?.description} scenario</h1>
 
-        <Clickable
-          danger
-          className="ml-auto"
-          icon={AiFillEyeInvisible}
-          text="Close"
-          onClick={() => {
-            setPreviewScenario(null);
-            hideModal();
-          }}
-        />
-      </div>
-    ),
-    // titleElement
-    children: () => (
-      <div>
-        <ScenarioRenderer scenario={previewScenario} />
-      </div>
-    ),
-    onCancel: () => {
-      setPreviewScenario(null);
-      hideModal();
-    },
-  });
+  //       <Clickable
+  //         danger
+  //         className="ml-auto"
+  //         icon={AiFillEyeInvisible}
+  //         text="Close"
+  //         onClick={() => {
+  //           setPreviewScenario(null);
+  //           hideModal();
+  //         }}
+  //       />
+  //     </div>
+  //   ),
+  //   // titleElement
+  //   children: () => (
+  //     <div>
+  //       <ScenarioRenderer scenario={previewScenario} />
+  //     </div>
+  //   ),
+  //   onCancel: () => {
+  //     setPreviewScenario(null);
+  //     hideModal();
+  //   },
+  // });
   return (
     <Layout loading={loading}>
-      {PreviewModal}
+      {/* {PreviewModal} */}
       {/* <ScenarioRenderer /> */}
       <div className="flex justify-between flex-row items-center">
         <h1>Scenarios</h1>
@@ -100,7 +101,15 @@ const ScenariosIndexPage = () => {
               }}
               title="copy id"
             />
-            <Clickable
+            <div
+            className="ml-auto"
+            >
+
+            <PreviewScenarioButton
+              scenario={scenario as ScenarioEntity}
+              />
+              </div>
+            {/* <Clickable
               className="ml-auto"
               primary
               text="View"
@@ -110,7 +119,7 @@ const ScenariosIndexPage = () => {
               }}
               icon={AiFillEye}
               title="view"
-            />
+            /> */}
             <Clickable
               // primary
               comp="link"

@@ -24,7 +24,7 @@ export function convertToFlowChartData(
       id: branch.id,
       type: "input-output",
       position: {
-        x: 300,
+        x: 100,
         y: branchIndex * 2 * 150,
       },
       ports: branchPorts,
@@ -62,7 +62,7 @@ export function convertToFlowChartData(
         id: choiceId,
         type: "input-output",
         position: {
-          x: 200 + index * 400,
+          x: 50 + index * 400,
           y: 100 + branchIndex * 2 * 150,
         },
         ports: choicePorts,

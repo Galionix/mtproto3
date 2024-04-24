@@ -1,4 +1,8 @@
-import { CreateMessageInput, TMessageEntity } from "@core/types/server";
+import {
+  CreateMessageInput,
+  ScenarioEntity,
+  TMessageEntity,
+} from "@core/types/server";
 import {
   mutationUpdateSpamMessage,
   querySpamMessages,
@@ -17,11 +21,14 @@ import {
 import { AScenarioElementType, EScenarioElementType } from "@core/types/client";
 import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
 import { getBasicScenariosDetailsQuery } from "../../../pages/scenarios/gql";
+import { PreviewScenarioButton } from "../scenarios/PreviewScenarioButton/PreviewScenarioButton";
 
 export const MessageRenderer = ({
   message,
   removeFunction,
+  scenarios,
 }: {
+  scenarios: ScenarioEntity[];
   message: Partial<TMessageEntity>;
   removeFunction: (id: string) => void;
 }) => {
@@ -145,15 +152,25 @@ export const MessageRenderer = ({
       {!editingMessage && (
         <>
           {scenarioIdForSpam && (
-            <Clickable
-              text="Edit scenario"
-              // className="ml-auto"
-              comp="link"
-              title="Edit scenario"
-              icon={PiFilmScriptFill}
-              href={"scenarios/" + id + "/edit"}
-              // onClick={() => removeFunction(message.id as string)}
-            />
+            <>
+              <PreviewScenarioButton
+                showDescription
+                scenario={
+                  scenarios?.find(
+                    (scenario) => scenario.id === scenarioIdForSpam
+                  ) as ScenarioEntity
+                }
+              />
+              <Clickable
+                text="Edit scenario"
+                // className="ml-auto"
+                comp="link"
+                title="Edit scenario"
+                icon={PiFilmScriptFill}
+                href={"scenarios/" + id + "/edit"}
+                // onClick={() => removeFunction(message.id as string)}
+              />
+            </>
           )}
           <Clickable
             title="Edit"

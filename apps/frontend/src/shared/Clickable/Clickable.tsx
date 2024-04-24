@@ -71,6 +71,7 @@ export const Clickable = ({
     : onClick;
 
   const preparedOnCLickHandler = (e) => {
+
     if (onClickMessage) {
       showModal();
     } else {

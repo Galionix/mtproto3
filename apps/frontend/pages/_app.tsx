@@ -18,7 +18,7 @@ function CustomApp({ Component, pageProps }: AppProps) {
   return (
     <>
       <Head>
-        <title>Welcome to frontend!</title>
+        <title>Botplatform v2</title>
       </Head>
       <main className="app">
         <ApolloProvider client={apolloClient}>

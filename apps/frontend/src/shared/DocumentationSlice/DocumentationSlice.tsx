@@ -12,6 +12,7 @@ import { IoInformationCircleOutline } from "react-icons/io5";
 // @ts-ignore
 import docs from "../../../src/docs/docs.md";
 import { useRouter } from "next/router";
+import Link from "next/link";
 
 // !!!slice is the name of the slice in the markdown file
 // just copy the name of the slice from the markdown file
@@ -59,11 +60,13 @@ export const DocumentationSlice = ({
       >
         {children}
         {hovered && (
-          <div
+          <Link
+            href={`/docs#${linkUrl}`}
+            target="_blank"
             // className="absolute p-4 bg-white shadow-md rounded-md max-w-lg text-sm"
-            onClick={() => {
-              router.push(`/docs#${linkUrl}`);
-            }}
+            // onClick={() => {
+            //   router.push(`/docs#${linkUrl}`);
+            // }}
             className="absolute p-4 bg-white shadow-md rounded-md w-[300px] text-sm z-10"
           >
             {content.length > 400 && (
@@ -71,7 +74,7 @@ export const DocumentationSlice = ({
             )}
             {/* {slice} */}
             <ReactMarkdown>{slicedContent}</ReactMarkdown>
-          </div>
+          </Link>
         )}
         <IoInformationCircleOutline
           className={

@@ -28,6 +28,7 @@ type TTextInputProps = {
   width?: number;
   onCtrlEnter?: () => void;
   loading?: boolean;
+  rows?: number;
 };
 export const TextInput = ({
   onCtrlEnter,
@@ -47,6 +48,7 @@ export const TextInput = ({
   width,
   defaultValue = "",
   ariaLabel,
+  rows = 1,
   style,
 }: TTextInputProps) => {
   const Component = area ? "textarea" : "input";
@@ -82,6 +84,7 @@ export const TextInput = ({
       <Skeleton enabled={loading}>
         <label>{label || renderedPlaceholder}</label>
         <Component
+          {...(area ? { rows } : {})}
           ref={inputRef}
           type={type}
           value={value}
