@@ -1,0 +1,15 @@
+.item{
+    animation: fadeIn 1.5s ease-in-out forwards;
+
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: .5;
+    background-color: rgb(58, 170, 58);
+  }
+  100% {
+    opacity: 1;
+    background-color: white;
+  }
+}

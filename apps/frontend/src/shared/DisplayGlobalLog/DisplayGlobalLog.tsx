@@ -4,18 +4,34 @@
 // it will have a search bar to search for logs
 // it will have a button to clear the logs
 
-import { useQuery } from "@apollo/client";
+import { useLazyQuery, useQuery } from "@apollo/client";
 import { GlobalLogEntity } from "@core/types/server";
 import { useEffect, useState } from "react";
 import { queryGlobalLog, queryGlobalLogFromDate } from "./gql";
 import { TextInput } from "../Input/TextInput";
 import { BooleanInput } from "../BooleanInput/BooleanInput";
+import s from "./displayGlobalLog.module.scss";
 
 export const DisplayGlobalLog = () => {
   const [latestDate, setLatestDate] = useState<Date>(new Date());
   const [search, setSearch] = useState<string>("");
+  const [showLatest, setShowLatest] = useState<string>("");
 
   // queryGlobalLog lazy
+  const [
+    loadGlobalLog,
+    { data: globalLogData, error: globalLogError, loading: globalLogLoading },
+  ] = useLazyQuery(queryGlobalLog, {
+    variables: {
+      limit: showLatest ? parseInt(showLatest) : 10,
+    },
+  });
+  useEffect(() => {
+    setGlobalLogs(
+      (globalLogData?.globalLog as unknown as GlobalLogEntity[]) || []
+    );
+    setLatestDate(new Date(globalLogData?.globalLog[0].event_date));
+  }, [globalLogData]);
   const { data, error, loading } = useQuery(queryGlobalLog, {
     variables: {
       limit: 10,
@@ -68,22 +84,36 @@ export const DisplayGlobalLog = () => {
       stopPolling();
     }
   }, [refresh]);
+
   return (
     <div>
       <span>
         {/* Last event date: {latestDate && new Date(latestDate).toISOString()} */}
       </span>
-      <BooleanInput value={refresh} onChange={setRefresh} label="Show logs" />
+      <BooleanInput value={refresh} onChange={setRefresh} label="Refresh" />
       <TextInput
         value={search}
         onChange={(e) => setSearch(e)}
         placeholder="Search"
       />
+      <TextInput
+        value={showLatest}
+        onChange={(e) => {
+          setShowLatest(e);
+          setRefresh(false);
+          loadGlobalLog();
+        }}
+        placeholder="Show latest"
+      />
+
       <div className="border border-gray-200 p-2 my-2 rounded-md flex flex-col gap-2">
         {filteredLogs.map((log) => (
           <div
             key={log.id}
-            className="border border-gray-200 p-2 my-2 rounded-md flex flex-row gap-2"
+            className={
+              s.item +
+              " border border-gray-200 p-2 my-2 rounded-md flex flex-row gap-2  "
+            }
           >
             <div>{log.event_message}</div>
             <div>{log.log_event}</div>
