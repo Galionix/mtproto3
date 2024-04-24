@@ -13,6 +13,7 @@ import {
 import { EditScenario } from "../components/EditScenario";
 import { ScenarioEntity } from "@core/types/server";
 import { v3 as uuidv3 } from "uuid";
+import { DocumentationSlice } from "../../../src/shared/DocumentationSlice/DocumentationSlice";
 
 const EditScenarioPage = () => {
   const router = useRouter();
@@ -68,7 +69,9 @@ const EditScenarioPage = () => {
 
   return (
     <Layout>
-      <h1>Edit Scenario</h1>
+      <DocumentationSlice slice="Creating new scenario">
+        <h1>Edit Scenario</h1>
+      </DocumentationSlice>
       <span>{id}</span>
       <Clickable
         danger

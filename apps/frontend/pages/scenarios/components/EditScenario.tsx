@@ -112,8 +112,16 @@ export const EditScenario = ({
   const [createScenario, { data, loading, error }] = useMutation(
     createScenarioMutation
   );
+  const {
+    scenario,
+    setScenario,
+    clearScenario,
+    instructions: savedInstructions,
+    setInstructions: setSavedInstructions,
+  } = useCreateScenarioStore();
+  console.log("savedInstructions: ", savedInstructions);
 
-  const [instructions, setInstructions] = useState<string>("");
+  const [instructions, setInstructions] = useState<string>(savedInstructions);
 
   const parsedScenario = parseInstructions(instructions);
 
@@ -180,6 +188,16 @@ export const EditScenario = ({
           }}
         />
         <Clickable
+          primary
+          text="Restore"
+          onClick={() => {
+            setInstructions(savedInstructions);
+            // setSavedInstructions(instructions);
+            handleRemount();
+            // hideModal();
+          }}
+        />
+        <Clickable
           danger
           className="ml-auto"
           icon={AiFillEyeInvisible}
@@ -196,13 +214,28 @@ export const EditScenario = ({
       <div className="flex flex-row gap-2">
         <div className="w-1/2 flex flex-col gap-2">
           <TextInput
+            showClear={false}
+            onCtrlEnter={() => {
+              // add template to instructions
+              const template = `
+b
+c
+q:
+r:
+n:b`;
+
+              setInstructions(instructions + template);
+              setSavedInstructions(instructions + template);
+            }}
             rows={30}
             area
             fullWidth
             label="Script Instructions"
             value={instructions}
             onChange={(value) => {
+              console.log("setSavedInstructions value: ", value);
               setInstructions(value);
+              setSavedInstructions(value);
               handleRemount();
             }}
           />
@@ -218,7 +251,7 @@ export const EditScenario = ({
   });
 
   const ErrorModal = useErrorModal(error);
-  const { scenario, setScenario, clearScenario } = useCreateScenarioStore();
+
 
   useEffect(() => {
     if (!createdScenario) return;

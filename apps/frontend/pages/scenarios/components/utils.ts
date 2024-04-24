@@ -85,7 +85,8 @@ export function parseInstructions(instructions: string): ScenarioEntity {
           break;
         case "r":
           if (currentBranch) {
-            const responsesTexts: string[] = value.split("|");
+            const separatorSymbol = value.includes("|") ? "|" : "\\\\";
+            const responsesTexts: string[] = value.split(separatorSymbol);
             console.log("responsesTexts: ", responsesTexts);
             responsesTexts.forEach((responseText, index) => {
               currentBranch.choices[

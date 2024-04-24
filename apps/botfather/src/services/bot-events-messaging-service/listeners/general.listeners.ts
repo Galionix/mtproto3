@@ -161,6 +161,8 @@ export const generalListeners = [
     event_type: BotEventTypes.SEND_STATE_TO_SERVER,
     listener: listenBotSyncState,
   },
+  //  LOG_GLOBAL
+
   // {
   //   event_type: BotEventTypes.GET_GENERAL_SETTINGS,
   //   listener: listenBotToRequestGeneralSettings

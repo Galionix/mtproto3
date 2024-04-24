@@ -53,28 +53,37 @@ export const DocumentationSlice = ({
     <>
       {" "}
       <span
-        className="relative text-gray-600 underline cursor-pointer"
+        className="relative text-gray-600"
         onClick={() => {
           setHovered(!hovered);
         }}
       >
-        {children}
+        <span className="cursor-pointer hover:text-blue-500 hover:underline">
+          {children}
+        </span>
         {hovered && (
-          <Link
-            href={`/docs#${linkUrl}`}
-            target="_blank"
-            // className="absolute p-4 bg-white shadow-md rounded-md max-w-lg text-sm"
-            // onClick={() => {
-            //   router.push(`/docs#${linkUrl}`);
-            // }}
+          <div
+            onClick={(e) => {
+              e.stopPropagation();
+            }}
             className="absolute p-4 bg-white shadow-md rounded-md w-[300px] text-sm z-10"
           >
-            {content.length > 400 && (
-              <p className="text-orange-500">Click here to read more...</p>
-            )}
-            {/* {slice} */}
+            <Link
+              href={`/docs#${linkUrl}`}
+              target="_blank"
+              title="Open documentation in new tab"
+              // className="absolute p-4 bg-white shadow-md rounded-md max-w-lg text-sm"
+              // onClick={() => {
+              //   router.push(`/docs#${linkUrl}`);
+              // }}
+            >
+              {content.length > 400 && (
+                <p className="text-orange-500">Click here to read more...</p>
+              )}
+              {/* {slice} */}
+            </Link>
             <ReactMarkdown>{slicedContent}</ReactMarkdown>
-          </Link>
+          </div>
         )}
         <IoInformationCircleOutline
           className={

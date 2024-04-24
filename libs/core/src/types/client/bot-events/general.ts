@@ -5,6 +5,7 @@ import { TState } from "../entities";
 
 export enum EGeneralBotEventTypes {
   LOG_EVENT = "LOG_EVENT",
+  LOG_GLOBAL = "LOG_GLOBAL",
   STATISTICS = "STATISTICS",
   SEND_STATE_TO_SERVER = "SEND_STATE_TO_SERVER",
   PHOTO_SET = "PHOTO_SET",
@@ -12,6 +13,12 @@ export enum EGeneralBotEventTypes {
 }
 
 export type TLogEvent = TGenericMessage<EGeneralBotEventTypes.LOG_EVENT> & {
+  event_message: string;
+  log_event: keyof typeof BotEventTypes;
+  event_date: number;
+};
+
+export type TLogGlobal = TGenericMessage<EGeneralBotEventTypes.LOG_GLOBAL> & {
   event_message: string;
   log_event: keyof typeof BotEventTypes;
   event_date: number;
@@ -30,4 +37,5 @@ export type TStatisticsEvent =
 export type TBotGeneralEvents =
   | TLogEvent
   | TStatisticsEvent
-  | TSendStateToServer;
+  | TSendStateToServer
+  | TLogGlobal

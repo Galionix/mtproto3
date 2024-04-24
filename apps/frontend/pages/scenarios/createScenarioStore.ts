@@ -18,8 +18,10 @@ export type TCreateScenarioFormData = {
 
 interface ICreateScenarioStore {
   scenario: TCreateScenarioFormData;
+  instructions: string;
   setScenario: (scenario: TCreateScenarioFormData) => void;
   clearScenario: () => void;
+  setInstructions: (instructions: string) => void;
 }
 
 export const useCreateScenarioStore = create<ICreateScenarioStore>()(
@@ -27,6 +29,10 @@ export const useCreateScenarioStore = create<ICreateScenarioStore>()(
     persist(
       (set) => ({
         scenario: createScenarioInitialData,
+        instructions: "",
+        setInstructions: (instructions: string) => {
+          set({ instructions });
+        },
         setScenario: (scenario: TCreateScenarioFormData) => {
           set({ scenario });
         },
