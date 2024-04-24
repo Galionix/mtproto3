@@ -11,7 +11,7 @@ declare global {
 
 function checkIfRequestMatches(request: string[], userRequest: string) {
   for (const requestItem of request) {
-    if (userRequest.toLowerCase().includes(requestItem)) {
+    if (userRequest.toLowerCase().includes(requestItem.toLowerCase())) {
       return true;
     }
   }
@@ -19,7 +19,10 @@ function checkIfRequestMatches(request: string[], userRequest: string) {
   return false;
 }
 
-export function getBotResponse(scenarioData: ScenarioEntity, userRequests: string[]) {
+export function getBotResponse(
+  scenarioData: ScenarioEntity,
+  userRequests: string[]
+) {
   if (!scenarioData) return null;
   let currentBranch = scenarioData?.branches[0];
   // console.log("currentBranch: ", currentBranch);
@@ -76,6 +79,7 @@ export function getBotResponses(
   scenarioData: ScenarioEntity,
   userRequests: string[]
 ) {
+  console.log("scenarioData: ", scenarioData);
   // console.log("scenarioData: ", scenarioData);
   if (!scenarioData) return null;
   let currentBranch = scenarioData?.branches[0];
@@ -90,9 +94,10 @@ export function getBotResponses(
     }
 
     currentChoice =
-      currentBranch.choices.findLast((choice) =>
-        checkIfRequestMatches(choice.request, userRequest)
-      ) ?? currentBranch.choices[0];
+      currentBranch.choices.findLast((choice) => {
+        const matches = checkIfRequestMatches(choice.request, userRequest);
+        return matches;
+      }) ?? currentBranch.choices[0];
     // console.log("currentChoice: ", currentChoice);
     if (!currentChoice) continue;
 

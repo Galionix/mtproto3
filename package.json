@@ -18,7 +18,10 @@
     "bot-client:test": "nx test bot-client --coverage",
     "bot-client:e2e:watch": "nx e2e bot-client-e2e --coverage --watch --verbose",
     "bot-client:test:watch": "nx test bot-client --watch --verbose",
-    "graphql:init": "graphql-codegen init"
+    "graphql:init": "graphql-codegen init",
+    "complie-typeorm-config": "tsc typeorm/typeorm.config.ts --skipLibCheck --esModuleInterop --emitDecoratorMetadata --experimentalDecorators --outDir .",
+    "typeorm-create-migration": "npm run complie-typeorm-config && typeorm migration:create typeorm/initial",
+    "typeorm-generate-migration": "npm run complie-typeorm-config && typeorm migration:generate ./typeorm -d typeorm/typeorm.config.js"
   },
   "private": true,
   "dependencies": {

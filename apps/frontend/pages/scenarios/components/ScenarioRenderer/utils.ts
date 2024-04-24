@@ -30,7 +30,7 @@ export function convertToFlowChartData(
       ports: branchPorts,
     };
     branch.choices.forEach((choice, index) => {
-      console.log("choice: ", choice);
+      // console.log("choice: ", choice);
       const choiceId = `${choice.id}_${branch.id}`;
       const choicePorts: { [id: string]: IPort } = {
         [choiceId]: {

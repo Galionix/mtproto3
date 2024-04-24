@@ -36,7 +36,7 @@ async function bootstrap() {
     `🚀 Application is running on: http://${process.env.API_HOST}:${port}/${globalPrefix}`
   );
 
-  if (process.env.AUTOSTART === "true") {
+  if (process.env.AUTOSTART_BOTS === "true") {
     Logger.log(`🚀 Autostart enabled`);
     const botProcessService = app.get(BotProcessService);
     botProcessService.startBots();

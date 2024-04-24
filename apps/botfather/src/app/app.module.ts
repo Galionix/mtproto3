@@ -58,21 +58,18 @@ import { ScenarioRepositoryModule } from "../databases/scenario-repository/scena
         // database: ":memory:",
         database: config.get<string>("TYPEORM_DATABASE"),
         entities: [
+          // !! on editing remember to update
+          // !! typeorm\typeorm.config.ts section entities
           BotEntity,
           AnswerEntity,
           GroupEntity,
-          // AnswerMessageEntity,
           StatisticEntity,
           MessageEntity,
           ScenarioEntity,
           ScenarioBranchEntity,
-          // ScenarioChoiceEntity,
         ],
         synchronize: true,
-        // playground: true,
-        // dropSchema: true,
         autoLoadEntities: true,
-        // logging: true,
       }),
     }),
     GraphQLModule.forRoot<ApolloDriverConfig>({
