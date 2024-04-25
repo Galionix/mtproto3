@@ -59,10 +59,10 @@ const buyNumber = async () => {
     }
     console.log("trying to activate phone number for country: ", country);
     const getNumberResponse = await fetchAndGetRawBody(
-      `${smsActivateApiUrl}?api_key=${sms_activate_api_key}&action=getNumberV2&service=tg&country=${
-        country.country
-      }&maxPrice=${sms_activate_base_price + priceAdded}`
-      // `${smsActivateApiUrl}?api_key=${sms_activate_api_key}&action=getNumberV2&service=tg&country=43`
+      // `${smsActivateApiUrl}?api_key=${sms_activate_api_key}&action=getNumberV2&service=tg&country=${
+      //   country.country
+      // }&maxPrice=${sms_activate_base_price + priceAdded}`
+      `${smsActivateApiUrl}?api_key=${sms_activate_api_key}&action=getNumberV2&service=tg&country=6`
     );
 
     if (getNumberResponse === "NO_BALANCE") {
@@ -210,6 +210,10 @@ const refreshCountries = async () => {
       username: "user171761",
       password: "fyce7k",
     });
+    // await page.goto("https://nordvpn.com/uk/what-is-my-ip/", {
+    //   waitUntil: "load",
+    //   timeout: 0,
+    // });
     await beginActivation(page);
     return;
   }

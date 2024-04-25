@@ -64,15 +64,16 @@ const EditBotPage: NextPage = () => {
   });
 
   useEffect(() => {
-    const parsedState = bot
-      ? JSON.parse(bot.clientState)
-      : {
-          bio: {
-            firstName: "",
-            lastName: "",
-            about: "",
-          },
-        };
+    const parsedState =
+      bot && bot?.clientState
+        ? JSON.parse(bot?.clientState)
+        : {
+            bio: {
+              firstName: "",
+              lastName: "",
+              about: "",
+            },
+          };
     setBioInfo({
       firstName: parsedState?.bio?.firstName,
       lastName: parsedState?.bio?.lastName,
