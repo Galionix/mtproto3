@@ -46,7 +46,7 @@ const cancelActivation = async (activationId: string) => {
   console.log("cancelActivation response: ", response);
 };
 
-let boughtNumber = null;
+// let boughtNumber = null;
 let countriesFilteredByPrice: TCountry[] = [];
 
 const buyNumber = async () => {
@@ -178,7 +178,7 @@ const refreshCountries = async () => {
   if (try_number) {
     boughtNumberParsed = {
       phoneNumber: try_number,
-    } as TGetNumberResponse;
+    } as unknown as TGetNumberResponse;
     const browser = await puppeteer.launch({
       headless: false,
       args: puppeteerArgs,
@@ -305,7 +305,7 @@ const beginActivation = async (
       console.log("Error on entering login details error: ", error);
       await cancelActivation(boughtNumberParsed.activationId);
       await wait(1);
-      boughtNumber = await buyNumber();
+      await buyNumber();
       await beginActivation(page);
       return;
     }
@@ -326,7 +326,7 @@ const beginActivation = async (
     if (try_number) return;
     await cancelActivation(boughtNumberParsed.activationId);
     await wait(3);
-    boughtNumber = await buyNumber();
+    await buyNumber();
     await beginActivation(page);
     return;
   }
