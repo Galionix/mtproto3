@@ -2,5 +2,5 @@
   "watch": ["apps/account-reg", "libs"],
   "ignore": ["apps/account-reg/src/dist"],
   "ext": "ts,json,env,js,graphql",
-  "exec": "nx build account-reg"
+  "exec": "nx serve account-reg"
 }
