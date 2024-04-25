@@ -41,3 +41,8 @@ export const sms_activate_base_price = 80;
 
 export const sms_activate_max_price = 150;
 export const try_number = "14348261679";
+
+export const puppeteerArgs = [
+  // `--proxy-server=http://185.229.221.152:2383`, // Proxy server url
+  `--proxy-server=http://185.229.223.23:2383`, // Proxy server url
+];

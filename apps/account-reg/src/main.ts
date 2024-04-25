@@ -11,6 +11,7 @@ import {
 import {
   getNumberErrorResponses,
   max_old_activation_time,
+  puppeteerArgs,
   sms_activate_base_price,
   sms_activate_max_price,
   try_number,
@@ -180,10 +181,7 @@ const refreshCountries = async () => {
     } as TGetNumberResponse;
     const browser = await puppeteer.launch({
       headless: false,
-      args: [
-        // `--proxy-server=http://185.229.221.152:2383`, // Proxy server url
-        `--proxy-server=http://185.229.223.23:2383`, // Proxy server url
-      ],
+      args: puppeteerArgs,
     });
     const page = await browser.newPage();
     await page.setViewport({ width: 1280, height: 720 });
