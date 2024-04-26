@@ -14,7 +14,7 @@ current implementation consists of N steps:
     // 1. Service that exposing bot api to web should get bot state from botStateService, and get the child process from it
   constructor(private readonly botStateService: BotStateService) {}
 
-  async setUsername(api_id: number, username: string) {
+  async setUsername(api_id: string, username: string) {
 
     const process = this.botStateService.getBotState(api_id);
 

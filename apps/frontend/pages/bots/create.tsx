@@ -10,17 +10,20 @@ import {
 } from "./gql";
 import { TextInput } from "../../src/shared/Input/TextInput";
 import { Clickable } from "../../src/shared/Clickable/Clickable";
-import { useReducer, useState } from "react";
+import { useEffect, useReducer, useState } from "react";
 import { useRouter } from "next/router";
 import { InitBot } from "./InitBot";
 import { SessionStringRestore } from "../../src/shared/BotSessionStringRestore/BotSessionStringRestore";
+import { BooleanInput } from "../../src/shared/BooleanInput/BooleanInput";
+import { generateFromEmail, generateUsername } from "unique-username-generator";
 
 const defaultCreateBotData: CreateBotInput = {
-  api_id: 26411752,
-  api_hash: "848d6968bf2786c0ebd73be6b2d3279e",
-  botName: "andromeda",
+  api_id: "",
+  api_hash: "",
+  botName: "",
   behaviorModel: "base",
   sessionString: "",
+  fromFile: true,
 };
 
 const CreateBotPage: NextPage = () => {
@@ -44,6 +47,10 @@ const CreateBotPage: NextPage = () => {
     defaultCreateBotData
   );
 
+  useEffect(() => {
+    dispatch({ botName: generateUsername() });
+  }, []);
+
   return (
     <Layout>
       <h1>Create Bot</h1>
@@ -54,26 +61,6 @@ const CreateBotPage: NextPage = () => {
       >
         {/* <InitBot /> */}
         <TextInput
-          value={createBotData.api_id.toString()}
-          onChange={(e) => {
-            dispatch({ api_id: parseInt(e) });
-          }}
-          label="api_id"
-          type="number"
-          placeholder="api_id"
-          required
-        />
-        <TextInput
-          label="api_hash"
-          type="text"
-          placeholder="api_hash"
-          required
-          value={createBotData.api_hash}
-          onChange={(e) => {
-            dispatch({ api_hash: e });
-          }}
-        />
-        <TextInput
           label="botName"
           type="text"
           placeholder="botName"
@@ -83,6 +70,56 @@ const CreateBotPage: NextPage = () => {
             dispatch({ botName: e });
           }}
         />
+        {!createBotData.fromFile && (
+          <>
+            <TextInput
+              value={createBotData.api_id.toString()}
+              onChange={(e) => {
+                dispatch({ api_id: e });
+              }}
+              label="api_id"
+              // type="string"
+              placeholder="api_id"
+              required
+            />
+            <TextInput
+              label="api_hash"
+              type="text"
+              placeholder="api_hash"
+              required
+              value={createBotData.api_hash}
+              onChange={(e) => {
+                dispatch({ api_hash: e });
+              }}
+            />
+            <TextInput
+              label="sessionString"
+              type="text"
+              placeholder="sessionString"
+              required
+              value={createBotData.sessionString}
+              onChange={(e) => {
+                dispatch({ sessionString: e });
+              }}
+            />
+            <SessionStringRestore
+              api_id={createBotData.api_id}
+              requestedPhone={true}
+            />
+          </>
+        )}
+        {createBotData.fromFile && (
+          <TextInput
+            label="FileName"
+            type="text"
+            placeholder="Digits"
+            required
+            value={createBotData.api_hash}
+            onChange={(e) => {
+              dispatch({ api_hash: e });
+            }}
+          />
+        )}
         <TextInput
           label="behaviorModel"
           type="text"
@@ -93,20 +130,16 @@ const CreateBotPage: NextPage = () => {
             dispatch({ behaviorModel: e });
           }}
         />
-        <TextInput
-          label="sessionString"
-          type="text"
-          placeholder="sessionString"
-          required
-          value={createBotData.sessionString}
+
+        <BooleanInput
+          // fromFile
+          label="fromFile"
+          value={createBotData.fromFile}
           onChange={(e) => {
-            dispatch({ sessionString: e });
+            dispatch({ fromFile: e });
           }}
         />
-        <SessionStringRestore
-          api_id={createBotData.api_id}
-          requestedPhone={true}
-        />
+
         <Clickable
           primary
           text="Create Bot"

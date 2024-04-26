@@ -3,7 +3,7 @@ import { BotEntity, BotStateEntity } from "@core/types/server";
 
 // export interface IBotState {
 //   //   id: string;
-//   api_id: number;
+//   api_id: string;
 //   api_hash: string;
 //   sessionString: string;
 //   isRunning: boolean;

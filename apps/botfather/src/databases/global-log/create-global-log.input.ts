@@ -29,5 +29,5 @@ export class CreateGlobalLogInputDTO
   details: string;
 
   @Field(() => Int, { nullable: true })
-  api_id: number;
+  api_id: string;
 }

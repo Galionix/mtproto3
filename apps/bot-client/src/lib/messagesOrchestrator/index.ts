@@ -14,6 +14,7 @@ import { getBotResponse } from "@core/functions";
 import { responseMessageEmpty } from "./utils";
 
 export async function messageOrchestrator(event: NewMessageEvent) {
+  console.log("event: ", event);
   //
   /*event:  {
   originalUpdate: {

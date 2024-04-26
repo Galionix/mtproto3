@@ -138,7 +138,7 @@ async function listenGlobalLog({
     {
       event_message,
       log_event,
-      details: JSON.stringify(details),
+      details: JSON.stringify(details, Object.getOwnPropertyNames(details)),
       api_id,
     } as any
     // cant fix auto generated column error. it actually creates it but i dont know how to set types

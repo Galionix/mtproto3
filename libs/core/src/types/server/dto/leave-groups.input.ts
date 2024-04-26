@@ -9,5 +9,5 @@ export class LeaveGroupsInput {
 
   @Field(() => [Int])
   @Column()
-  api_ids: number[];
+  api_ids: string[];
 }

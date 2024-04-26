@@ -46,7 +46,7 @@ const EditBotPage: NextPage = () => {
   const router = useRouter();
   const { id } = router.query;
   const { data: { bot } = { bot: null } } = useQuery(getBotQuery, {
-    variables: { api_id: parseInt(`${id}`) },
+    variables: { api_id: `${id}` },
   });
   // hidePhoneNumberMutation
   const [hidePhoneNumber, { data: hidePhoneNumberDataResult }] = useMutation(
@@ -283,7 +283,7 @@ const EditBotPage: NextPage = () => {
             onClick={async () => {
               const { data } = await hidePhoneNumber({
                 variables: {
-                  api_id: parseInt(`${id}`),
+                  api_id: `${id}`,
                 },
               });
               console.log("data: ", data);
@@ -297,7 +297,7 @@ const EditBotPage: NextPage = () => {
             onClick={async () => {
               const { data } = await removePhotos({
                 variables: {
-                  api_id: parseInt(`${id}`),
+                  api_id: `${id}`,
                 },
               });
               console.log("data: ", data);
@@ -322,7 +322,7 @@ const EditBotPage: NextPage = () => {
               onClick={async () => {
                 const { data } = await setPhoto({
                   variables: {
-                    api_id: parseInt(`${id}`),
+                    api_id: `${id}`,
                     photoName,
                   },
                 });
@@ -386,7 +386,7 @@ const EditBotPage: NextPage = () => {
           onClick={async () => {
             await setBio({
               variables: {
-                api_id: parseInt(`${id}`),
+                api_id: `${id}`,
                 firstName: bioInfo.firstName,
                 lastName: bioInfo.lastName,
                 about: bioInfo.about,
@@ -526,7 +526,7 @@ const EditBotPage: NextPage = () => {
           };
           await updateBot({
             variables: {
-              api_id: parseInt(`${id}`),
+              api_id: `${id}`,
               updateBotInput: preparedUpdateBotData,
             },
             refetchQueries: [

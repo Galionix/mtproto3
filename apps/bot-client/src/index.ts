@@ -159,7 +159,7 @@ console.log("launching main thread");
       parseInt(apiId),
       apiHash,
       {
-        connectionRetries: 5,
+        connectionRetries: 3,
       }
     );
     console.log("before start");
@@ -212,6 +212,7 @@ console.log("launching main thread");
       },
       onError: (err) => {
         logEvent(BotEventTypes.ERROR, err.message);
+
         process.send({ event_type: "ERROR", error: err });
         console.log(err);
       },
@@ -308,5 +309,6 @@ console.log("launching main thread");
   } catch (error) {
     console.log("error: ", error);
     logEvent(BotEventTypes.ERROR, error.message);
+    logGlobal(BotEventTypes.ERROR, error.message, { stack: error.stack });
   }
 })();

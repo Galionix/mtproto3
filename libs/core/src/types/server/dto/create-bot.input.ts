@@ -4,14 +4,13 @@ import { Column } from "typeorm";
 
 @InputType()
 export class CreateBotInput {
-  @Field(() => Int, { nullable: true })
+  @Field(() => String, { nullable: true })
   @Column()
-  @IsNumber()
-  api_id: number;
+  api_id: string;
 
   @Field(() => String, { nullable: true })
   @Column()
-  @Length(32, 32)
+  // @Length(32, 32)
   api_hash: string;
 
   @Field(() => String, { nullable: true })
@@ -70,11 +69,16 @@ export class CreateBotInput {
   @IsOptional()
   replacements?: string;
 
-  @Field(() => Int, { nullable: true })
+  @Field(() => String, { nullable: true })
   @Column()
   @IsOptional()
-  copyFrom?: number;
+  copyFrom?: string;
 
   @Field(() => String, { nullable: true })
   botName: string;
+  // fromFile
+  @Field(() => Boolean, { nullable: true })
+  @Column()
+  @IsOptional()
+  fromFile?: boolean;
 }

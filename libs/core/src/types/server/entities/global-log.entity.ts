@@ -30,7 +30,7 @@ export class GlobalLogEntity {
 
   @Field(() => String, { nullable: true })
   @Column()
-  api_id: number;
+  api_id: string;
 
   @Field(() => String, { nullable: true })
   @Column()
@@ -41,6 +41,6 @@ export type CreateGlobalLogInput = {
   event_message: string;
   log_event: string;
   details: string;
-  api_id: number;
+  api_id: string;
   event_date: Date;
 };

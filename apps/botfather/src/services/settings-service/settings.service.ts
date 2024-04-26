@@ -10,7 +10,7 @@ import { sanitizeGroupNames } from "./utils";
 export class SettingsService {
   constructor(private readonly botStateService: BotStateService) {}
 
-  async setUsername(api_id: number, username: string) {
+  async setUsername(api_id: string, username: string) {
     const botState = this.botStateService.getBotState(api_id);
 
     if (botState) {
@@ -91,7 +91,7 @@ export class SettingsService {
 
     return botStateService.getBotStates();
   }
-  async setPhoto(api_id: number, photoName: string) {
+  async setPhoto(api_id: string, photoName: string) {
     const botState = this.botStateService.getBotState(api_id);
 
     if (botState) {
@@ -108,7 +108,7 @@ export class SettingsService {
   }
 
   // remove photos
-  async removePhotos(api_id: number) {
+  async removePhotos(api_id: string) {
     const botState = this.botStateService.getBotState(api_id);
 
     if (botState) {
@@ -124,7 +124,7 @@ export class SettingsService {
   }
 
   async setBio(
-    api_id: number,
+    api_id: string,
     firstName: string,
     lastName: string,
     about: string
@@ -146,7 +146,7 @@ export class SettingsService {
     return botState;
   }
 
-  async hidePhoneNumber(api_id: number) {
+  async hidePhoneNumber(api_id: string) {
     const botState = this.botStateService.getBotState(api_id);
 
     if (botState) {

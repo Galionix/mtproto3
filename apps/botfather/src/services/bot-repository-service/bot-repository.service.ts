@@ -3,8 +3,134 @@ import { Injectable, Logger } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { defaultValues } from "./default-values";
-
+import { Database } from "sqlite3";
+import sqlite3 from "sqlite3";
+import { sep, resolve } from "path";
+import { AuthKey } from "telegram/crypto/AuthKey";
+import { TEntitiesRow, TSessionRow } from "./sesionFile.types";
+import { MemorySession, StringSession } from "telegram/sessions";
+import select from "./readDb.utils";
+import ip from "ip";
+import base64 from "base64-js";
 const l = new Logger("BotRepositoryService");
+const CURRENT_VERSION = "1";
+// const _STRUCT_PREFORMAT = ">B{}sH256s";
+/*    dc_id?: number;
+    dcId?: number;
+    server_address?: string;
+    serverAddress?: string;
+    port: number;
+    auth_key: Buffer;
+    */
+
+function encode(
+  dc_id: number,
+  ip_address: string,
+  port: number,
+  auth_key: Buffer
+) {
+  // const ip = ip_address.split(".");
+  const ip_bytes = Buffer.from(ip_address.toString());
+  const auth_key_bytes = Buffer.from(auth_key);
+  const data = Buffer.concat([
+    Buffer.from([dc_id]),
+    ip_bytes,
+    Buffer.from([port]),
+    auth_key_bytes,
+  ]);
+  return `${CURRENT_VERSION}${base64.fromByteArray(data)}`;
+}
+async function getBotDataFromFile(number: string) {
+  // const data: {
+  //   stringSession: string;
+  // } & TEntitiesRow = {
+  //   stringSession: "",
+  //   date: 0,
+  //   hash: null,
+  //   id: 0,
+  //   name: "",
+  //   phone: 0,
+  //   username: "",
+  // };
+  // const session = new StringSession("");
+  const filePath = resolve("accounts" + sep + number + ".session");
+  console.log("filePath: ", filePath);
+  // const db: Database = new sqlite3.Database(filePath);
+  // console.log("db: ", db);
+
+  const sessionsData = await select<TSessionRow>(filePath, "sessions");
+  // const stringSession = sessionsData[0].auth_key.toString("base64");
+  // const stringSession = encode(
+  //   sessionsData[0].dc_id,
+  //   sessionsData[0].server_address,
+  //   sessionsData[0].port,
+  //   sessionsData[0].auth_key
+  // );
+  const ss = new StringSession();
+
+  const authKey = new AuthKey();
+
+  authKey.setKey(Buffer.from(sessionsData[0].auth_key));
+
+  ss.setDC(
+    sessionsData[0].dc_id,
+    sessionsData[0].server_address,
+    sessionsData[0].port
+  );
+  ss.setAuthKey(authKey);
+
+  const sessionString = ss.save();
+
+  // const authKey = new AuthKey(sessionsData[0].auth_key);
+  // session.setAuthKey(authKey, sessionsData[0].dc_id);
+  // const sessionString = session.save();
+  // console.log("sessionString: ", sessionString);
+
+  const entities = await select<TEntitiesRow>(filePath, "entities");
+  console.log("entities: ", entities);
+  return { stringSession: sessionString, ...entities[1] };
+
+  // return stringSession;
+  // console.log("dbData: ", dbData);
+  // try {
+  // db.get("SELECT * FROM sessions", (err, row: TSessionRow) => {
+  //   // const dcId = row.dcId || row.dc_id;
+  //   const stringSession = row.auth_key.toString("base64");
+  //   console.log("stringSession from select: ", stringSession);
+  //   data.stringSession = stringSession;
+  //   // return stringSession;
+  //   // console.log("stringSession: ", stringSession);
+  //   // const serverAddress = row.serverAddress || row.server_address;
+  //   // console.log("dcId: ", dcId);
+  //   // const authKey = new AuthKey();
+  //   // await authKey.setKey(row.auth_key);
+
+  //   // const authSession = new MemorySession();
+  //   // authSession.setDC(dcId, serverAddress, row.port);
+  //   // authSession.setAuthKey(authKey, dcId);
+  //   // authSession.takeoutId = null;
+  //   // const res = authSession.save();
+  //   // console.log("res: ", res);
+
+  //   // console.log("row: ", row);
+  //   // return row;
+  // });
+  // // } catch (err) {
+  // //   console.log("err: ", err);
+  // // } finally {
+  // //   db.close();
+  // // }
+  // return data;
+}
+
+// async function getSession(number: string) {
+//   const filePath = resolve("accounts" + sep + number + ".session");
+//   const db: Database = new sqlite3.Database(filePath);
+//   return db.get("SELECT * FROM sessions", async (err, row: TSessionRow) => {
+//     const stringSession = row.auth_key.toString("base64");
+//     return stringSession;
+//   });
+// }
 
 @Injectable()
 export class BotRepositoryService {
@@ -14,6 +140,22 @@ export class BotRepositoryService {
   ) {}
 
   async create(createBotInput: CreateBotInput) {
+    console.log("createBotInput: ", createBotInput);
+    if (createBotInput.fromFile) {
+      const { stringSession, id, hash, username, phone, name, date } =
+        await getBotDataFromFile(createBotInput.api_hash.toString());
+
+      createBotInput.api_id = `${id}`;
+      createBotInput.api_hash = `${hash}`;
+      // createBotInput = username;
+      // createBotInput.phone = phone;
+      createBotInput.sessionString = stringSession;
+      // // here we use api_id as a number showing us what the file we should open.
+      // const sessionString = await getSession(
+      //   createBotInput.api_hash.toString()
+      // );
+      // console.log("sessionString: ", sessionString);
+    }
     const existingBot = await this.botRepository.findOne({
       where: { api_id: createBotInput.api_id },
     });
@@ -34,7 +176,7 @@ export class BotRepositoryService {
       ...defaultValues,
       ...copyFromBot,
       ...createBotInput,
-    }
+    };
 
     await this.botRepository.save(newBot);
     return newBot;
@@ -46,25 +188,25 @@ export class BotRepositoryService {
     return bots;
   }
 
-  async findOne(api_id: number): Promise<BotEntity> {
+  async findOne(api_id: string): Promise<BotEntity> {
     const res = await this.botRepository.findOne({ where: { api_id } });
     return res;
   }
 
   async findOneByName(botName: string): Promise<BotEntity> {
-    console.log('botName: ', botName);
+    console.log("botName: ", botName);
     const res = await this.botRepository.findOne({ where: { botName } });
-    console.log('res: ', res);
+    console.log("res: ", res);
     return res;
   }
 
-  async remove(id: number) {
+  async remove(id: string) {
     const removedId = await this.botRepository.delete(id);
     // await this.botStateService.reload();
     return removedId;
   }
 
-  async updateSessionString(api_id: number, sessionString: string) {
+  async updateSessionString(api_id: string, sessionString: string) {
     const bot = await this.findOne(api_id);
 
     bot.sessionString = sessionString;
@@ -74,7 +216,7 @@ export class BotRepositoryService {
     l.log("sessionString updated: ", sessionString);
   }
 
-  async updateClientState(api_id: number, state: string) {
+  async updateClientState(api_id: string, state: string) {
     const bot = await this.findOne(api_id);
 
     bot.clientState = state;
@@ -83,11 +225,11 @@ export class BotRepositoryService {
     this.botRepository.save(bot);
   }
 
-  async update(api_id: number, updateBotInput: UpdateBotInput) {
+  async update(api_id: string, updateBotInput: UpdateBotInput) {
     const bot = await this.findOne(api_id);
-    if(!bot) {
+    if (!bot) {
       throw new Error(`Bot with api_id ${api_id} not found`);
     }
-    return await this.botRepository.save({...bot, ...updateBotInput});
+    return await this.botRepository.save({ ...bot, ...updateBotInput });
   }
 }

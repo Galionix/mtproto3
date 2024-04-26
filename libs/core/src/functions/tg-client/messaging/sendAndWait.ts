@@ -1,9 +1,25 @@
-import { BotEvents } from "../../../types/client";
+import { BotEvents, BotEventTypes } from "../../../types/client";
 import {
   ServerEvents,
   ServerEventTypes,
 } from "../../../types/server/server-events";
 export const WAIT_FOR_SERVER_MESSAGE_TIMEOUT = 5000;
+
+export function logGlobal(
+  log_event: keyof typeof BotEventTypes,
+  event_message = "",
+  details = {}
+) {
+  const result = {
+    event_type: BotEventTypes.LOG_GLOBAL,
+    event_message,
+    log_event,
+    details,
+    api_id: "unknown api id",
+  };
+
+  process.send(result);
+}
 
 export function sendToFather(
   childProcess: NodeJS.Process,
@@ -25,6 +41,13 @@ message: {
   return new Promise((resolve, reject) => {
     const timeout = wait
       ? setTimeout(() => {
+          logGlobal(
+            BotEventTypes.ERROR,
+            "Timeout waiting for parent process response",
+            {
+              message,
+            }
+          );
           reject(new Error("Timeout waiting for parent process response"));
         }, waitTimeout)
       : null;

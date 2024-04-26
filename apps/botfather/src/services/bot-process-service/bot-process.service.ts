@@ -10,9 +10,11 @@ import {
 import { sep } from "path";
 import { ScenarioRepositoryService } from "../../databases/scenario-repository/scenario-repository.service";
 
+
 @Injectable()
 export class BotProcessService {
   private botProcesses: ChildProcess[] = [];
+  зище;
 
   constructor(
     private readonly botRepositoryService: BotRepositoryService,
@@ -34,7 +36,7 @@ export class BotProcessService {
     return this.botRepositoryService.findAll();
   }
 
-  async stopBot(api_id: number) {
+  async stopBot(api_id: string) {
     const botState = this.botStateService.getBotState(api_id);
     //   botState.childProcess.
     if (botState && botState.childProcess && botState.isStarted) {
@@ -55,7 +57,7 @@ export class BotProcessService {
     return this.botProcesses.length;
   }
 
-  async startBot(api_id: number) {
+  async startBot(api_id: string) {
     const bot = await this.botRepositoryService.findOne(api_id);
 
     // check if bot is already started
@@ -191,7 +193,7 @@ export class BotProcessService {
     // return loginDetailsList;
   }
 
-  // async restartBot(api_id: number) {
+  // async restartBot(api_id: string) {
   //   const botState = await this.botStateService.getBotState(api_id);
   //   if (botState) {
   //     botState.childProcess.kill();
@@ -208,11 +210,11 @@ export class BotProcessService {
   //   });
   // }
 
-  botsErrorsReducer(error: Error, api_id: number) {
+  botsErrorsReducer(error: Error, api_id: string) {
     console.log("api_id: " + api_id + ", error: ", error);
   }
 
-  async providePhoneNumber(api_id: number, phoneNumber: string) {
+  async providePhoneNumber(api_id: string, phoneNumber: string) {
     const botState = this.botStateService.getBotState(api_id);
     if (botState) {
       botState.childProcess.send({
@@ -223,7 +225,7 @@ export class BotProcessService {
     return botState;
   }
 
-  async providePhoneCode(api_id: number, phoneCode: string) {
+  async providePhoneCode(api_id: string, phoneCode: string) {
     const botState = this.botStateService.getBotState(api_id);
     if (botState) {
       // make requestedPhoneNumber false
@@ -240,7 +242,7 @@ export class BotProcessService {
     return botState;
   }
   // provide2FACode
-  async provide2FACode(api_id: number, code: string) {
+  async provide2FACode(api_id: string, code: string) {
     const botState = this.botStateService.getBotState(api_id);
     if (botState) {
       // make requestedPhoneNumber false

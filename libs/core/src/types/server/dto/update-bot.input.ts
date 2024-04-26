@@ -52,9 +52,9 @@ export class UpdateBotInput {
   @Column()
   replacements?: string;
 
-  @Field(() => Int, { nullable: true })
+  @Field(() => String, { nullable: true })
   @Column()
-  copyFrom?: number;
+  copyFrom?: string;
 
   @Field(() => String, { nullable: true })
   @Column()

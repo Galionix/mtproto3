@@ -51,12 +51,12 @@ export class BotResolver {
   }
 
   @Query(() => BotEntity, { name: "bot" })
-  findOne(@Args("api_id", { type: () => Int }) api_id: number) {
+  findOne(@Args("api_id", { type: () => String }) api_id: string) {
     return this.botRepositoryService.findOne(api_id);
   }
 
   @Mutation(() => BotEntity)
-  async removeBot(@Args("api_id", { type: () => Int }) api_id: number) {
+  async removeBot(@Args("api_id", { type: () => String }) api_id: string) {
     await this.botProcessService.stopBot(api_id);
     l.log("bot stopped: ", api_id);
 
@@ -77,7 +77,7 @@ export class BotResolver {
   }
 
   @Query(() => BotEntity, { name: "startBot" })
-  startBot(@Args("api_id", { type: () => Int }) api_id: number) {
+  startBot(@Args("api_id", { type: () => String }) api_id: string) {
     return this.botProcessService.startBot(api_id);
   }
 
@@ -87,7 +87,7 @@ export class BotResolver {
   }
 
   @Query(() => BotStateEntity, { name: "getBotState" })
-  getBotState(@Args("id", { type: () => Int }) api_id: number) {
+  getBotState(@Args("id", { type: () => String }) api_id: string) {
     return this.botStateService.getBotState(api_id);
   }
 
@@ -102,13 +102,13 @@ export class BotResolver {
   }
 
   @Mutation(() => BotStateEntity, { name: "stopBot" })
-  stopBot(@Args("api_id", { type: () => Int }) api_id: number) {
+  stopBot(@Args("api_id", { type: () => String }) api_id: string) {
     return this.botProcessService.stopBot(api_id);
   }
 
   @Mutation(() => String, { name: "setUsername" })
   async setUsername(
-    @Args("api_id", { type: () => Int }) api_id: number,
+    @Args("api_id", { type: () => String }) api_id: string,
     @Args("username") username: string
   ) {
     return await this.messagingSettingsService.setUsername(api_id, username);
@@ -136,14 +136,14 @@ export class BotResolver {
   // set photo
   @Mutation(() => BotStateEntity, { name: "setPhoto" })
   async setPhoto(
-    @Args("api_id", { type: () => Int }) api_id: number,
+    @Args("api_id", { type: () => String }) api_id: string,
     @Args("photoName") photoName: string
   ) {
     return await this.messagingSettingsService.setPhoto(api_id, photoName);
   }
 
   @Mutation(() => BotEntity, { name: "restartBot" })
-  async restartBot(@Args("api_id", { type: () => Int }) api_id: number) {
+  async restartBot(@Args("api_id", { type: () => String }) api_id: string) {
     await this.botProcessService.stopBot(api_id);
     l.log("bot stopped: ", api_id);
 
@@ -155,7 +155,7 @@ export class BotResolver {
 
   @Mutation(() => BotEntity, { name: "updateBot" })
   async updateBot(
-    @Args("api_id", { type: () => Int }) api_id: number,
+    @Args("api_id", { type: () => String }) api_id: string,
     @Args("updateBotInput") updateBotInput: UpdateBotInput
   ) {
     return await this.botRepositoryService.update(api_id, updateBotInput);
@@ -163,7 +163,7 @@ export class BotResolver {
 
   @Mutation(() => BotStateEntity, { name: "providePhoneNumber" })
   async providePhoneNumber(
-    @Args("api_id", { type: () => Int }) api_id: number,
+    @Args("api_id", { type: () => String }) api_id: string,
     @Args("phoneNumber") phoneNumber: string
   ) {
     return await this.botProcessService.providePhoneNumber(api_id, phoneNumber);
@@ -171,7 +171,7 @@ export class BotResolver {
 
   @Mutation(() => BotStateEntity, { name: "providePhoneCode" })
   async providePhoneCode(
-    @Args("api_id", { type: () => Int }) api_id: number,
+    @Args("api_id", { type: () => String }) api_id: string,
     @Args("phoneCode") phoneCode: string
   ) {
     return await this.botProcessService.providePhoneCode(api_id, phoneCode);
@@ -179,7 +179,7 @@ export class BotResolver {
   // provide2FACode
   @Mutation(() => BotStateEntity, { name: "provide2FACode" })
   async provide2FACode(
-    @Args("api_id", { type: () => Int }) api_id: number,
+    @Args("api_id", { type: () => String }) api_id: string,
     @Args("code") code: string
   ) {
     return await this.botProcessService.provide2FACode(api_id, code);
@@ -187,14 +187,14 @@ export class BotResolver {
 
   // removePhotos
   @Mutation(() => BotStateEntity, { name: "removePhotos" })
-  async removePhotos(@Args("api_id", { type: () => Int }) api_id: number) {
+  async removePhotos(@Args("api_id", { type: () => String }) api_id: string) {
     return await this.messagingSettingsService.removePhotos(api_id);
   }
 
   // setBio
   @Mutation(() => BotStateEntity, { name: "setBio" })
   async setBio(
-    @Args("api_id", { type: () => Int }) api_id: number,
+    @Args("api_id", { type: () => String }) api_id: string,
     @Args("firstName") firstName: string,
     @Args("lastName") lastName: string,
     @Args("about") about: string
@@ -208,7 +208,9 @@ export class BotResolver {
   }
 
   @Mutation(() => BotStateEntity, { name: "hidePhoneNumber" })
-  async hidePhoneNumber(@Args("api_id", { type: () => Int }) api_id: number) {
+  async hidePhoneNumber(
+    @Args("api_id", { type: () => String }) api_id: string
+  ) {
     return await this.messagingSettingsService.hidePhoneNumber(api_id);
   }
 }

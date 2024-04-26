@@ -21,14 +21,14 @@ export class BotStateService {
 
   private botStates: BotStateEntity[] = [];
 
-  getBotState(api_id: number): Readonly<BotStateEntity> {
+  getBotState(api_id: string): Readonly<BotStateEntity> {
     const botState = this.botStates.find(
       (botState) => botState.bot.api_id === api_id
     );
 
     return { ...botState };
   }
-  removeBotState(api_id: number) {
+  removeBotState(api_id: string) {
     this.botStates = this.botStates.filter(
       (botState) => botState.bot.api_id !== api_id
     );
@@ -57,7 +57,7 @@ export class BotStateService {
    * @description
    * Updates bot state with new values
    * */
-  updateBotState(api_id: number, botState: Partial<BotStateEntity>) {
+  updateBotState(api_id: string, botState: Partial<BotStateEntity>) {
     const index = this.botStates.findIndex(
       (botState) => botState.bot.api_id === api_id
     );

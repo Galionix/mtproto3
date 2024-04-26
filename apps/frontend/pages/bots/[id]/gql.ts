@@ -1,7 +1,7 @@
 import { graphql } from "../../../apollo/codegen";
 
 export const getBotQuery = graphql(`
-  query Bot($api_id: Int!) {
+  query Bot($api_id: String!) {
     bot(api_id: $api_id) {
       afterTaskDelay
       afterTaskIdleTime
@@ -27,7 +27,7 @@ export const getBotQuery = graphql(`
 
 // updateBot
 export const updateBotMutation = graphql(`
-  mutation updateBot($api_id: Int!, $updateBotInput: UpdateBotInput!) {
+  mutation updateBot($api_id: String!, $updateBotInput: UpdateBotInput!) {
     updateBot(api_id: $api_id, updateBotInput: $updateBotInput) {
       afterTaskDelay
       afterTaskIdleTime
@@ -50,7 +50,7 @@ export const updateBotMutation = graphql(`
 `);
 
 export const setPhotoMutation = graphql(`
-  mutation setPhoto($api_id: Int!, $photoName: String!) {
+  mutation setPhoto($api_id: String!, $photoName: String!) {
     setPhoto(api_id: $api_id, photoName: $photoName) {
       bot {
         api_id
@@ -60,7 +60,7 @@ export const setPhotoMutation = graphql(`
 `);
 
 export const removePhotosMutation = graphql(`
-  mutation removePhotos($api_id: Int!) {
+  mutation removePhotos($api_id: String!) {
     removePhotos(api_id: $api_id) {
       bot {
         api_id
@@ -70,8 +70,18 @@ export const removePhotosMutation = graphql(`
 `);
 // setBio
 export const setBioMutation = graphql(`
-  mutation setBio($api_id: Int!, $firstName: String!, $lastName: String!, $about: String!) {
-    setBio(api_id: $api_id, firstName: $firstName, lastName: $lastName, about: $about) {
+  mutation setBio(
+    $api_id: String!
+    $firstName: String!
+    $lastName: String!
+    $about: String!
+  ) {
+    setBio(
+      api_id: $api_id
+      firstName: $firstName
+      lastName: $lastName
+      about: $about
+    ) {
       bot {
         api_id
       }
@@ -81,7 +91,7 @@ export const setBioMutation = graphql(`
 
 // hidePhoneNumber
 export const hidePhoneNumberMutation = graphql(`
-  mutation hidePhoneNumber($api_id: Int!) {
+  mutation hidePhoneNumber($api_id: String!) {
     hidePhoneNumber(api_id: $api_id) {
       bot {
         api_id

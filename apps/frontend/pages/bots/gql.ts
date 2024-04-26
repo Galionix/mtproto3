@@ -52,7 +52,7 @@ export const createBotMutation = graphql(`
 `);
 
 export const removeBotMutation = graphql(`
-  mutation removeBot($api_id: Int!) {
+  mutation removeBot($api_id: String!) {
     removeBot(api_id: $api_id) {
       api_id
     }
@@ -84,7 +84,7 @@ export const getBotStatesQuery = graphql(`
 `);
 
 export const restartBotMutation = graphql(`
-  mutation restartBot($api_id: Int!) {
+  mutation restartBot($api_id: String!) {
     restartBot(api_id: $api_id) {
       api_id
     }
@@ -92,7 +92,7 @@ export const restartBotMutation = graphql(`
 `);
 
 export const stopBotMutation = graphql(`
-  mutation stopBot($api_id: Int!) {
+  mutation stopBot($api_id: String!) {
     stopBot(api_id: $api_id) {
       isRunning
     }
@@ -100,7 +100,7 @@ export const stopBotMutation = graphql(`
 `);
 
 export const getBotStateQuery = graphql(`
-  query getBotState($api_id: Int!) {
+  query getBotState($api_id: String!) {
     getBotState(id: $api_id) {
       bot {
         api_id
@@ -124,7 +124,7 @@ export const getBotStateQuery = graphql(`
   }
 `);
 export const getBotStateLogs = graphql(`
-  query getBotStateLogs($api_id: Int!) {
+  query getBotStateLogs($api_id: String!) {
     getBotState(id: $api_id) {
       eventLogs {
         log_event

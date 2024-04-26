@@ -7,7 +7,7 @@ export class CreateBotStateInput {
   @Field(() => Int, { nullable: true })
   @Column()
   @IsNumber()
-  api_id: number;
+  api_id: string;
 
   @Field(() => String, { nullable: true })
   @Column()

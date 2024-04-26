@@ -10,7 +10,7 @@ import { IsOptional } from "class-validator";
 export class BotEntity {
   @Field(() => String, { nullable: true })
   @PrimaryColumn()
-  api_id: number;
+  api_id: string;
 
   @Field({ nullable: true })
   @Column()
@@ -68,9 +68,9 @@ export class BotEntity {
   @Column()
   replacements: string;
 
-  @Field(() => Int, { nullable: true })
+  @Field(() => String, { nullable: true })
   @Column()
-  copyFrom: number;
+  copyFrom: string;
 
   @Field(() => String, { nullable: true })
   @Column()
@@ -79,4 +79,9 @@ export class BotEntity {
   @Field(() => String, { nullable: true })
   @Column()
   botName: string;
+
+  // fromFile:boolean
+  @Field(() => Boolean, { nullable: true })
+  @Column()
+  fromFile: boolean;
 }

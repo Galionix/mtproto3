@@ -41,8 +41,9 @@ type BotEntity {
   botName: String
   clientState: String
   clientStateUpdateTime: String
-  copyFrom: Int
+  copyFrom: String
   dmScenarioNames: [String!]
+  fromFile: Boolean
   readDelay: Int
   replacements: String
   sessionString: String
@@ -127,10 +128,11 @@ input CreateBotInput {
   afterTaskIdleTime: Int
   answersDb: String
   api_hash: String
-  api_id: Int
+  api_id: String
   behaviorModel: String
   botName: String
-  copyFrom: Int
+  copyFrom: String
+  fromFile: Boolean
   readDelay: Int
   replacements: String
   scenario: String
@@ -307,26 +309,26 @@ type Mutation {
   createMessage(createMessageInput: CreateMessageInput!): MessageEntity!
   createScenario(scenarioInput: CreateScenarioInput!): ScenarioEntity!
   createSpamMessage(createSpamMessageInput: CreateMessageInput!): MessageEntity!
-  hidePhoneNumber(api_id: Int!): BotStateEntity!
+  hidePhoneNumber(api_id: String!): BotStateEntity!
   joinGroups(JoinGroupsInput: JoinGroupsInput!): [BotStateEntity!]!
   leaveGroups(input: LeaveGroupsInput!): [BotStateEntity!]!
-  provide2FACode(api_id: Int!, code: String!): BotStateEntity!
-  providePhoneCode(api_id: Int!, phoneCode: String!): BotStateEntity!
-  providePhoneNumber(api_id: Int!, phoneNumber: String!): BotStateEntity!
+  provide2FACode(api_id: String!, code: String!): BotStateEntity!
+  providePhoneCode(api_id: String!, phoneCode: String!): BotStateEntity!
+  providePhoneNumber(api_id: String!, phoneNumber: String!): BotStateEntity!
   removeAnswer(id: String!): Int!
-  removeBot(api_id: Int!): BotEntity!
+  removeBot(api_id: String!): BotEntity!
   removeGlobalLog(id: Int!): GlobalLogEntity!
   removeMessages(ids: [String!]!): Int!
-  removePhotos(api_id: Int!): BotStateEntity!
+  removePhotos(api_id: String!): BotStateEntity!
   removeScenario(id: String!): String!
   removeSpamMessage(id: String!): Float!
-  restartBot(api_id: Int!): BotEntity!
-  setBio(about: String!, api_id: Int!, firstName: String!, lastName: String!): BotStateEntity!
-  setPhoto(api_id: Int!, photoName: String!): BotStateEntity!
-  setUsername(api_id: Int!, username: String!): String!
-  stopBot(api_id: Int!): BotStateEntity!
+  restartBot(api_id: String!): BotEntity!
+  setBio(about: String!, api_id: String!, firstName: String!, lastName: String!): BotStateEntity!
+  setPhoto(api_id: String!, photoName: String!): BotStateEntity!
+  setUsername(api_id: String!, username: String!): String!
+  stopBot(api_id: String!): BotStateEntity!
   updateAnswer(updateAnswerInput: UpdateAnswersRepositoryInput!): AnswerEntity!
-  updateBot(api_id: Int!, updateBotInput: UpdateBotInput!): BotEntity!
+  updateBot(api_id: String!, updateBotInput: UpdateBotInput!): BotEntity!
   updateMessage(id: String!, updateMessageInput: UpdateMessageInput!): MessageEntity!
   updateSpamMessage(id: String!, updateSpamMessageInput: CreateMessageInput!): MessageEntity!
 }
@@ -335,9 +337,9 @@ type Query {
   answer(id: String!): AnswerEntity
   answers: [AnswerEntity!]!
   batchFind(ids: [String!]!): [MessageEntity!]!
-  bot(api_id: Int!): BotEntity!
+  bot(api_id: String!): BotEntity!
   bots: [BotEntity!]!
-  getBotState(id: Int!): BotStateEntity!
+  getBotState(id: String!): BotStateEntity!
   getBotStates: [BotStateEntity!]!
   getProcessesCount: Int!
   globalLog(limit: Int! = 10): [GlobalLogEntity!]!
@@ -350,7 +352,7 @@ type Query {
   someAnswers(findSomeAnswersInput: UpdateAnswersRepositoryInput!): [AnswerEntity!]!
   spamMessages: [MessageEntity!]!
   spamMessagesByDbName(db_name: String!): [MessageEntity!]!
-  startBot(api_id: Int!): BotEntity!
+  startBot(api_id: String!): BotEntity!
   startBots: [BotEntity!]!
   startBotsImmediately: [BotEntity!]!
   stopBots: [BotEntity!]!
@@ -437,7 +439,7 @@ input UpdateBotInput {
   behaviorModel: String
   botName: String
   clientState: String
-  copyFrom: Int
+  copyFrom: String
   dmScenarioNames: [String!]
   readDelay: Int
   replacements: String

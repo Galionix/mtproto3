@@ -27,7 +27,7 @@ export interface IServiceArgs {
 export type TListenerArgs<T = TProcessMessages, O = object> = {
   services: IServiceArgs;
   message: T;
-  api_id: number;
+  api_id: string;
 } & O;
 
 @Injectable()
@@ -42,7 +42,7 @@ export class BotEventsService {
     private readonly globalLogService: GlobalLogService
   ) {}
 
-  async botsMessagesReducer(message: TProcessMessages, api_id: number) {
+  async botsMessagesReducer(message: TProcessMessages, api_id: string) {
     const botState = this.botStateService
       .getBotStates()
       .find((botState) => botState.bot.api_id === api_id);

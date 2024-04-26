@@ -17,7 +17,7 @@ export class StatisticEntity {
 
   @Field(() => Int, { description: "bot's api_id", nullable: true })
   @Column()
-  api_id: number;
+  api_id: string;
 
   @Field(() => Date, {
     description: "date of statistic update",

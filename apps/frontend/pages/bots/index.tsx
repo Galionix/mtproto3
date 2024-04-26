@@ -68,7 +68,7 @@ const BotsPage: NextPage = () => {
     onSubmit: (id: string) => {
       removeBot({
         variables: {
-          api_id: parseInt(id),
+          api_id: id,
         },
         refetchQueries: [
           {
@@ -187,7 +187,7 @@ const BotsPage: NextPage = () => {
           <SessionStringRestore
             key={`restore ${bot.api_id}`}
             api_id={bot.api_id}
-            requestedPhone={bot.botState.requestedPhoneCode}
+            requestedPhone={bot.botState?.requestedPhoneCode}
           />,
           <Clickable
             key={`start/stop ${bot.api_id}`}
@@ -199,7 +199,7 @@ const BotsPage: NextPage = () => {
               if (bot.botState?.isRunning) {
                 stopBot({
                   variables: {
-                    api_id: parseInt(bot.api_id),
+                    api_id: bot.api_id,
                   },
                   refetchQueries: [
                     {
@@ -211,7 +211,7 @@ const BotsPage: NextPage = () => {
               } else {
                 restartBot({
                   variables: {
-                    api_id: parseInt(bot.api_id),
+                    api_id: bot.api_id,
                   },
                   refetchQueries: [
                     {

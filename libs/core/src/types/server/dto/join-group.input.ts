@@ -9,7 +9,7 @@ export class JoinGroupsInput {
 
   @Field(() => [Int])
   @Column()
-  api_ids: number[];
+  api_ids: string[];
 
   @Field(() => String, { nullable: true })
   @Column()

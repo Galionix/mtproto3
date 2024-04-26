@@ -60,7 +60,8 @@ export const defaultValues: Omit<BotEntity, "api_id" | "api_hash"> = {
   afterTaskIdleTime: 1000,
   voice: "ksenia",
   replacements: "{}",
-  copyFrom: -1,
+  copyFrom: "-1",
   spamDBname: "base",
   botName: "baseName",
+  fromFile: false,
 };
