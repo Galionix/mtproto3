@@ -6,6 +6,7 @@ import {
 export const WAIT_FOR_SERVER_MESSAGE_TIMEOUT = 5000;
 
 export function logGlobal(
+  process: NodeJS.Process,
   log_event: keyof typeof BotEventTypes,
   event_message = "",
   details = {}
@@ -41,13 +42,15 @@ message: {
   return new Promise((resolve, reject) => {
     const timeout = wait
       ? setTimeout(() => {
-          logGlobal(
-            BotEventTypes.ERROR,
-            "Timeout waiting for parent process response",
-            {
-              message,
-            }
-          );
+          console.log("Timeout waiting for parent process response:" + message);
+          // logGlobal(
+          //   childProcess,
+          //   BotEventTypes.ERROR,
+          //   "Timeout waiting for parent process response",
+          //   {
+          //     message,
+          //   }
+          // );
           reject(new Error("Timeout waiting for parent process response"));
         }, waitTimeout)
       : null;
