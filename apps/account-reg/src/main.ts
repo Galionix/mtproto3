@@ -15,9 +15,11 @@ import {
   sms_activate_base_price,
   sms_activate_max_price,
   try_number,
+  updateCredsNumber,
 } from "./constants";
 import { countriesList } from "./countriesList.constant";
 import { fetchAndGetRawBody, wait } from "./utils";
+import { updateCreds } from "./updateCreds";
 
 const sms_activate_api_key = "c7fb329608ef0cAbb6bA0AA98475c558";
 let priceAdded = 0;
@@ -175,6 +177,10 @@ const refreshCountries = async () => {
 };
 
 (async () => {
+  if (updateCredsNumber) {
+    await updateCreds({phone: updateCredsNumber})
+    return;
+  }
   if (try_number) {
     boughtNumberParsed = {
       phoneNumber: try_number,
@@ -184,7 +190,6 @@ const refreshCountries = async () => {
       args: puppeteerArgs,
     });
     const page = await browser.newPage();
-    await page.setViewport({ width: 1280, height: 720 });
     await page.setViewport({
       width: 320,
       height: 568,

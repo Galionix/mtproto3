@@ -47,3 +47,5 @@ export const puppeteerArgs = [
   // `--proxy-server=http://185.229.221.152:2383`, // Proxy server url
   `--proxy-server=http://185.229.223.23:2383`, // Proxy server url
 ];
+
+export const updateCredsNumber = '+34604102550';
