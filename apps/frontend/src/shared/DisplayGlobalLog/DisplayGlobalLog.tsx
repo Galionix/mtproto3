@@ -42,7 +42,8 @@ export const DisplayGlobalLog = () => {
   );
   useEffect(() => {
     setGlobalLogs((data?.globalLog as unknown as GlobalLogEntity[]) || []);
-    setLatestDate(new Date(data?.globalLog[0].event_date));
+    data?.globalLog[0] &&
+      setLatestDate(new Date(data?.globalLog[0].event_date));
   }, [data]);
 
   // queryGlobalLogFromDate
@@ -74,7 +75,7 @@ export const DisplayGlobalLog = () => {
       log.event_message.includes(search) ||
       log.details.includes(search) ||
       log.log_event.includes(search) ||
-      log.api_id.toString().includes(search)
+      log.botDbId.toString().includes(search)
   );
   const [refresh, setRefresh] = useState(true);
   useEffect(() => {
@@ -119,7 +120,7 @@ export const DisplayGlobalLog = () => {
             <div>{log.log_event}</div>
             <div>{new Date(log.event_date).toISOString()}</div>
             <div>{log.details}</div>
-            <div>{log.api_id}</div>
+            <div>{log.botDbId}</div>
           </div>
         ))}
       </div>

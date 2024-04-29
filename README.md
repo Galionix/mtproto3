@@ -15,7 +15,7 @@ This server will be responsible for managing the database, which will include al
 Requirements:
 
 When i want to add a new bot, i want to be able to add it by providing the following info:
-- api_id
+- botDbId
 - api_hash
 - stringSession
 

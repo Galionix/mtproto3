@@ -37,7 +37,7 @@ export type TRemovePhotosMessage =
   TGenericMessage<ESettingsMessageType.REMOVE_PHOTOS>;
 export type TJoinGroupsMessage = TGenericMessage<ESettingsMessageType.JOIN_GROUPS> & {
   chatNames: string[];
-  api_ids: string[];
+  botDbIds: string[];
   behavior_model: string;
   processing_enabled: boolean;
   spam_frequency: number;

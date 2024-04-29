@@ -1,13 +1,14 @@
 import { graphql } from "../../../apollo/codegen";
 
 export const getBotQuery = graphql(`
-  query Bot($api_id: String!) {
-    bot(api_id: $api_id) {
+  query Bot($botDbId: String!) {
+    bot(botDbId: $botDbId) {
       afterTaskDelay
       afterTaskIdleTime
       answersDb
       api_hash
       api_id
+      botDbId
       behaviorModel
       botName
       clientState
@@ -27,13 +28,14 @@ export const getBotQuery = graphql(`
 
 // updateBot
 export const updateBotMutation = graphql(`
-  mutation updateBot($api_id: String!, $updateBotInput: UpdateBotInput!) {
-    updateBot(api_id: $api_id, updateBotInput: $updateBotInput) {
+  mutation updateBot($botDbId: String!, $updateBotInput: UpdateBotInput!) {
+    updateBot(botDbId: $botDbId, updateBotInput: $updateBotInput) {
       afterTaskDelay
       afterTaskIdleTime
       answersDb
       api_hash
       api_id
+      botDbId
       behaviorModel
       botName
       clientState
@@ -50,20 +52,20 @@ export const updateBotMutation = graphql(`
 `);
 
 export const setPhotoMutation = graphql(`
-  mutation setPhoto($api_id: String!, $photoName: String!) {
-    setPhoto(api_id: $api_id, photoName: $photoName) {
+  mutation setPhoto($botDbId: String!, $photoName: String!) {
+    setPhoto(botDbId: $botDbId, photoName: $photoName) {
       bot {
-        api_id
+        botDbId
       }
     }
   }
 `);
 
 export const removePhotosMutation = graphql(`
-  mutation removePhotos($api_id: String!) {
-    removePhotos(api_id: $api_id) {
+  mutation removePhotos($botDbId: String!) {
+    removePhotos(botDbId: $botDbId) {
       bot {
-        api_id
+        botDbId
       }
     }
   }
@@ -71,19 +73,19 @@ export const removePhotosMutation = graphql(`
 // setBio
 export const setBioMutation = graphql(`
   mutation setBio(
-    $api_id: String!
+    $botDbId: String!
     $firstName: String!
     $lastName: String!
     $about: String!
   ) {
     setBio(
-      api_id: $api_id
+      botDbId: $botDbId
       firstName: $firstName
       lastName: $lastName
       about: $about
     ) {
       bot {
-        api_id
+        botDbId
       }
     }
   }
@@ -91,10 +93,10 @@ export const setBioMutation = graphql(`
 
 // hidePhoneNumber
 export const hidePhoneNumberMutation = graphql(`
-  mutation hidePhoneNumber($api_id: String!) {
-    hidePhoneNumber(api_id: $api_id) {
+  mutation hidePhoneNumber($botDbId: String!) {
+    hidePhoneNumber(botDbId: $botDbId) {
       bot {
-        api_id
+        botDbId
       }
     }
   }

@@ -36,32 +36,32 @@ export class BotProcessService {
     return this.botRepositoryService.findAll();
   }
 
-  async stopBot(api_id: string) {
-    const botState = this.botStateService.getBotState(api_id);
+  async stopBot(botDbId: string) {
+    const botState = this.botStateService.getBotState(botDbId);
     //   botState.childProcess.
     if (botState && botState.childProcess && botState.isStarted) {
       //   TODO: add check if stop succeeded
       botState.childProcess.kill();
       botState.childProcess.disconnect();
-      this.botStateService.updateBotState(api_id, {
+      this.botStateService.updateBotState(botDbId, {
         childProcess: null,
       });
       this.botProcesses = this.botProcesses.filter(
         (childProcess) => childProcess.pid !== botState.childProcess.pid
       );
     }
-    return this.botRepositoryService.findOne(api_id);
+    return this.botRepositoryService.findOne(botDbId);
   }
   getProcessesCount() {
     // console.log("this.botProcesses: ", this.botProcesses);
     return this.botProcesses.length;
   }
 
-  async startBot(api_id: string) {
-    const bot = await this.botRepositoryService.findOne(api_id);
+  async startBot(botDbId: string) {
+    const bot = await this.botRepositoryService.findOne(botDbId);
 
     // check if bot is already started
-    const botState = this.botStateService.getBotState(bot.api_id);
+    const botState = this.botStateService.getBotState(bot.botDbId);
     // console.log("botState: ", botState);
     if (botState.isStarted) {
       return bot;
@@ -74,23 +74,6 @@ export class BotProcessService {
 
     // console.log("scenarios: ", scenarios);
     console.log("bot.replacements: ", bot.replacements);
-    // console.log([
-    //   bot.api_id.toString(),
-    //   bot.api_hash,
-    //   bot.sessionString,
-    //   bot.behaviorModel,
-    //   bot.answersDb,
-    //   bot.readDelay.toString(),
-    //   bot.typeDelayMultiplier.toString(),
-    //   bot.taskOrder,
-    //   bot.afterTaskDelay.toString(),
-    //   bot.afterTaskIdleTime.toString(),
-    //   bot.scenario,
-    //   bot.voice,
-    //   bot.replacements,
-    //   bot.spamDBname,
-    //   // bot.id,
-    // ]);
 
     const childProcess = fork(
       "dist" + sep + "apps" + sep + "bot-client" + sep + "main.js",
@@ -109,6 +92,7 @@ export class BotProcessService {
         bot.voice,
         bot.replacements.replaceAll("\n", ""),
         bot.spamDBname,
+        bot.botDbId,
         // isTest
         "false",
 
@@ -126,7 +110,7 @@ export class BotProcessService {
       this.botProcesses = this.botProcesses.filter(
         (chProcess) => chProcess.pid !== childProcess.pid
       );
-      this.botStateService.updateBotState(api_id, {
+      this.botStateService.updateBotState(botDbId, {
         bot,
         childProcess: null,
         isStarted: false,
@@ -140,17 +124,17 @@ export class BotProcessService {
     childProcess.on("message", (message) =>
       this.botMessageService.botsMessagesReducer.bind(this.botMessageService)(
         message,
-        bot.api_id
+        bot.botDbId
       )
     );
     childProcess.on("error", (error: Error) =>
-      this.botsErrorsReducer.bind(this)(error, bot.api_id)
+      this.botsErrorsReducer.bind(this)(error, bot.botDbId)
     );
     // this.botStateService
     //   .getBotStates()
     //   .find((botState) => botState.bot.api_id === bot.api_id).childProcess =
     //   childProcess;
-    this.botStateService.updateBotState(api_id, {
+    this.botStateService.updateBotState(botDbId, {
       bot,
       childProcess: childProcess as ChildProcessEntity,
       isStarted: true,
@@ -164,7 +148,7 @@ export class BotProcessService {
   async startBotsImmediately() {
     const loginDetailsList = await this.botRepositoryService.findAll();
     return loginDetailsList.map((loginDetails) =>
-      this.startBot(loginDetails.api_id)
+      this.startBot(loginDetails.botDbId)
     );
   }
 
@@ -178,7 +162,7 @@ export class BotProcessService {
         (loginDetails, index) =>
           new Promise((resolve) => {
             setTimeout(() => {
-              resolve(this.startBot(loginDetails.api_id));
+              resolve(this.startBot(loginDetails.botDbId));
             }, 2000 * (index + 1));
           })
       )
@@ -210,12 +194,12 @@ export class BotProcessService {
   //   });
   // }
 
-  botsErrorsReducer(error: Error, api_id: string) {
-    console.log("api_id: " + api_id + ", error: ", error);
+  botsErrorsReducer(error: Error, botDbId: string) {
+    console.log("botDbId: " + botDbId + ", error: ", error);
   }
 
-  async providePhoneNumber(api_id: string, phoneNumber: string) {
-    const botState = this.botStateService.getBotState(api_id);
+  async providePhoneNumber(botDbId: string, phoneNumber: string) {
+    const botState = this.botStateService.getBotState(botDbId);
     if (botState) {
       botState.childProcess.send({
         event_type: ERegistrationServerMessagesTypes.PHONE_NUMBER_PROVIDED,
@@ -225,11 +209,11 @@ export class BotProcessService {
     return botState;
   }
 
-  async providePhoneCode(api_id: string, phoneCode: string) {
-    const botState = this.botStateService.getBotState(api_id);
+  async providePhoneCode(botDbId: string, phoneCode: string) {
+    const botState = this.botStateService.getBotState(botDbId);
     if (botState) {
       // make requestedPhoneNumber false
-      this.botStateService.updateBotState(api_id, {
+      this.botStateService.updateBotState(botDbId, {
         requestedPhoneNumber: false,
         requestedPhoneCode: false,
       });
@@ -242,11 +226,11 @@ export class BotProcessService {
     return botState;
   }
   // provide2FACode
-  async provide2FACode(api_id: string, code: string) {
-    const botState = this.botStateService.getBotState(api_id);
+  async provide2FACode(botDbId: string, code: string) {
+    const botState = this.botStateService.getBotState(botDbId);
     if (botState) {
       // make requestedPhoneNumber false
-      this.botStateService.updateBotState(api_id, {
+      this.botStateService.updateBotState(botDbId, {
         requested2FACode: false,
       });
 

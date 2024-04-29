@@ -10,8 +10,8 @@ import { sanitizeGroupNames } from "./utils";
 export class SettingsService {
   constructor(private readonly botStateService: BotStateService) {}
 
-  async setUsername(api_id: string, username: string) {
-    const botState = this.botStateService.getBotState(api_id);
+  async setUsername(botDbId: string, username: string) {
+    const botState = this.botStateService.getBotState(botDbId);
 
     if (botState) {
       const result = await sendToBot(botState.childProcess as ChildProcess, {
@@ -29,7 +29,7 @@ export class SettingsService {
 
   async joinGroups({
     chatNames,
-    api_ids,
+    botDbIds,
     behavior_model,
     processing_enabled,
     spam_frequency,
@@ -37,8 +37,8 @@ export class SettingsService {
   }: JoinGroupsInput) {
     const botStateService = this.botStateService;
 
-    api_ids.forEach(async (api_id, index) => {
-      const botState = botStateService.getBotState(api_id);
+    botDbIds.forEach(async (botDbId, index) => {
+      const botState = botStateService.getBotState(botDbId);
 
       if (botState) {
         sendToBot(
@@ -46,7 +46,7 @@ export class SettingsService {
           {
             event_type: ServerEventTypes.JOIN_GROUPS,
             chatNames: sanitizeGroupNames(chatNames),
-            api_ids,
+            botDbIds,
             behavior_model,
             processing_enabled,
             spam_frequency,
@@ -55,7 +55,7 @@ export class SettingsService {
           false
         );
 
-        botStateService.updateBotState(api_id, {
+        botStateService.updateBotState(botDbId, {
           joining_groups: true,
           joining_groups_chat_ids: chatNames,
         });
@@ -65,13 +65,13 @@ export class SettingsService {
     return botStateService.getBotStates();
   }
 
-  async leaveGroups({ api_ids, chatNames }: LeaveGroupsInput) {
+  async leaveGroups({ botDbIds, chatNames }: LeaveGroupsInput) {
     const botStateService = this.botStateService;
 
     // const botStates = botStateService.getBotStates();
 
-    api_ids.forEach(async (api_id) => {
-      const botState = botStateService.getBotState(api_id);
+    botDbIds.forEach(async (botDbId) => {
+      const botState = botStateService.getBotState(botDbId);
       if (botState) {
         sendToBot(
           botState.childProcess as ChildProcess,
@@ -82,7 +82,7 @@ export class SettingsService {
           false
         );
 
-        botStateService.updateBotState(api_id, {
+        botStateService.updateBotState(botDbId, {
           leaving_groups: true,
           leaving_groups_chat_ids: chatNames,
         });
@@ -91,8 +91,8 @@ export class SettingsService {
 
     return botStateService.getBotStates();
   }
-  async setPhoto(api_id: string, photoName: string) {
-    const botState = this.botStateService.getBotState(api_id);
+  async setPhoto(botDbId: string, photoName: string) {
+    const botState = this.botStateService.getBotState(botDbId);
 
     if (botState) {
       sendToBot(
@@ -108,8 +108,8 @@ export class SettingsService {
   }
 
   // remove photos
-  async removePhotos(api_id: string) {
-    const botState = this.botStateService.getBotState(api_id);
+  async removePhotos(botDbId: string) {
+    const botState = this.botStateService.getBotState(botDbId);
 
     if (botState) {
       sendToBot(
@@ -124,12 +124,12 @@ export class SettingsService {
   }
 
   async setBio(
-    api_id: string,
+    botDbId: string,
     firstName: string,
     lastName: string,
     about: string
   ) {
-    const botState = this.botStateService.getBotState(api_id);
+    const botState = this.botStateService.getBotState(botDbId);
 
     if (botState) {
       sendToBot(
@@ -146,8 +146,8 @@ export class SettingsService {
     return botState;
   }
 
-  async hidePhoneNumber(api_id: string) {
-    const botState = this.botStateService.getBotState(api_id);
+  async hidePhoneNumber(botDbId: string) {
+    const botState = this.botStateService.getBotState(botDbId);
 
     if (botState) {
       sendToBot(

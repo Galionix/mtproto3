@@ -8,21 +8,21 @@ import {
 import { TListenerArgs } from "../bot-events.service";
 import { TListener } from "../listeners";
 
-function listenStarted({ services, api_id }: TListenerArgs) {
+function listenStarted({ services, botDbId }: TListenerArgs) {
   const { botStateService, l } = services;
   //
-  l.log("Bot started: ", api_id);
-  botStateService.updateBotState(api_id, {
+  l.log("Bot started: ", botDbId);
+  botStateService.updateBotState(botDbId, {
     isStarted: true,
     startedDate: Date.now(),
   });
 }
-function listenStopped({ services, api_id }: TListenerArgs) {
+function listenStopped({ services, botDbId }: TListenerArgs) {
   const { botStateService, l } = services;
   //
-  l.log("Bot stopped: ", api_id);
+  l.log("Bot stopped: ", botDbId);
 
-  botStateService.updateBotState(api_id, {
+  botStateService.updateBotState(botDbId, {
     isStopped: true,
     stoppedDate: Date.now(),
   });
@@ -30,12 +30,12 @@ function listenStopped({ services, api_id }: TListenerArgs) {
 function listenError({
   services,
   message,
-  api_id,
+  botDbId,
 }: TListenerArgs<TBotErrorMessage>) {
   const { botStateService, l } = services;
   // probably this will never happen, but just in case
-  l.log("Bot errored: ", api_id);
-  botStateService.updateBotState(api_id, {
+  l.log("Bot errored: ", botDbId);
+  botStateService.updateBotState(botDbId, {
     isErrored: true,
     error: message.error.message,
   });
@@ -44,7 +44,7 @@ function listenError({
 function listenGroupsList({
   services,
   message,
-  api_id,
+  botDbId,
 }: TListenerArgs<TListGroups>) {
   console.log("message: ", message);
   const { groupsRepositoryService, l } = services;
@@ -52,11 +52,11 @@ function listenGroupsList({
   // here groups are raw data from client. it has no set correct id, only chat_id. so here we create an id, which is chat_id + api_id
   const preparedGroups = groups.map((group) => ({
     ...group,
-    id: `${group.chat_id}_${api_id}`,
+    id: `${group.chat_id}_${botDbId}`,
   }));
   groupsRepositoryService.updateMany(preparedGroups);
 
-  l.log("Bot groups list: ", api_id);
+  l.log("Bot groups list: ", botDbId);
 
   // botStateService.updateBotState(api_id, {
   //   groupsList,

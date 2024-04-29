@@ -21,16 +21,16 @@ export class BotStateService {
 
   private botStates: BotStateEntity[] = [];
 
-  getBotState(api_id: string): Readonly<BotStateEntity> {
+  getBotState(botDbId: string): Readonly<BotStateEntity> {
     const botState = this.botStates.find(
-      (botState) => botState.bot.api_id === api_id
+      (botState) => botState.bot.botDbId === botDbId
     );
 
     return { ...botState };
   }
-  removeBotState(api_id: string) {
+  removeBotState(botDbId: string) {
     this.botStates = this.botStates.filter(
-      (botState) => botState.bot.api_id !== api_id
+      (botState) => botState.bot.botDbId !== botDbId
     );
   }
 
@@ -51,15 +51,15 @@ export class BotStateService {
 
   /*
    * updateBotState
-   * @param api_id - api_id of bot
+   * @param botDbId - botDbId of bot
    * @param botState - partial bot state to update
    * @returns void
    * @description
    * Updates bot state with new values
    * */
-  updateBotState(api_id: string, botState: Partial<BotStateEntity>) {
+  updateBotState(botDbId: string, botState: Partial<BotStateEntity>) {
     const index = this.botStates.findIndex(
-      (botState) => botState.bot.api_id === api_id
+      (botState) => botState.bot.botDbId === botDbId
     );
     const currentState = this.botStates[index];
 

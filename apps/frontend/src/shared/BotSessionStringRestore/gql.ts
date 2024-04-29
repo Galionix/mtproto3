@@ -1,10 +1,11 @@
 import { graphql } from "../../../apollo/codegen";
 
 export const providePhoneNumberMutation = graphql(`
-  mutation providePhoneNumber($api_id: String!, $phoneNumber: String!) {
-    providePhoneNumber(api_id: $api_id, phoneNumber: $phoneNumber) {
+  mutation providePhoneNumber($botDbId: String!, $phoneNumber: String!) {
+    providePhoneNumber(botDbId: $botDbId, phoneNumber: $phoneNumber) {
       bot {
         api_id
+        botDbId
         api_hash
       }
       requestedPhoneNumber
@@ -25,10 +26,11 @@ export const providePhoneNumberMutation = graphql(`
 `);
 
 export const providePhoneCodeMutation = graphql(`
-  mutation providePhoneCode($api_id: String!, $phoneCode: String!) {
-    providePhoneCode(api_id: $api_id, phoneCode: $phoneCode) {
+  mutation providePhoneCode($botDbId: String!, $phoneCode: String!) {
+    providePhoneCode(botDbId: $botDbId, phoneCode: $phoneCode) {
       bot {
         api_id
+        botDbId
         api_hash
       }
       requestedPhoneNumber
@@ -50,10 +52,11 @@ export const providePhoneCodeMutation = graphql(`
 //provide2FACode
 
 export const provide2FACodeMutation = graphql(`
-  mutation provide2FACode($api_id: String!, $code: String!) {
-    provide2FACode(api_id: $api_id, code: $code) {
+  mutation provide2FACode($botDbId: String!, $code: String!) {
+    provide2FACode(botDbId: $botDbId, code: $code) {
       bot {
         api_id
+        botDbId
         api_hash
       }
       requestedPhoneNumber

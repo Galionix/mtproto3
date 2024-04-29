@@ -25,7 +25,7 @@ export const queryGlobalLog = graphql(`
       log_event
       event_date
       details
-      api_id
+      botDbId
     }
   }
 `);
@@ -40,7 +40,7 @@ export const queryGlobalLogFromDate = graphql(`
       log_event
       event_date
       details
-      api_id
+      botDbId
     }
   }
 `);

@@ -46,22 +46,24 @@ export const defaultScenario: TScenarioElement[] = [
   },
 ];
 
-export const defaultValues: Omit<BotEntity, "api_id" | "api_hash"> = {
-  sessionString: "",
-  clientState: "",
-  clientStateUpdateTime: new Date(Date.now()),
-  behaviorModel: "base",
-  answersDb: "base",
-  readDelay: 1000,
-  dmScenarioNames: ["initial"],
-  typeDelayMultiplier: 1,
-  taskOrder: defaultTaskOrder.join(","),
-  afterTaskDelay: 1000,
-  afterTaskIdleTime: 1000,
-  voice: "ksenia",
-  replacements: "{}",
-  copyFrom: "-1",
-  spamDBname: "base",
-  botName: "baseName",
-  fromFile: false,
-};
+export const defaultValues: Omit<BotEntity, "api_id" | "api_hash" | "botDbId"> =
+  {
+    sessionString: "",
+    clientState: "",
+    clientStateUpdateTime: new Date(Date.now()),
+    behaviorModel: "base",
+    answersDb: "base",
+    readDelay: 1000,
+    dmScenarioNames: ["initial"],
+    typeDelayMultiplier: 1,
+    taskOrder: defaultTaskOrder.join(","),
+    afterTaskDelay: 1000,
+    afterTaskIdleTime: 1000,
+    voice: "ksenia",
+    replacements: "{}",
+    copyFrom: "-1",
+    spamDBname: "base",
+    botName: "baseName",
+    fromFile: false,
+    phone: "",
+  };

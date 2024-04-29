@@ -62,6 +62,7 @@ const [
   voice,
   replacements,
   spamDBname,
+  botDbId,
   isTest,
 ] = process.argv.slice(2);
 const isTestMode = Boolean(isTest);
@@ -70,6 +71,7 @@ const initState = () => {
 
   state.taskOrder = taskOrder.split(",") as TTaskOrder;
   state.voice = voice;
+  state.botDbId = botDbId;
 
   state.afterTaskDelay = parseInt(afterTaskDelay);
   state.afterTaskIdleTime = parseInt(afterTaskIdleTime);

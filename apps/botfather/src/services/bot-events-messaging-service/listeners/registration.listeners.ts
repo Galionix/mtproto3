@@ -10,11 +10,11 @@ import { TListener } from "../listeners";
 function listenRequestPhoneNumber({
   services,
   message,
-  api_id,
+  botDbId,
 }: TListenerArgs<TPhoneNumber>) {
-  console.log("bot ", api_id, " requested phone number");
+  console.log("bot ", botDbId, " requested phone number");
   const { botStateService } = services;
-  botStateService.updateBotState(api_id, {
+  botStateService.updateBotState(botDbId, {
     requestedPhoneNumber: true,
   });
 }
@@ -22,23 +22,23 @@ function listenRequestPhoneNumber({
 function listenRequestPhoneCode({
   services,
   message,
-  api_id,
+  botDbId,
 }: TListenerArgs<TPhoneNumber>) {
-  console.log("bot ", api_id, " requested phone code");
+  console.log("bot ", botDbId, " requested phone code");
   const { botStateService } = services;
-  botStateService.updateBotState(api_id, {
+  botStateService.updateBotState(botDbId, {
     requestedPhoneCode: true,
   });
 }
 function listenRequest2FACode({
   services,
   message,
-  api_id,
+  botDbId,
 }: TListenerArgs<Ta2FA_CODE>) {
-  console.log("bot ", api_id, " requested phone code");
+  console.log("bot ", botDbId, " requested phone code");
 
   const { botStateService } = services;
-  botStateService.updateBotState(api_id, {
+  botStateService.updateBotState(botDbId, {
     requested2FACode: true,
   });
 }

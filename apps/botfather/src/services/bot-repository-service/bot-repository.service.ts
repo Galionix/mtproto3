@@ -12,6 +12,8 @@ import { MemorySession, StringSession } from "telegram/sessions";
 import select from "./readDb.utils";
 import ip from "ip";
 import base64 from "base64-js";
+import { readFileSync } from "fs";
+import { readdir } from "fs/promises";
 const l = new Logger("BotRepositoryService");
 const CURRENT_VERSION = "1";
 // const _STRUCT_PREFORMAT = ">B{}sH256s";
@@ -54,6 +56,11 @@ async function getBotDataFromFile(number: string) {
   // };
   // const session = new StringSession("");
   const filePath = resolve("accounts" + sep + number + ".session");
+  const jsonFilePath = resolve("accounts" + sep + number + ".json");
+  const jsonData = readFileSync(jsonFilePath, "utf8");
+  const { phone } = JSON.parse(jsonData);
+  // read json file
+
   console.log("filePath: ", filePath);
   // const db: Database = new sqlite3.Database(filePath);
   // console.log("db: ", db);
@@ -88,7 +95,7 @@ async function getBotDataFromFile(number: string) {
 
   const entities = await select<TEntitiesRow>(filePath, "entities");
   console.log("entities: ", entities);
-  return { stringSession: sessionString, ...entities[1] };
+  return { stringSession: sessionString, ...entities[1], phone };
 
   // return stringSession;
   // console.log("dbData: ", dbData);
@@ -139,13 +146,25 @@ export class BotRepositoryService {
     private readonly botRepository: Repository<BotEntity> // private readonly botStateService: BotStateService
   ) {}
 
+  // get availeble for creation bots by files
+  // this query will show what bots are available for creation by files in accounts folder
+  // we should read accounts folder and get file names and show them here
+  async getAvailableBotsByFiles() {
+    const accountsFolder = resolve("accounts");
+    const files = await readdir(accountsFolder);
+    console.log("files: ", files);
+    return files;
+  }
+
+  // TODO: change api_id and api_hash by botDbId to defaultValues
+  // maybe this will fix some connection errors
   async create(createBotInput: CreateBotInput) {
     console.log("createBotInput: ", createBotInput);
     if (createBotInput.fromFile) {
       const { stringSession, id, hash, username, phone, name, date } =
         await getBotDataFromFile(createBotInput.api_hash.toString());
 
-      createBotInput.api_id = `${id}`;
+      createBotInput.api_id = id;
       createBotInput.api_hash = `${hash}`;
       // createBotInput = username;
       // createBotInput.phone = phone;
@@ -168,7 +187,7 @@ export class BotRepositoryService {
 
     if (createBotInput.copyFrom) {
       copyFromBot = await this.botRepository.findOne({
-        where: { api_id: createBotInput.copyFrom },
+        where: { botDbId: createBotInput.copyFrom },
       });
     }
 
@@ -188,8 +207,8 @@ export class BotRepositoryService {
     return bots;
   }
 
-  async findOne(api_id: string): Promise<BotEntity> {
-    const res = await this.botRepository.findOne({ where: { api_id } });
+  async findOne(botDbId: string): Promise<BotEntity> {
+    const res = await this.botRepository.findOne({ where: { botDbId } });
     return res;
   }
 
@@ -199,6 +218,10 @@ export class BotRepositoryService {
     console.log("res: ", res);
     return res;
   }
+  async findOneByPhone(phone: string) {
+    const res = await this.botRepository.findOne({ where: { phone } });
+    return res;
+  }
 
   async remove(id: string) {
     const removedId = await this.botRepository.delete(id);
@@ -206,8 +229,8 @@ export class BotRepositoryService {
     return removedId;
   }
 
-  async updateSessionString(api_id: string, sessionString: string) {
-    const bot = await this.findOne(api_id);
+  async updateSessionString(botDbId: string, sessionString: string) {
+    const bot = await this.findOne(botDbId);
 
     bot.sessionString = sessionString;
 
@@ -216,8 +239,8 @@ export class BotRepositoryService {
     l.log("sessionString updated: ", sessionString);
   }
 
-  async updateClientState(api_id: string, state: string) {
-    const bot = await this.findOne(api_id);
+  async updateClientState(botDbId: string, state: string) {
+    const bot = await this.findOne(botDbId);
 
     bot.clientState = state;
     bot.clientStateUpdateTime = new Date(Date.now());
@@ -225,10 +248,10 @@ export class BotRepositoryService {
     this.botRepository.save(bot);
   }
 
-  async update(api_id: string, updateBotInput: UpdateBotInput) {
-    const bot = await this.findOne(api_id);
+  async update(botDbId: string, updateBotInput: UpdateBotInput) {
+    const bot = await this.findOne(botDbId);
     if (!bot) {
-      throw new Error(`Bot with api_id ${api_id} not found`);
+      throw new Error(`Bot with api_id ${botDbId} not found`);
     }
     return await this.botRepository.save({ ...bot, ...updateBotInput });
   }

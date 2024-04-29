@@ -28,7 +28,7 @@ const MAX_LOG_SIZE = parseInt(BOT_EVENT_LOG_MAX_SIZE);
 function listenLogEventToState({
   services,
   message,
-  api_id,
+  botDbId,
 }: TListenerArgs<TLogEvent>) {
   const { botStateService } = services;
 
@@ -36,10 +36,10 @@ function listenLogEventToState({
   // if it is, we just push new event to the end of the array
   // if it is not, we need to remove first element and push new event to the end of the array
 
-  const botState = botStateService.getBotState(api_id);
+  const botState = botStateService.getBotState(botDbId);
 
   if (botState) {
-    botStateService.updateBotState(api_id, {
+    botStateService.updateBotState(botDbId, {
       eventLogs: [...botState.eventLogs, message].slice(-MAX_LOG_SIZE),
     });
   }
@@ -48,7 +48,7 @@ function listenLogEventToState({
 async function listenForBotToRequestDB({
   services,
   message,
-  api_id,
+  botDbId,
 }: TListenerArgs<TGetDatabase>): Promise<TGetDatabaseResponse> {
   const { database, spamDBname, dmScenarioNames } = message;
 
@@ -62,7 +62,7 @@ async function listenForBotToRequestDB({
     } = services;
     // console.log("scenarioRepositoryService: ", scenarioRepositoryService);
 
-    const bot = await botRepositoryService.findOne(api_id);
+    const bot = await botRepositoryService.findOne(botDbId);
     // const db = await answersRepositoryService.findByDbName(database);
     const spamDb = await spamRepositoryService.findByDbName(spamDBname);
 
@@ -82,7 +82,7 @@ async function listenForBotToRequestDB({
     console.log("scenarios: ", scenarios);
 
     // TODO: query spamdb repos by spamDBname
-    l.log("bot requested db", api_id, message);
+    l.log("bot requested db", botDbId, message);
 
     return {
       event_type: EGetDatabaseResponseTypes.DB_GET_SUCCESS,
@@ -107,7 +107,7 @@ async function listenForBotToRequestDB({
 async function addStatisticsToDB({
   services,
   message,
-  api_id,
+  botDbId,
 }: TListenerArgs<TStatisticsEvent>) {
   const { answersRepositoryService, l } = services;
 
@@ -117,18 +117,18 @@ async function addStatisticsToDB({
 async function listenBotSyncState({
   services,
   message,
-  api_id,
+  botDbId,
 }: TListenerArgs<TSendStateToServer>) {
   const { botRepositoryService, l } = services;
 
   const { state } = message;
 
-  await botRepositoryService.updateClientState(api_id, state);
+  await botRepositoryService.updateClientState(botDbId, state);
 }
 async function listenGlobalLog({
   services,
   message,
-  api_id,
+  botDbId,
 }: TListenerArgs<TLogGlobal>) {
   const { globalLogService, l } = services;
 
@@ -139,7 +139,7 @@ async function listenGlobalLog({
       event_message,
       log_event,
       details: JSON.stringify(details, Object.getOwnPropertyNames(details)),
-      api_id,
+      botDbId,
     } as any
     // cant fix auto generated column error. it actually creates it but i dont know how to set types
   );

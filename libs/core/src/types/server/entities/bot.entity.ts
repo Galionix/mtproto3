@@ -1,6 +1,6 @@
 import { ObjectType, Field, Int, InputType } from "@nestjs/graphql";
 // import { ChildProcess } from "child_process";
-import { Column, Entity, PrimaryColumn } from "typeorm";
+import { Column, Entity, PrimaryColumn, PrimaryGeneratedColumn } from "typeorm";
 import { TState } from "../../client";
 import { IsOptional } from "class-validator";
 // import { IBotState } from "../types/botState";
@@ -9,8 +9,16 @@ import { IsOptional } from "class-validator";
 @ObjectType()
 export class BotEntity {
   @Field(() => String, { nullable: true })
-  @PrimaryColumn()
-  api_id: string;
+  @PrimaryGeneratedColumn("uuid")
+  botDbId: string;
+
+  @Field(() => Int, { nullable: true })
+  @Column()
+  api_id: number;
+  // phone
+  @Field(() => String, { nullable: true })
+  @Column()
+  phone: string;
 
   @Field({ nullable: true })
   @Column()

@@ -30,6 +30,7 @@ export type TState = {
     [key: string]: number;
   };
   voice: string;
+  botDbId: string;
   dmDb: TAnswer[];
   groupDb: TAnswer[];
   channelDb: TAnswer[];

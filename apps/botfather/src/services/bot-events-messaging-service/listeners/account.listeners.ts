@@ -5,10 +5,10 @@ import { TListener } from "../listeners";
 function listenSetSessionString({
   services,
   message,
-  api_id,
+  botDbId,
 }: TListenerArgs<TSetSessionString>) {
   const { botRepositoryService } = services;
-  botRepositoryService.updateSessionString(api_id, message.sessionString);
+  botRepositoryService.updateSessionString(botDbId, message.sessionString);
 }
 
 export const accountListeners: TListener[] = [

@@ -25,7 +25,7 @@ export function logGlobal(
     event_message,
     log_event,
     details,
-    api_id: state.apiId,
+    botDbId: state.botDbId,
   };
 
   process.send(result);

@@ -39,8 +39,8 @@ export class GlobalLogResolver {
   //   );
   // }
 
-  @Mutation(() => GlobalLogEntity)
-  removeGlobalLog(@Args("id", { type: () => Int }) id: number) {
-    return this.globalLogService.remove(id);
-  }
+  // @Mutation(() => GlobalLogEntity)
+  // removeGlobalLog(@Args("id", { type: () => Int }) id: number) {
+  //   return this.globalLogService.remove(id);
+  // }
 }

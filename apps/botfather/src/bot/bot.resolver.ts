@@ -34,12 +34,18 @@ export class BotResolver {
     );
     if (isExistBotName) throw new Error("Bot with this name already exists");
 
+    const isExistByPhone = await this.botRepositoryService.findOneByPhone(
+      createBotInput.api_hash
+    );
+    if (createBotInput.fromFile && isExistByPhone)
+      throw new Error("Bot with this phone already exists");
+
     // bot successfully creating
     const botEntity = await this.botRepositoryService.create(createBotInput);
 
     console.log("saved botEntity: ", botEntity);
     this.botStateService.addBotState(botEntity);
-    await this.botProcessService.startBot(botEntity.api_id);
+    await this.botProcessService.startBot(botEntity.botDbId);
     console.log("botEntity: ", botEntity);
 
     return botEntity;
@@ -51,18 +57,18 @@ export class BotResolver {
   }
 
   @Query(() => BotEntity, { name: "bot" })
-  findOne(@Args("api_id", { type: () => String }) api_id: string) {
-    return this.botRepositoryService.findOne(api_id);
+  findOne(@Args("botDbId", { type: () => String }) botDbId: string) {
+    return this.botRepositoryService.findOne(botDbId);
   }
 
   @Mutation(() => BotEntity)
-  async removeBot(@Args("api_id", { type: () => String }) api_id: string) {
-    await this.botProcessService.stopBot(api_id);
-    l.log("bot stopped: ", api_id);
+  async removeBot(@Args("botDbId", { type: () => String }) botDbId: string) {
+    await this.botProcessService.stopBot(botDbId);
+    l.log("bot stopped: ", botDbId);
 
-    const res = await this.botRepositoryService.remove(api_id);
-    l.log("removeBot: ", api_id);
-    await this.botStateService.removeBotState(api_id);
+    const res = await this.botRepositoryService.remove(botDbId);
+    l.log("removeBot: ", botDbId);
+    await this.botStateService.removeBotState(botDbId);
     return res;
   }
 
@@ -77,8 +83,8 @@ export class BotResolver {
   }
 
   @Query(() => BotEntity, { name: "startBot" })
-  startBot(@Args("api_id", { type: () => String }) api_id: string) {
-    return this.botProcessService.startBot(api_id);
+  startBot(@Args("botDbId", { type: () => String }) botDbId: string) {
+    return this.botProcessService.startBot(botDbId);
   }
 
   @Query(() => [BotEntity], { name: "stopBots" })
@@ -87,8 +93,8 @@ export class BotResolver {
   }
 
   @Query(() => BotStateEntity, { name: "getBotState" })
-  getBotState(@Args("id", { type: () => String }) api_id: string) {
-    return this.botStateService.getBotState(api_id);
+  getBotState(@Args("botDbId", { type: () => String }) botDbId: string) {
+    return this.botStateService.getBotState(botDbId);
   }
 
   @Query(() => Int, { name: "getProcessesCount" })
@@ -102,16 +108,16 @@ export class BotResolver {
   }
 
   @Mutation(() => BotStateEntity, { name: "stopBot" })
-  stopBot(@Args("api_id", { type: () => String }) api_id: string) {
-    return this.botProcessService.stopBot(api_id);
+  stopBot(@Args("botDbId", { type: () => String }) botDbId: string) {
+    return this.botProcessService.stopBot(botDbId);
   }
 
   @Mutation(() => String, { name: "setUsername" })
   async setUsername(
-    @Args("api_id", { type: () => String }) api_id: string,
+    @Args("botDbId", { type: () => String }) botDbId: string,
     @Args("username") username: string
   ) {
-    return await this.messagingSettingsService.setUsername(api_id, username);
+    return await this.messagingSettingsService.setUsername(botDbId, username);
   }
 
   @Query(() => [BotStateEntity], { name: "reloadStates" })
@@ -124,83 +130,91 @@ export class BotResolver {
     return await this.messagingSettingsService.joinGroups(joinGroupsInput);
   }
 
+  @Query(() => [String], { name: "getAvailableBotsByFiles" })
+  async getAvailableBotsByFiles() {
+    return await this.botRepositoryService.getAvailableBotsByFiles();
+  }
+
   @Mutation(() => [BotStateEntity], { name: "leaveGroups" })
   async leaveGroups(@Args("input") leaveGroupsInput: LeaveGroupsInput) {
-    const { api_ids, chatNames } = leaveGroupsInput;
+    const { botDbIds, chatNames } = leaveGroupsInput;
 
     return await this.messagingSettingsService.leaveGroups({
-      api_ids,
+      botDbIds,
       chatNames,
     });
   }
   // set photo
   @Mutation(() => BotStateEntity, { name: "setPhoto" })
   async setPhoto(
-    @Args("api_id", { type: () => String }) api_id: string,
+    @Args("botDbId", { type: () => String }) botDbId: string,
     @Args("photoName") photoName: string
   ) {
-    return await this.messagingSettingsService.setPhoto(api_id, photoName);
+    return await this.messagingSettingsService.setPhoto(botDbId, photoName);
   }
 
   @Mutation(() => BotEntity, { name: "restartBot" })
-  async restartBot(@Args("api_id", { type: () => String }) api_id: string) {
-    await this.botProcessService.stopBot(api_id);
-    l.log("bot stopped: ", api_id);
+  async restartBot(@Args("botDbId", { type: () => String }) botDbId: string) {
+    await this.botProcessService.stopBot(botDbId);
+    l.log("bot stopped: ", botDbId);
 
-    const res = await this.botProcessService.startBot(api_id);
-    l.log("bot started: ", api_id);
+    const res = await this.botProcessService.startBot(botDbId);
+    l.log("bot started: ", botDbId);
 
     return res;
   }
 
   @Mutation(() => BotEntity, { name: "updateBot" })
   async updateBot(
-    @Args("api_id", { type: () => String }) api_id: string,
+    @Args("botDbId", { type: () => String }) botDbId: string,
     @Args("updateBotInput") updateBotInput: UpdateBotInput
   ) {
-    return await this.botRepositoryService.update(api_id, updateBotInput);
+    return await this.botRepositoryService.update(botDbId, updateBotInput);
   }
 
   @Mutation(() => BotStateEntity, { name: "providePhoneNumber" })
   async providePhoneNumber(
-    @Args("api_id", { type: () => String }) api_id: string,
+    @Args("botDbId", { type: () => String }) botDbId: string,
     @Args("phoneNumber") phoneNumber: string
   ) {
-    return await this.botProcessService.providePhoneNumber(api_id, phoneNumber);
+    return await this.botProcessService.providePhoneNumber(
+      botDbId,
+      phoneNumber
+    );
   }
 
   @Mutation(() => BotStateEntity, { name: "providePhoneCode" })
   async providePhoneCode(
-    @Args("api_id", { type: () => String }) api_id: string,
+    @Args("botDbId", { type: () => String }) botDbId: string,
     @Args("phoneCode") phoneCode: string
   ) {
-    return await this.botProcessService.providePhoneCode(api_id, phoneCode);
+    return await this.botProcessService.providePhoneCode(botDbId, phoneCode);
   }
   // provide2FACode
   @Mutation(() => BotStateEntity, { name: "provide2FACode" })
   async provide2FACode(
-    @Args("api_id", { type: () => String }) api_id: string,
+    @Args("botDbId", { type: () => String }) botDbId: string,
     @Args("code") code: string
   ) {
-    return await this.botProcessService.provide2FACode(api_id, code);
+    return await this.botProcessService.provide2FACode(botDbId, code);
   }
 
   // removePhotos
   @Mutation(() => BotStateEntity, { name: "removePhotos" })
-  async removePhotos(@Args("api_id", { type: () => String }) api_id: string) {
-    return await this.messagingSettingsService.removePhotos(api_id);
+  async removePhotos(@Args("botDbId", { type: () => String }) botDbId: string) {
+    return await this.messagingSettingsService.removePhotos(botDbId);
   }
 
   // setBio
   @Mutation(() => BotStateEntity, { name: "setBio" })
   async setBio(
-    @Args("api_id", { type: () => String }) api_id: string,
+    @Args("botDbId", { type: () => String }) botDbId: string,
     @Args("firstName") firstName: string,
     @Args("lastName") lastName: string,
     @Args("about") about: string
   ) {
     return await this.messagingSettingsService.setBio(
-      api_id,
+      botDbId,
       firstName,
       lastName,
       about
@@ -209,8 +223,8 @@ export class BotResolver {
 
   @Mutation(() => BotStateEntity, { name: "hidePhoneNumber" })
   async hidePhoneNumber(
-    @Args("api_id", { type: () => String }) api_id: string
+    @Args("botDbId", { type: () => String }) botDbId: string
   ) {
-    return await this.messagingSettingsService.hidePhoneNumber(api_id);
+    return await this.messagingSettingsService.hidePhoneNumber(botDbId);
   }
 }

@@ -27,7 +27,7 @@ export interface IServiceArgs {
 export type TListenerArgs<T = TProcessMessages, O = object> = {
   services: IServiceArgs;
   message: T;
-  api_id: string;
+  botDbId: string;
 } & O;
 
 @Injectable()
@@ -42,10 +42,10 @@ export class BotEventsService {
     private readonly globalLogService: GlobalLogService
   ) {}
 
-  async botsMessagesReducer(message: TProcessMessages, api_id: string) {
+  async botsMessagesReducer(message: TProcessMessages, botDbId: string) {
     const botState = this.botStateService
       .getBotStates()
-      .find((botState) => botState.bot.api_id === api_id);
+      .find((botState) => botState.bot.botDbId === botDbId);
 
     const services: IServiceArgs = {
       botStateService: this.botStateService,
@@ -62,7 +62,7 @@ export class BotEventsService {
         const res = await combinedListeners[message.event_type]({
           services,
           message,
-          api_id,
+          botDbId,
         });
         if (res && "event_type" in res) {
           // TODO: fix this any

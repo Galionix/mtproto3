@@ -36,14 +36,16 @@ type BotEntity {
   afterTaskIdleTime: Int
   answersDb: String
   api_hash: String
-  api_id: String
+  api_id: Int
   behaviorModel: String
+  botDbId: String
   botName: String
   clientState: String
   clientStateUpdateTime: String
   copyFrom: String
   dmScenarioNames: [String!]
   fromFile: Boolean
+  phone: String
   readDelay: Int
   replacements: String
   sessionString: String
@@ -128,7 +130,7 @@ input CreateBotInput {
   afterTaskIdleTime: Int
   answersDb: String
   api_hash: String
-  api_id: String
+  api_id: Int
   behaviorModel: String
   botName: String
   copyFrom: String
@@ -143,7 +145,7 @@ input CreateBotInput {
 }
 
 input CreateGlobalLogInputDTO {
-  api_id: Int
+  botDbId: String
   details: String
   event_message: String
   log_event: String
@@ -227,7 +229,7 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 scalar DateTime
 
 type GlobalLogEntity {
-  api_id: String
+  botDbId: String
   details: String
   event_date: DateTime
   event_message: String
@@ -236,8 +238,8 @@ type GlobalLogEntity {
 }
 
 input JoinGroupsInput {
-  api_ids: [Int!]!
   behavior_model: String = "default"
+  botDbIds: [Int!]!
   chatNames: [String!]!
   join_delay: Int = 5000
   processing_enabled: Boolean = false
@@ -245,7 +247,7 @@ input JoinGroupsInput {
 }
 
 input LeaveGroupsInput {
-  api_ids: [Int!]!
+  botDbIds: [String!]!
   chatNames: [String!]!
 }
 
@@ -309,26 +311,25 @@ type Mutation {
   createMessage(createMessageInput: CreateMessageInput!): MessageEntity!
   createScenario(scenarioInput: CreateScenarioInput!): ScenarioEntity!
   createSpamMessage(createSpamMessageInput: CreateMessageInput!): MessageEntity!
-  hidePhoneNumber(api_id: String!): BotStateEntity!
+  hidePhoneNumber(botDbId: String!): BotStateEntity!
   joinGroups(JoinGroupsInput: JoinGroupsInput!): [BotStateEntity!]!
   leaveGroups(input: LeaveGroupsInput!): [BotStateEntity!]!
-  provide2FACode(api_id: String!, code: String!): BotStateEntity!
-  providePhoneCode(api_id: String!, phoneCode: String!): BotStateEntity!
-  providePhoneNumber(api_id: String!, phoneNumber: String!): BotStateEntity!
+  provide2FACode(botDbId: String!, code: String!): BotStateEntity!
+  providePhoneCode(botDbId: String!, phoneCode: String!): BotStateEntity!
+  providePhoneNumber(botDbId: String!, phoneNumber: String!): BotStateEntity!
   removeAnswer(id: String!): Int!
-  removeBot(api_id: String!): BotEntity!
-  removeGlobalLog(id: Int!): GlobalLogEntity!
+  removeBot(botDbId: String!): BotEntity!
   removeMessages(ids: [String!]!): Int!
-  removePhotos(api_id: String!): BotStateEntity!
+  removePhotos(botDbId: String!): BotStateEntity!
   removeScenario(id: String!): String!
   removeSpamMessage(id: String!): Float!
-  restartBot(api_id: String!): BotEntity!
-  setBio(about: String!, api_id: String!, firstName: String!, lastName: String!): BotStateEntity!
-  setPhoto(api_id: String!, photoName: String!): BotStateEntity!
-  setUsername(api_id: String!, username: String!): String!
-  stopBot(api_id: String!): BotStateEntity!
+  restartBot(botDbId: String!): BotEntity!
+  setBio(about: String!, botDbId: String!, firstName: String!, lastName: String!): BotStateEntity!
+  setPhoto(botDbId: String!, photoName: String!): BotStateEntity!
+  setUsername(botDbId: String!, username: String!): String!
+  stopBot(botDbId: String!): BotStateEntity!
   updateAnswer(updateAnswerInput: UpdateAnswersRepositoryInput!): AnswerEntity!
-  updateBot(api_id: String!, updateBotInput: UpdateBotInput!): BotEntity!
+  updateBot(botDbId: String!, updateBotInput: UpdateBotInput!): BotEntity!
   updateMessage(id: String!, updateMessageInput: UpdateMessageInput!): MessageEntity!
   updateSpamMessage(id: String!, updateSpamMessageInput: CreateMessageInput!): MessageEntity!
 }
@@ -337,9 +338,10 @@ type Query {
   answer(id: String!): AnswerEntity
   answers: [AnswerEntity!]!
   batchFind(ids: [String!]!): [MessageEntity!]!
-  bot(api_id: String!): BotEntity!
+  bot(botDbId: String!): BotEntity!
   bots: [BotEntity!]!
-  getBotState(id: String!): BotStateEntity!
+  getAvailableBotsByFiles: [String!]!
+  getBotState(botDbId: String!): BotStateEntity!
   getBotStates: [BotStateEntity!]!
   getProcessesCount: Int!
   globalLog(limit: Int! = 10): [GlobalLogEntity!]!
@@ -352,7 +354,7 @@ type Query {
   someAnswers(findSomeAnswersInput: UpdateAnswersRepositoryInput!): [AnswerEntity!]!
   spamMessages: [MessageEntity!]!
   spamMessagesByDbName(db_name: String!): [MessageEntity!]!
-  startBot(api_id: String!): BotEntity!
+  startBot(botDbId: String!): BotEntity!
   startBots: [BotEntity!]!
   startBotsImmediately: [BotEntity!]!
   stopBots: [BotEntity!]!

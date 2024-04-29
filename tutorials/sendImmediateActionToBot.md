@@ -17,9 +17,9 @@ apps\botfather\src\bot\bot.resolver.ts
 
   @Mutation(() => BotStateEntity, { name: "hidePhoneNumber" })
   async hidePhoneNumber(
-    @Args("api_id", { type: () => String}) api_id: string
+    @Args("botDbId", { type: () => String}) botDbId: string
   ) {
-    return await this.messagingSettingsService.hidePhoneNumber(api_id);
+    return await this.messagingSettingsService.hidePhoneNumber(botDbId);
   }
 
 

@@ -8,20 +8,21 @@ import {
 } from "./gql";
 
 export type TSessionStringRestoreProps = {
-  api_id: any;
+  botDbId: string;
   requestedPhone: boolean;
 };
 
 export const SessionStringRestore = (props: TSessionStringRestoreProps) => {
-  const { api_id = 0 } = props;
-  const preparedApiId = parseInt(api_id);
+  // this should work with api_id not with botDbId. check full code on server. currently unused because we have our flow with files
+  const { botDbId = "0" } = props;
+  // const preparedApiId = botDbId;
   const [requestedPhone, setRequestedPhone] = useState(false);
   const [requestedCode, setRequestedCode] = useState(false);
   const [requested2FACode, setRequested2FACode] = useState(false);
   // const [enableQuery, setEnableQuery] = useState(false);
 
   const botState = useQuery(getBotStateQuery, {
-    variables: { api_id: parseInt(`${preparedApiId}`) },
+    variables: { botDbId },
     // pollInterval: 1000,
     // disabled: !enableQuery,
   });
@@ -130,7 +131,7 @@ export const SessionStringRestore = (props: TSessionStringRestoreProps) => {
                 console.log("providePhoneNumberData: ", providePhoneNumberData);
                 await providePhoneNumber({
                   variables: {
-                    api_id: preparedApiId,
+                    botDbId,
                     phoneNumber: providePhoneNumberData,
                   },
                 });
@@ -165,7 +166,7 @@ export const SessionStringRestore = (props: TSessionStringRestoreProps) => {
                 console.log("provideCodeData: ", provideCodeData);
                 await provideCode({
                   variables: {
-                    api_id: preparedApiId,
+                    botDbId,
                     phoneCode: provideCodeData,
                   },
                 });
@@ -200,7 +201,7 @@ export const SessionStringRestore = (props: TSessionStringRestoreProps) => {
                 console.log("provide2FACodeData: ", provide2FACodeData);
                 await provide2FACode({
                   variables: {
-                    api_id: preparedApiId,
+                    botDbId,
                     code: provide2FACodeData,
                   },
                 });

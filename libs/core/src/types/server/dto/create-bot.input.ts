@@ -4,9 +4,9 @@ import { Column } from "typeorm";
 
 @InputType()
 export class CreateBotInput {
-  @Field(() => String, { nullable: true })
+  @Field(() => Int, { nullable: true })
   @Column()
-  api_id: string;
+  api_id: number;
 
   @Field(() => String, { nullable: true })
   @Column()

@@ -7,7 +7,7 @@ export class CreateGlobalLogInputDTO
   implements
     Pick<
       CreateGlobalLogInput,
-      "event_message" | "log_event" | "details" | "api_id"
+      "event_message" | "log_event" | "details" | "botDbId"
     >
 {
   //   @Field(() => Int, { description: "Example field (placeholder)" })
@@ -28,6 +28,6 @@ export class CreateGlobalLogInputDTO
   @Field(() => String, { nullable: true })
   details: string;
 
-  @Field(() => Int, { nullable: true })
-  api_id: string;
+  @Field(() => String, { nullable: true })
+  botDbId: string;
 }

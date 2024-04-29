@@ -7,7 +7,7 @@ export class LeaveGroupsInput {
   @Column()
   chatNames: string[];
 
-  @Field(() => [Int])
+  @Field(() => [String])
   @Column()
-  api_ids: string[];
+  botDbIds: string[];
 }

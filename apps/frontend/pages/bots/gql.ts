@@ -1,6 +1,7 @@
 import { gql } from "@apollo/client";
 import { graphql } from "../../apollo/codegen";
 
+
 export const getBotsQuery = graphql(`
   query Bots {
     bots {
@@ -8,7 +9,7 @@ export const getBotsQuery = graphql(`
       afterTaskIdleTime
       answersDb
       api_hash
-      api_id
+      botDbId
       behaviorModel
       botName
       clientState
@@ -52,9 +53,9 @@ export const createBotMutation = graphql(`
 `);
 
 export const removeBotMutation = graphql(`
-  mutation removeBot($api_id: String!) {
-    removeBot(api_id: $api_id) {
-      api_id
+  mutation removeBot($botDbId: String!) {
+    removeBot(botDbId: $botDbId) {
+      botDbId
     }
   }
 `);
@@ -64,6 +65,7 @@ export const getBotStatesQuery = graphql(`
     getBotStates {
       bot {
         api_id
+        botDbId
         api_hash
       }
       requestedPhoneNumber
@@ -84,24 +86,24 @@ export const getBotStatesQuery = graphql(`
 `);
 
 export const restartBotMutation = graphql(`
-  mutation restartBot($api_id: String!) {
-    restartBot(api_id: $api_id) {
-      api_id
+  mutation restartBot($botDbId: String!) {
+    restartBot(botDbId: $botDbId) {
+      botDbId
     }
   }
 `);
 
 export const stopBotMutation = graphql(`
-  mutation stopBot($api_id: String!) {
-    stopBot(api_id: $api_id) {
+  mutation stopBot($botDbId: String!) {
+    stopBot(botDbId: $botDbId) {
       isRunning
     }
   }
 `);
 
 export const getBotStateQuery = graphql(`
-  query getBotState($api_id: String!) {
-    getBotState(id: $api_id) {
+  query getBotState($botDbId: String!) {
+    getBotState(botDbId: $botDbId) {
       bot {
         api_id
         api_hash
@@ -124,13 +126,20 @@ export const getBotStateQuery = graphql(`
   }
 `);
 export const getBotStateLogs = graphql(`
-  query getBotStateLogs($api_id: String!) {
-    getBotState(id: $api_id) {
+  query getBotStateLogs($botDbId: String!) {
+    getBotState(botDbId: $botDbId) {
       eventLogs {
         log_event
         event_date
         event_message
       }
     }
+  }
+`);
+
+// query array of strings
+export const getAvailableBotsByFilesQuery = graphql(`
+  query getAvailableBotsByFiles {
+    getAvailableBotsByFiles
   }
 `);

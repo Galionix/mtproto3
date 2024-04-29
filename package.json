@@ -7,7 +7,7 @@
     "bot-client:build:watch": "nodemon --config ./nodemon/bot-client-nodemon-config.json",
     "accounts-reg:build:watch": "nodemon --config ./nodemon/accounts-reg-nodemon-config.json",
     "frontend:dev": "nx serve frontend",
-    "codegen": "graphql-codegen --config codegen.ts",
+    "codegen": "graphql-codegen --config codegen.ts --watch",
     "compileTailwind": "npx tailwindcss -i ./apps/frontend/pages/styles.css -o ./apps/frontend/styles/tailwind-output.css --watch",
     "botclient:run:watch": "nodemon --config ./nodemon/watch-test-client-nodemon-config.json client-dist.test.ts",
     "botfather:test:watch": "nx test botfather --watch --verbose",

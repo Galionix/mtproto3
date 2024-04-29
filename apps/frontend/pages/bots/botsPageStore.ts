@@ -10,7 +10,7 @@ export const useBotsPageStore = create<IBotsPageStore>()(
   devtools(
     persist(
       (set) => ({
-        visibleColumns: ["api_id", "api_hash"],
+        visibleColumns: ["botDbId", "api_id", "api_hash"],
 
         setVisibleColumns: (columns: string[]) => {
           set({ visibleColumns: columns });

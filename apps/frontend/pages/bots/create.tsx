@@ -4,6 +4,7 @@ import { CreateBotInput } from "@core/types/server";
 import { useApolloClient, useMutation, useQuery } from "@apollo/client";
 import {
   createBotMutation,
+  getAvailableBotsByFilesQuery,
   getBotStateQuery,
   getBotStatesQuery,
   getBotsQuery,
@@ -18,7 +19,7 @@ import { BooleanInput } from "../../src/shared/BooleanInput/BooleanInput";
 import { generateFromEmail, generateUsername } from "unique-username-generator";
 
 const defaultCreateBotData: CreateBotInput = {
-  api_id: "",
+  api_id: -1,
   api_hash: "",
   botName: "",
   behaviorModel: "base",
@@ -36,6 +37,12 @@ const CreateBotPage: NextPage = () => {
       error: createBotError,
     },
   ] = useMutation(createBotMutation);
+
+  // getAvailableBotsByFilesQuery
+  const { data: availableBotsByFilesData } = useQuery(
+    getAvailableBotsByFilesQuery
+  );
+  console.log("availableBotsByFilesData: ", availableBotsByFilesData);
 
   const router = useRouter();
 
@@ -75,7 +82,7 @@ const CreateBotPage: NextPage = () => {
             <TextInput
               value={createBotData.api_id.toString()}
               onChange={(e) => {
-                dispatch({ api_id: e });
+                dispatch({ api_id: parseInt(e) });
               }}
               label="api_id"
               // type="string"
@@ -102,10 +109,10 @@ const CreateBotPage: NextPage = () => {
                 dispatch({ sessionString: e });
               }}
             />
-            <SessionStringRestore
+            {/* <SessionStringRestore
               api_id={createBotData.api_id}
               requestedPhone={true}
-            />
+            /> */}
           </>
         )}
         {createBotData.fromFile && (
