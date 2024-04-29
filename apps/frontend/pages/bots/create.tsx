@@ -17,6 +17,7 @@ import { InitBot } from "./InitBot";
 import { SessionStringRestore } from "../../src/shared/BotSessionStringRestore/BotSessionStringRestore";
 import { BooleanInput } from "../../src/shared/BooleanInput/BooleanInput";
 import { generateFromEmail, generateUsername } from "unique-username-generator";
+import { IoIosRefresh } from "react-icons/io";
 
 const defaultCreateBotData: CreateBotInput = {
   api_id: -1,
@@ -42,7 +43,7 @@ const CreateBotPage: NextPage = () => {
   const { data: availableBotsByFilesData } = useQuery(
     getAvailableBotsByFilesQuery
   );
-  console.log("availableBotsByFilesData: ", availableBotsByFilesData);
+  // console.log("availableBotsByFilesData: ", availableBotsByFilesData);
 
   const router = useRouter();
 
@@ -61,22 +62,49 @@ const CreateBotPage: NextPage = () => {
   return (
     <Layout>
       <h1>Create Bot</h1>
+      <div>
+        <h2>Available Bots</h2>
+        {availableBotsByFilesData?.getAvailableBotsByFiles?.map((bot) => (
+          <div key={bot}>
+            <Clickable
+              text={bot}
+              onClick={() => {
+                dispatch({
+                  api_hash: bot,
+                  fromFile: true,
+                });
+              }}
+            />
+          </div>
+        ))}
+        {/* <pre>{JSON.stringify(availableBotsByFilesData, null, 2)}</pre> */}
+      </div>
       <form
         onSubmit={async (e) => {
           e.preventDefault();
         }}
       >
-        {/* <InitBot /> */}
-        <TextInput
-          label="botName"
-          type="text"
-          placeholder="botName"
-          required
-          value={createBotData.botName}
-          onChange={(e) => {
-            dispatch({ botName: e });
-          }}
-        />
+        <div className="flex items-center gap-4">
+          {/* <InitBot /> */}
+          <TextInput
+            label="botName"
+            type="text"
+            placeholder="botName"
+            required
+            value={createBotData.botName}
+            onChange={(e) => {
+              dispatch({ botName: e });
+            }}
+          />
+          <Clickable
+            warning
+            // text="Generate botName"
+            icon={IoIosRefresh}
+            onClick={() => {
+              dispatch({ botName: generateUsername() });
+            }}
+          />
+        </div>
         {!createBotData.fromFile && (
           <>
             <TextInput

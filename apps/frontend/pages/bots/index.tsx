@@ -25,6 +25,7 @@ import s from "./Index.module.scss";
 import { BotsIndexPanel } from "../../src/domains/bots/BotsIndexPanel/BotsIndexPanel";
 import { TextInputWithChoicesList } from "../../src/shared/Input/TextInput";
 import { useBotsPageStore } from "./botsPageStore";
+import { DisplayGlobalLog } from "../../src/shared/DisplayGlobalLog/DisplayGlobalLog";
 
 const BotsPage: NextPage = () => {
   const { data } = useQuery(getBotsQuery);
@@ -68,7 +69,7 @@ const BotsPage: NextPage = () => {
     onSubmit: (id: string) => {
       removeBot({
         variables: {
-          api_id: id,
+          botDbId: id,
         },
         refetchQueries: [
           {
@@ -82,7 +83,7 @@ const BotsPage: NextPage = () => {
     id: "viewLogsModal",
     className: s.viewLogsModal,
     children: (id) => {
-      const botName = data?.bots.find((bot) => bot.api_id === id)?.botName;
+      const botName = data?.bots.find((bot) => bot.botDbId === id)?.botName;
       return (
         <div>
           <h2>Bot name: {botName}</h2>
@@ -100,10 +101,10 @@ const BotsPage: NextPage = () => {
   const botsForTable =
     data?.bots.map((bot) => {
       const botState = botStates?.getBotStates.find(
-        (botState) => botState.bot.api_id === bot.api_id
+        (botState) => botState.bot.botDbId === bot.botDbId
       );
       return {
-        id: bot.api_id,
+        id: bot.botDbId,
         botState,
         ...bot,
       };
@@ -111,7 +112,7 @@ const BotsPage: NextPage = () => {
 
   const [selectedBots, setSelectedBots] = useState<
     {
-      api_id: string;
+      botDbId: string;
       botName: string;
     }[]
   >([]);
@@ -150,10 +151,10 @@ const BotsPage: NextPage = () => {
       <BotsIndexPanel
         selectedBots={
           data?.bots.filter(
-            ({ api_id }) =>
-              selectedBots.map(({ api_id }) => api_id).includes(api_id) &&
+            ({ botDbId }) =>
+              selectedBots.map(({ botDbId }) => botDbId).includes(botDbId) &&
               botStates.getBotStates.find(
-                (botState) => botState.bot.api_id === api_id
+                (botState) => botState.bot.botDbId === botDbId
               )?.isRunning
           ) || []
         }
@@ -176,7 +177,7 @@ const BotsPage: NextPage = () => {
         onSelectRow={(selectedRows) => {
           setSelectedBots(
             selectedRows.map((i) => ({
-              api_id: botsForTable[i].api_id,
+              botDbId: botsForTable[i].botDbId,
               botName: botsForTable[i].botName,
             }))
           );
@@ -184,13 +185,13 @@ const BotsPage: NextPage = () => {
         columns={selectedColumns}
         data={botsForTable}
         rowLeftControls={(bot) => [
-          <SessionStringRestore
-            key={`restore ${bot.api_id}`}
-            api_id={bot.api_id}
-            requestedPhone={bot.botState?.requestedPhoneCode}
-          />,
+          // <SessionStringRestore
+          //   key={`restore ${bot.botDbId}`}
+          //   api_id={bot.botDbId}
+          //   requestedPhone={bot.botState?.requestedPhoneCode}
+          // />,
           <Clickable
-            key={`start/stop ${bot.api_id}`}
+            key={`start/stop ${bot.botDbId}`}
             danger={!bot.botState?.isRunning}
             primary={bot.botState?.isRunning}
             icon={bot.botState?.isRunning ? BsStopCircle : VscDebugStart}
@@ -199,7 +200,7 @@ const BotsPage: NextPage = () => {
               if (bot.botState?.isRunning) {
                 stopBot({
                   variables: {
-                    api_id: bot.api_id,
+                    botDbId: bot.botDbId,
                   },
                   refetchQueries: [
                     {
@@ -211,7 +212,7 @@ const BotsPage: NextPage = () => {
               } else {
                 restartBot({
                   variables: {
-                    api_id: bot.api_id,
+                    botDbId: bot.botDbId,
                   },
                   refetchQueries: [
                     {
@@ -225,34 +226,35 @@ const BotsPage: NextPage = () => {
         ]}
         rowControls={(bot) => [
           <Clickable
-            key={`view logs ${bot.api_id}`}
+            key={`view logs ${bot.botDbId}`}
             primary
             title="view logs"
             icon={IoList}
             onClick={() => {
-              showLogsModal(bot.api_id);
-              setViewLogsId(bot.api_id);
+              showLogsModal(bot.botDbId);
+              setViewLogsId(bot.botDbId);
             }}
           />,
           <Clickable
             text="Edit"
             comp="link"
-            key={`edit ${bot.api_id}`}
+            key={`edit ${bot.botDbId}`}
             icon={CiEdit}
-            href={`/bots/${bot.api_id}/edit`}
+            href={`/bots/${bot.botDbId}/edit`}
             title="edit"
           />,
           <Clickable
-            key={`delete ${bot.api_id}`}
+            key={`delete ${bot.botDbId}`}
             danger
             icon={FaTrash}
             title="delete"
             onClick={() => {
-              showModal(bot.api_id);
+              showModal(bot.botDbId);
             }}
           />,
         ]}
       />
+      <DisplayGlobalLog />
     </Layout>
   );
 };

@@ -13,11 +13,11 @@ export class GlobalLogEntity {
   @PrimaryGeneratedColumn("uuid")
   id: number;
 
-  @Field(() => String, { nullable: true })
+  @Field(() => String, { nullable: true, defaultValue: "" })
   @Column()
   event_message: string;
 
-  @Field(() => String, { nullable: true })
+  @Field(() => String, { nullable: true, defaultValue: "" })
   @Column()
   log_event: string;
 

@@ -7,7 +7,7 @@ import { Database } from "sqlite3";
 import sqlite3 from "sqlite3";
 import { sep, resolve } from "path";
 import { AuthKey } from "telegram/crypto/AuthKey";
-import { TEntitiesRow, TSessionRow } from "./sesionFile.types";
+import { TEntitiesRow, TJsonFile, TSessionRow } from "./sesionFile.types";
 import { MemorySession, StringSession } from "telegram/sessions";
 import select from "./readDb.utils";
 import ip from "ip";
@@ -15,6 +15,22 @@ import base64 from "base64-js";
 import { readFileSync } from "fs";
 import { readdir } from "fs/promises";
 const l = new Logger("BotRepositoryService");
+
+async function getFiles(dir: string): Promise<string[]> {
+  const dirents = await readdir(dir, { withFileTypes: true });
+  const files = await Promise.all(
+    dirents.map((dirent) => {
+      const res = resolve(dir, dirent.name);
+      return dirent.isDirectory() ? getFiles(res) : res;
+    })
+  );
+  const paths = Array.prototype.concat(...files);
+  return paths;
+  // {
+  // filenames: paths.map((file) => file.split(sep).pop()),
+  // };
+}
+
 const CURRENT_VERSION = "1";
 // const _STRUCT_PREFORMAT = ">B{}sH256s";
 /*    dc_id?: number;
@@ -55,17 +71,26 @@ async function getBotDataFromFile(number: string) {
   //   username: "",
   // };
   // const session = new StringSession("");
-  const filePath = resolve("accounts" + sep + number + ".session");
-  const jsonFilePath = resolve("accounts" + sep + number + ".json");
-  const jsonData = readFileSync(jsonFilePath, "utf8");
-  const { phone } = JSON.parse(jsonData);
+  // const filePath = resolve("accounts" + sep + number + ".session");
+
+  const existingFiles = await getFiles(resolve("accounts"));
+  const jsonFile = existingFiles.find((file) =>
+    file.includes(`${number}.json`)
+  );
+  const sessionFile = existingFiles.find((file) =>
+    file.includes(`${number}.session`)
+  );
+
+  // const jsonFilePath = resolve("accounts" + sep + number + ".json");
+  const jsonData = readFileSync(jsonFile, "utf8");
+  const { phone, app_id, app_hash } = JSON.parse(jsonData) as TJsonFile;
   // read json file
 
-  console.log("filePath: ", filePath);
+  console.log("filePath: ", sessionFile);
   // const db: Database = new sqlite3.Database(filePath);
   // console.log("db: ", db);
 
-  const sessionsData = await select<TSessionRow>(filePath, "sessions");
+  const sessionsData = await select<TSessionRow>(sessionFile, "sessions");
   // const stringSession = sessionsData[0].auth_key.toString("base64");
   // const stringSession = encode(
   //   sessionsData[0].dc_id,
@@ -93,9 +118,15 @@ async function getBotDataFromFile(number: string) {
   // const sessionString = session.save();
   // console.log("sessionString: ", sessionString);
 
-  const entities = await select<TEntitiesRow>(filePath, "entities");
+  const entities = await select<TEntitiesRow>(sessionFile, "entities");
   console.log("entities: ", entities);
-  return { stringSession: sessionString, ...entities[1], phone };
+  return {
+    stringSession: sessionString,
+    ...entities[1],
+    phone,
+    app_id,
+    app_hash,
+  };
 
   // return stringSession;
   // console.log("dbData: ", dbData);
@@ -150,10 +181,26 @@ export class BotRepositoryService {
   // this query will show what bots are available for creation by files in accounts folder
   // we should read accounts folder and get file names and show them here
   async getAvailableBotsByFiles() {
+    // we need all files in nested folders
     const accountsFolder = resolve("accounts");
-    const files = await readdir(accountsFolder);
-    console.log("files: ", files);
-    return files;
+    const paths = await getFiles(accountsFolder);
+
+    const fileNames = new Set(
+      paths
+        .map((file) => file.split(sep).pop())
+        .map((file) => file && file.split(".")[0])
+    );
+    // next we need to find all bots with this phone numbers
+    // and remove them from result using findOneByPhone
+
+    const result = await Promise.all(
+      Array.from(fileNames).map(async (phone) => {
+        const bot = await this.findOneByPhone(phone);
+        return bot ? null : phone;
+      })
+    );
+
+    return result.filter(Boolean);
   }
 
   // TODO: change api_id and api_hash by botDbId to defaultValues
@@ -161,13 +208,13 @@ export class BotRepositoryService {
   async create(createBotInput: CreateBotInput) {
     console.log("createBotInput: ", createBotInput);
     if (createBotInput.fromFile) {
-      const { stringSession, id, hash, username, phone, name, date } =
+      const { stringSession, app_id, app_hash, username, phone, name, date } =
         await getBotDataFromFile(createBotInput.api_hash.toString());
 
-      createBotInput.api_id = id;
-      createBotInput.api_hash = `${hash}`;
+      createBotInput.api_id = app_id;
+      createBotInput.api_hash = app_hash;
       // createBotInput = username;
-      // createBotInput.phone = phone;
+      createBotInput.phone = phone;
       createBotInput.sessionString = stringSession;
       // // here we use api_id as a number showing us what the file we should open.
       // const sessionString = await getSession(
@@ -175,13 +222,13 @@ export class BotRepositoryService {
       // );
       // console.log("sessionString: ", sessionString);
     }
-    const existingBot = await this.botRepository.findOne({
-      where: { api_id: createBotInput.api_id },
-    });
+    // const existingBot = await this.botRepository.findOne({
+    //   where: { api_id: createBotInput.api_id },
+    // });
 
-    if (existingBot) {
-      return existingBot;
-    }
+    // if (existingBot) {
+    //   return existingBot;
+    // }
 
     let copyFromBot: BotEntity;
 
@@ -213,9 +260,7 @@ export class BotRepositoryService {
   }
 
   async findOneByName(botName: string): Promise<BotEntity> {
-    console.log("botName: ", botName);
     const res = await this.botRepository.findOne({ where: { botName } });
-    console.log("res: ", res);
     return res;
   }
   async findOneByPhone(phone: string) {

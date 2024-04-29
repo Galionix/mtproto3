@@ -135,6 +135,7 @@ input CreateBotInput {
   botName: String
   copyFrom: String
   fromFile: Boolean
+  phone: String
   readDelay: Int
   replacements: String
   scenario: String
@@ -438,6 +439,8 @@ input UpdateBotInput {
   afterTaskDelay: Int
   afterTaskIdleTime: Int
   answersDb: String
+  api_hash: String
+  api_id: Int
   behaviorModel: String
   botName: String
   clientState: String

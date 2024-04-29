@@ -156,6 +156,7 @@ console.log("launching main thread");
   }
 
   try {
+    logGlobal("STARTING", "Starting");
     const client = new TelegramClient(
       new StringSession(stringSession),
       parseInt(apiId),
@@ -197,6 +198,8 @@ console.log("launching main thread");
       },
       phoneNumber: async () => {
         console.log("phone number requested");
+        logEvent(BotEventTypes.PHONE_NUMBER);
+        logGlobal(BotEventTypes.PHONE_NUMBER, "phone number requested");
         const res = await sendToFather(
           process,
           {
@@ -214,6 +217,7 @@ console.log("launching main thread");
       },
       onError: (err) => {
         logEvent(BotEventTypes.ERROR, err.message);
+        logGlobal(BotEventTypes.ERROR, err.message, { stack: err.stack });
 
         process.send({ event_type: "ERROR", error: err });
         console.log(err);

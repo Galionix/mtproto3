@@ -81,4 +81,9 @@ export class CreateBotInput {
   @Column()
   @IsOptional()
   fromFile?: boolean;
+  // phone optional
+  @Field(() => String, { nullable: true })
+  @Column()
+  @IsOptional()
+  phone?: string;
 }

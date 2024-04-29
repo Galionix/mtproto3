@@ -46,7 +46,7 @@ const EditBotPage: NextPage = () => {
   const router = useRouter();
   const { id } = router.query;
   const { data: { bot } = { bot: null } } = useQuery(getBotQuery, {
-    variables: { api_id: `${id}` },
+    variables: { botDbId: `${id}` },
   });
   // hidePhoneNumberMutation
   const [hidePhoneNumber, { data: hidePhoneNumberDataResult }] = useMutation(
@@ -186,7 +186,11 @@ const EditBotPage: NextPage = () => {
             placeholder="api_id"
             required
             value={bot.api_id.toString()}
-            disabled
+            onChange={(e) => {
+              dispatch({ api_id: parseInt(e) });
+            }}
+
+            // disabled
           />
           {/* api_hash */}
           <TextInput
@@ -195,7 +199,10 @@ const EditBotPage: NextPage = () => {
             placeholder="api_hash"
             required
             value={bot.api_hash}
-            disabled
+            onChange={(e) => {
+              dispatch({ api_hash: e });
+            }}
+            // disabled
           />
           <TextInput
             label="botName"
@@ -283,7 +290,7 @@ const EditBotPage: NextPage = () => {
             onClick={async () => {
               const { data } = await hidePhoneNumber({
                 variables: {
-                  api_id: `${id}`,
+                  botDbId: `${id}`,
                 },
               });
               console.log("data: ", data);
@@ -297,7 +304,7 @@ const EditBotPage: NextPage = () => {
             onClick={async () => {
               const { data } = await removePhotos({
                 variables: {
-                  api_id: `${id}`,
+                  botDbId: `${id}`,
                 },
               });
               console.log("data: ", data);
@@ -322,7 +329,7 @@ const EditBotPage: NextPage = () => {
               onClick={async () => {
                 const { data } = await setPhoto({
                   variables: {
-                    api_id: `${id}`,
+                    botDbId: `${id}`,
                     photoName,
                   },
                 });
@@ -386,7 +393,7 @@ const EditBotPage: NextPage = () => {
           onClick={async () => {
             await setBio({
               variables: {
-                api_id: `${id}`,
+                botDbId: `${id}`,
                 firstName: bioInfo.firstName,
                 lastName: bioInfo.lastName,
                 about: bioInfo.about,
@@ -397,7 +404,7 @@ const EditBotPage: NextPage = () => {
                 },
                 {
                   query: getBotQuery,
-                  variables: { api_id: parseInt(`${id}`) },
+                  variables: { botDbId: `${id}` },
                 },
               ],
             });
@@ -516,6 +523,8 @@ const EditBotPage: NextPage = () => {
             api_id,
             // @ts-ignore
             clientStateUpdateTime,
+            // @ts-ignore
+            botDbId,
             ...rest
           } = updateBotData;
           console.log("updateBotData: ", updateBotData);
@@ -526,7 +535,7 @@ const EditBotPage: NextPage = () => {
           };
           await updateBot({
             variables: {
-              api_id: `${id}`,
+              botDbId: `${id}`,
               updateBotInput: preparedUpdateBotData,
             },
             refetchQueries: [
@@ -535,7 +544,7 @@ const EditBotPage: NextPage = () => {
               // },
               {
                 query: getBotQuery,
-                variables: { api_id: parseInt(`${id}`) },
+                variables: { botDbId: `${id}` },
               },
               {
                 query: getBotsQuery,

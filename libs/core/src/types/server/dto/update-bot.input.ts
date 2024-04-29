@@ -4,6 +4,14 @@ import { IsOptional } from "class-validator";
 
 @InputType()
 export class UpdateBotInput {
+  // api_id + api_hash
+  @Field(() => Int, { nullable: true })
+  @Column()
+  api_id?: number;
+
+  @Field(() => String, { nullable: true })
+  @Column()
+  api_hash?: string;
   @Field(() => String, { nullable: true })
   @Column()
   sessionString?: string;

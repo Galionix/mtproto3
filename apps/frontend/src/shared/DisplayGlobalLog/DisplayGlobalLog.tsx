@@ -11,66 +11,70 @@ import { queryGlobalLog, queryGlobalLogFromDate } from "./gql";
 import { TextInput } from "../Input/TextInput";
 import { BooleanInput } from "../BooleanInput/BooleanInput";
 import s from "./displayGlobalLog.module.scss";
+import { Clickable } from "../Clickable/Clickable";
 
 export const DisplayGlobalLog = () => {
-  const [latestDate, setLatestDate] = useState<Date>(new Date());
+  // const [latestDate, setLatestDate] = useState<Date>(new Date());
   const [search, setSearch] = useState<string>("");
   const [showLatest, setShowLatest] = useState<string>("");
 
+  const [interval, setInterval] = useState<number>(5000);
   // queryGlobalLog lazy
-  const [
-    loadGlobalLog,
-    { data: globalLogData, error: globalLogError, loading: globalLogLoading },
-  ] = useLazyQuery(queryGlobalLog, {
+  const { data: globalLogData } = useQuery(queryGlobalLog, {
     variables: {
       limit: showLatest ? parseInt(showLatest) : 10,
     },
-  });
-  useEffect(() => {
-    setGlobalLogs(
-      (globalLogData?.globalLog as unknown as GlobalLogEntity[]) || []
-    );
-    setLatestDate(new Date(globalLogData?.globalLog[0].event_date));
-  }, [globalLogData]);
-  const { data, error, loading } = useQuery(queryGlobalLog, {
-    variables: {
-      limit: 10,
-    },
-  });
-  const [globalLogs, setGlobalLogs] = useState<GlobalLogEntity[]>(
-    (data?.globalLog as unknown as GlobalLogEntity[]) || []
-  );
-  useEffect(() => {
-    setGlobalLogs((data?.globalLog as unknown as GlobalLogEntity[]) || []);
-    data?.globalLog[0] &&
-      setLatestDate(new Date(data?.globalLog[0].event_date));
-  }, [data]);
-
-  // queryGlobalLogFromDate
-  const {
-    data: logFromDate,
-    startPolling,
-    stopPolling,
-  } = useQuery(queryGlobalLogFromDate, {
-    variables: {
-      date: latestDate,
-    },
     pollInterval: 5000,
-    // disabled: false
   });
-  useEffect(() => {
-    if (logFromDate?.globalLogFromDate) {
-      setGlobalLogs([
-        ...(logFromDate.globalLogFromDate as unknown as GlobalLogEntity[]),
-        ...globalLogs,
-      ]);
-      if (logFromDate.globalLogFromDate[0]?.event_date)
-        setLatestDate(new Date(logFromDate.globalLogFromDate[0]?.event_date));
-    }
-  }, [logFromDate?.globalLogFromDate]);
+  // useEffect(() => {
+  //   setGlobalLogs(
+  //     (globalLogData?.globalLog as unknown as GlobalLogEntity[]) || []
+  //   );
+  //   setLatestDate(new Date(globalLogData?.globalLog[0].event_date));
+  // }, [globalLogData]);
+  // const { data, error, loading } = useQuery(queryGlobalLog, {
+  //   variables: {
+  //     limit: 10,
+  //   },
+  // });
+  // const [globalLogs, setGlobalLogs] = useState<GlobalLogEntity[]>(
+  //   (data?.globalLog as unknown as GlobalLogEntity[]) || []
+  // );
+  // useEffect(() => {
+  //   setGlobalLogs((data?.globalLog as unknown as GlobalLogEntity[]) || []);
+  //   data?.globalLog[0] &&
+  //     setLatestDate(new Date(data?.globalLog[0].event_date));
+  // }, [data]);
+
+  // // queryGlobalLogFromDate
+  // const {
+  //   data: logFromDate,
+  //   startPolling,
+  //   stopPolling,
+  // } = useQuery(queryGlobalLogFromDate, {
+  //   variables: {
+  //     date: latestDate,
+  //   },
+  //   pollInterval: 5000,
+  //   // disabled: false
+  // });
+  // useEffect(() => {
+  //   if (logFromDate?.globalLogFromDate) {
+  //     const combined = [
+  //       ...(logFromDate.globalLogFromDate as unknown as GlobalLogEntity[]),
+  //       ...globalLogs,
+  //     ];
+  //     // const deduped = combined.filter(
+  //     //   (v, i, a) => a.findIndex((t) => t.id === v.id) === i
+  //     // );
+  //     setGlobalLogs(combined);
+  //     if (logFromDate.globalLogFromDate[0]?.event_date)
+  //       setLatestDate(new Date(logFromDate.globalLogFromDate[0]?.event_date));
+  //   }
+  // }, [logFromDate?.globalLogFromDate]);
 
   //   TODO: fix filtering. there are bugs
-  const filteredLogs = globalLogs.filter(
+  const filteredLogs = globalLogData?.globalLog?.filter(
     (log) =>
       log.event_message.includes(search) ||
       log.details.includes(search) ||
@@ -78,37 +82,52 @@ export const DisplayGlobalLog = () => {
       log.botDbId.toString().includes(search)
   );
   const [refresh, setRefresh] = useState(true);
-  useEffect(() => {
-    if (refresh) {
-      startPolling(5000);
-    } else {
-      stopPolling();
-    }
-  }, [refresh]);
+  // useEffect(() => {
+  //   if (refresh) {
+  //     startPolling(5000);
+  //   } else {
+  //     stopPolling();
+  //   }
+  // }, [refresh]);
 
   return (
     <div>
-      <span>
+      <span className="flex flex-row gap-2">
         {/* Last event date: {latestDate && new Date(latestDate).toISOString()} */}
+        {/* <Clickable
+          text="load"
+          onClick={() => {
+            loadGlobalLog();
+          }}
+        /> */}
+        <BooleanInput value={refresh} onChange={setRefresh} label="Refresh" />
       </span>
-      <BooleanInput value={refresh} onChange={setRefresh} label="Refresh" />
+
       <TextInput
         value={search}
         onChange={(e) => setSearch(e)}
         placeholder="Search"
       />
       <TextInput
+        type="number"
+        value={`${interval}`}
+        onChange={(e) => {
+          setInterval(parseInt(e));
+        }}
+        placeholder="Interval"
+      />
+      <TextInput
         value={showLatest}
         onChange={(e) => {
           setShowLatest(e);
           setRefresh(false);
-          loadGlobalLog();
+          // loadGlobalLog();
         }}
         placeholder="Show latest"
       />
 
       <div className="border border-gray-200 p-2 my-2 rounded-md flex flex-col gap-2">
-        {filteredLogs.map((log) => (
+        {filteredLogs?.map((log) => (
           <div
             key={log.id}
             className={

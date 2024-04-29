@@ -140,6 +140,7 @@ export type CreateBotInput = {
   botName?: InputMaybe<Scalars['String']['input']>;
   copyFrom?: InputMaybe<Scalars['String']['input']>;
   fromFile?: InputMaybe<Scalars['Boolean']['input']>;
+  phone?: InputMaybe<Scalars['String']['input']>;
   readDelay?: InputMaybe<Scalars['Int']['input']>;
   replacements?: InputMaybe<Scalars['String']['input']>;
   scenario?: InputMaybe<Scalars['String']['input']>;
@@ -608,6 +609,8 @@ export type UpdateBotInput = {
   afterTaskDelay?: InputMaybe<Scalars['Int']['input']>;
   afterTaskIdleTime?: InputMaybe<Scalars['Int']['input']>;
   answersDb?: InputMaybe<Scalars['String']['input']>;
+  api_hash?: InputMaybe<Scalars['String']['input']>;
+  api_id?: InputMaybe<Scalars['Int']['input']>;
   behaviorModel?: InputMaybe<Scalars['String']['input']>;
   botName?: InputMaybe<Scalars['String']['input']>;
   clientState?: InputMaybe<Scalars['String']['input']>;

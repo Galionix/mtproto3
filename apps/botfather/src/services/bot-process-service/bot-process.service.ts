@@ -9,7 +9,10 @@ import {
 } from "@core/types/server";
 import { sep } from "path";
 import { ScenarioRepositoryService } from "../../databases/scenario-repository/scenario-repository.service";
+import { Logger } from "@nestjs/common";
+import { GlobalLogService } from "../../databases/global-log/global-log.service";
 
+const l = new Logger("BotProcessService");
 
 @Injectable()
 export class BotProcessService {
@@ -20,7 +23,9 @@ export class BotProcessService {
     private readonly botRepositoryService: BotRepositoryService,
     private readonly botStateService: BotStateService,
     private readonly botMessageService: BotEventsService,
-    private readonly scenarioRepositoryService: ScenarioRepositoryService
+    private readonly scenarioRepositoryService: ScenarioRepositoryService,
+    // global log
+    private readonly globalLogService: GlobalLogService
   ) {}
 
   stopBots() {
@@ -59,9 +64,11 @@ export class BotProcessService {
 
   async startBot(botDbId: string) {
     const bot = await this.botRepositoryService.findOne(botDbId);
+    l.log("bot: ", bot);
 
     // check if bot is already started
     const botState = this.botStateService.getBotState(bot.botDbId);
+    l.log("botState: ", botState);
     // console.log("botState: ", botState);
     if (botState.isStarted) {
       return bot;
@@ -103,6 +110,16 @@ export class BotProcessService {
     // childProcess.
     this.botProcesses.push(childProcess);
     childProcess.on("exit", (code: number) => {
+      // we dont need to pass here event_date, because it will be set automatically
+      this.globalLogService.create({
+        log_event: "childProcess exited",
+        event_message: `childProcess exited with code: ${code}`,
+        botDbId,
+        // event_date: new Date(),
+        details: JSON.stringify({
+          code,
+        }),
+      } as any);
       console.log(childProcess.pid, "childProcess exited with code: ", code);
       // find botState and set childProcess to null
       //   const botState = this.botStateService.getBotState(bot.api_id);
