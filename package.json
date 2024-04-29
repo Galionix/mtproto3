@@ -5,7 +5,8 @@
   "scripts": {
     "botfather:serve": "nx serve botfather",
     "bot-client:build:watch": "nodemon --config ./nodemon/bot-client-nodemon-config.json",
-    "accounts-reg:build:watch": "nodemon --config ./nodemon/accounts-reg-nodemon-config.json",
+    "accounts-reg:serve:watch": "nodemon --config ./nodemon/accounts-reg-nodemon-config.json",
+    "accounts-reg:build:watch": "nodemon --config ./nodemon/accounts-reg-nodemon-build.json",
     "frontend:dev": "nx serve frontend",
     "codegen": "graphql-codegen --config codegen.ts --watch",
     "compileTailwind": "npx tailwindcss -i ./apps/frontend/pages/styles.css -o ./apps/frontend/styles/tailwind-output.css --watch",

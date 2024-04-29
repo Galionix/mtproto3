@@ -13,9 +13,13 @@ import { Layout } from "../../../src/shared/Layout/Layout";
 import {
   getBotQuery,
   hidePhoneNumberMutation,
+  isCodeRequestedFromAccountsRegProcessQuery,
+  provideCodeForRegistrationMutation,
   removePhotosMutation,
   setBioMutation,
   setPhotoMutation,
+  startAccountsRegProcessMutation,
+  stopAccountsRegProcessMutation,
   updateBotMutation,
 } from "./gql";
 import { TextInput } from "../../../src/shared/Input/TextInput";
@@ -44,14 +48,37 @@ const EditBotPage: NextPage = () => {
   //     },
   //   ] = useMutation(createBotMutation);
   const router = useRouter();
+  // state for isCodeRequestedFromAccountsRegProcessQuery
+  const [isCodeRequested, setIsCodeRequested] = useState(false);
   const { id } = router.query;
   const { data: { bot } = { bot: null } } = useQuery(getBotQuery, {
     variables: { botDbId: `${id}` },
   });
+  // isCodeRequestedFromAccountsRegProcessQuery
+  const {
+    data: isCodeRequestedData,
+    stopPolling,
+    startPolling,
+  } = useQuery(isCodeRequestedFromAccountsRegProcessQuery);
+  console.log("isCodeRequestedData: ", isCodeRequestedData);
+  useEffect(() => {
+    if (isCodeRequested) {
+      startPolling(1000);
+    } else {
+      stopPolling();
+    }
+    return () => {
+      stopPolling();
+    };
+  }, [isCodeRequested]);
+
   // hidePhoneNumberMutation
   const [hidePhoneNumber, { data: hidePhoneNumberDataResult }] = useMutation(
     hidePhoneNumberMutation
   );
+  // mutation stopAccountsRegProcessMutation
+  const [stopAccountsRegProcess, { data: stopAccountsRegProcessDataResult }] =
+    useMutation(stopAccountsRegProcessMutation);
 
   const [bioInfo, setBioInfo] = useState<{
     firstName: string;
@@ -98,7 +125,26 @@ const EditBotPage: NextPage = () => {
       error: updateBotError,
     },
   ] = useMutation(updateBotMutation);
+  // startAccountsRegProcessMutation
+  const [
+    startAccountsRegProcess,
+    {
+      data: startAccountsRegProcessDataResult,
+      loading: startAccountsRegProcessLoading,
+      error: startAccountsRegProcessError,
+    },
+  ] = useMutation(startAccountsRegProcessMutation);
 
+  const [codeForRegistration, setCodeForRegistration] = useState("");
+  // provideCodeForRegistrationMutation
+  const [
+    provideCodeForRegistration,
+    {
+      data: provideCodeForRegistrationDataResult,
+      loading: provideCodeForRegistrationLoading,
+      error: provideCodeForRegistrationError,
+    },
+  ] = useMutation(provideCodeForRegistrationMutation);
   // setPhotoMutation
   const [
     setPhoto,
@@ -387,6 +433,58 @@ const EditBotPage: NextPage = () => {
             setBioInfo({ ...bioInfo, about: e });
           }}
         />
+        {/* startAccountsRegProcess */}
+        <Clickable
+          primary
+          text="Start Accounts Reg Process"
+          onClick={async () => {
+            const { data } = await startAccountsRegProcess({
+              variables: {
+                botDbId: `${id}`,
+              },
+            });
+            setIsCodeRequested(true);
+            console.log("data: ", data);
+          }}
+        />
+        {isCodeRequested && (
+          <>
+            <Clickable
+              // stopAccountsRegProcess
+              danger
+              text="Stop Accounts Reg Process"
+              onClick={async () => {
+                const { data } = await stopAccountsRegProcess();
+                setIsCodeRequested(false);
+                console.log("data: ", data);
+              }}
+            />
+            <TextInput
+              // provideCodeForRegistration
+              label="code"
+              type="text"
+              placeholder="code"
+              required
+              value={codeForRegistration}
+              onChange={(e) => {
+                setCodeForRegistration(e);
+              }}
+            />
+            <Clickable
+              primary
+              text="Provide Code For Registration"
+              onClick={async () => {
+                const { data } = await provideCodeForRegistration({
+                  variables: {
+                    code: codeForRegistration,
+                  },
+                });
+                console.log("data: ", data);
+              }}
+            />
+          </>
+        )}
+
         <Clickable
           primary
           text="Update Bio"

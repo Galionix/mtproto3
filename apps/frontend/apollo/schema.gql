@@ -316,6 +316,7 @@ type Mutation {
   joinGroups(JoinGroupsInput: JoinGroupsInput!): [BotStateEntity!]!
   leaveGroups(input: LeaveGroupsInput!): [BotStateEntity!]!
   provide2FACode(botDbId: String!, code: String!): BotStateEntity!
+  provideCodeForRegistration(code: String!): Boolean!
   providePhoneCode(botDbId: String!, phoneCode: String!): BotStateEntity!
   providePhoneNumber(botDbId: String!, phoneNumber: String!): BotStateEntity!
   removeAnswer(id: String!): Int!
@@ -328,6 +329,8 @@ type Mutation {
   setBio(about: String!, botDbId: String!, firstName: String!, lastName: String!): BotStateEntity!
   setPhoto(botDbId: String!, photoName: String!): BotStateEntity!
   setUsername(botDbId: String!, username: String!): String!
+  startAccountsRegProcess(botDbId: String!): String!
+  stopAccountsRegProcess: String!
   stopBot(botDbId: String!): BotStateEntity!
   updateAnswer(updateAnswerInput: UpdateAnswersRepositoryInput!): AnswerEntity!
   updateBot(botDbId: String!, updateBotInput: UpdateBotInput!): BotEntity!
@@ -347,6 +350,7 @@ type Query {
   getProcessesCount: Int!
   globalLog(limit: Int! = 10): [GlobalLogEntity!]!
   globalLogFromDate(date: DateTime!): [GlobalLogEntity!]!
+  isCodeRequestedFromAccountsRegProcess: String!
   message(id: String!): MessageEntity!
   messages: [MessageEntity!]!
   reloadStates: [BotStateEntity!]!

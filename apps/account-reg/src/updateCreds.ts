@@ -1,6 +1,11 @@
 import puppeteer, { KnownDevices } from "puppeteer";
 import { wait } from "./utils";
 import { generateUsername } from "unique-username-generator";
+import { sendToFather } from "@core/functions";
+import {
+  RegistrationEventTypes,
+  RegistrationResponseTypes,
+} from "@core/types/client";
 
 export const updateCreds = async ({ phone }: { phone: string }) => {
   const browser = await puppeteer.launch({
@@ -60,11 +65,23 @@ export const updateCreds = async ({ phone }: { phone: string }) => {
   // // // // // .....
   // // // // // и передаем ниже в input[id="my_password"]
 
-  // await telegramOrgPage.waitForSelector('input[id="my_password"]');
-  // await telegramOrgPage.type('input[id="my_password"]', "my code from app", {
-  //   delay: 200,
-  // });
-  await wait(20);
+  const res = await sendToFather(
+    process,
+    {
+      event_type: RegistrationEventTypes.REQUEST_CODE,
+      response_types: [RegistrationResponseTypes.RESPONSE_CODE],
+    },
+    true,
+    20000
+  );
+  if (res.event_type !== RegistrationResponseTypes.RESPONSE_CODE) {
+    return;
+  }
+  await telegramOrgPage.waitForSelector('input[id="my_password"]');
+  await telegramOrgPage.type('input[id="my_password"]', res.code, {
+    delay: 200,
+  });
+  await wait(5);
   const btns = await telegramOrgPage.$$(".btn.btn-primary.btn-lg");
   console.log(btns);
   await btns[1].click();

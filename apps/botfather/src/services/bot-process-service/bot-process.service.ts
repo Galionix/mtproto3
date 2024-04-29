@@ -11,14 +11,20 @@ import { sep } from "path";
 import { ScenarioRepositoryService } from "../../databases/scenario-repository/scenario-repository.service";
 import { Logger } from "@nestjs/common";
 import { GlobalLogService } from "../../databases/global-log/global-log.service";
+import {
+  RegistrationEventTypes,
+  RegistrationResponseTypes,
+} from "@core/types/client";
 
 const l = new Logger("BotProcessService");
 
 @Injectable()
 export class BotProcessService {
   private botProcesses: ChildProcess[] = [];
-  зище;
 
+  // var for storing accounts-reg process
+  private accountsRegProcess: ChildProcess;
+  private isCodeRequested = "";
   constructor(
     private readonly botRepositoryService: BotRepositoryService,
     private readonly botStateService: BotStateService,
@@ -138,6 +144,18 @@ export class BotProcessService {
         stoppedDate: Date.now(),
       });
     });
+    childProcess.addListener("message", (message: any) => {
+      // event_type: RegistrationResponseTypes.RESPONSE_CODE
+      console.log("message: ", message);
+      if (
+        "event_type" in message &&
+        message.event_type === RegistrationResponseTypes.RESPONSE_CODE
+      ) {
+        this.provideCode.bind(this)(message.code);
+        console.log("code provided: ", message.code);
+      }
+    });
+
     childProcess.on("message", (message) =>
       this.botMessageService.botsMessagesReducer.bind(this.botMessageService)(
         message,
@@ -257,5 +275,83 @@ export class BotProcessService {
       });
     }
     return botState;
+  }
+
+  // functions to manage accountsRegProcess: start, stop, restart
+
+  async startAccountsRegProcess(botDbId: string) {
+    const bot = await this.botRepositoryService.findOne(botDbId);
+    if (this.accountsRegProcess) {
+      this.stopAccountsRegProcess();
+    }
+
+    const childProcess = fork(
+      "dist" + sep + "apps" + sep + "account-reg" + sep + "main.js",
+      [bot.phone]
+    );
+    this.accountsRegProcess = childProcess;
+    childProcess.on("exit", (code: number) => {
+      console.log(childProcess.pid, "childProcess exited with code: ", code);
+      this.accountsRegProcess = null;
+      this.isCodeRequested = "";
+    });
+    childProcess.on("message", (message: any) => {
+      // RegistrationEventTypes.REQUEST_CODE
+      switch (message.event_type) {
+        case RegistrationEventTypes.REQUEST_CODE:
+          console.log("message: ", message);
+          this.isCodeRequested = bot.botDbId;
+          break;
+        default:
+          break;
+      }
+
+      // console.log("message: ", message);
+    });
+    childProcess.on("error", (error: Error) => {
+      console.log("error: ", error);
+    });
+    console.log("pid: ", this.accountsRegProcess?.pid);
+
+    return botDbId;
+  }
+
+  async stopAccountsRegProcess() {
+    if (this.accountsRegProcess) {
+      this.accountsRegProcess.kill();
+      this.accountsRegProcess.disconnect();
+      this.accountsRegProcess = null;
+      this.isCodeRequested = "";
+    }
+    return `${this.accountsRegProcess?.pid}`;
+  }
+
+  async restartAccountsRegProcess(phone: string) {
+    if (this.accountsRegProcess) {
+      this.accountsRegProcess.kill();
+      this.accountsRegProcess.disconnect();
+      this.accountsRegProcess = null;
+      this.isCodeRequested = "";
+    }
+    return this.startAccountsRegProcess(phone);
+  }
+  // return isCodeRequested
+  async isCodeRequestedFromAccountsRegProcess() {
+    return this.isCodeRequested;
+  }
+  // provideCode
+  async provideCode(code: string) {
+    if (this.accountsRegProcess) {
+      console.log("pid: ", this.accountsRegProcess?.pid);
+
+      console.log("code: ", code);
+      this.accountsRegProcess.send({
+        event_type: RegistrationResponseTypes.RESPONSE_CODE,
+        code,
+      });
+    } else {
+      throw new Error("accountsRegProcess is not started");
+    }
+    return this.isCodeRequested;
   }
 }

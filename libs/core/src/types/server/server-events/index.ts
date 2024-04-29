@@ -5,8 +5,12 @@ import {
   ERegistrationServerMessagesTypes,
   TRegistrationServerMessages,
 } from "./registration";
+import { TAccRegistrationResponses } from "../../client";
+// import { TRegistrationResponses } from "../../client";
+// import {TRegistrationResponses}
 // various payloads
 export type ServerEvents =
+  | TAccRegistrationResponses
   | TSettingsMessage
   | TGetDatabaseResponse
   | TRegistrationServerMessages;

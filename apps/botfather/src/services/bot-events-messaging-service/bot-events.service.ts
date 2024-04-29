@@ -64,6 +64,12 @@ export class BotEventsService {
           message,
           botDbId,
         });
+        /*
+        {
+        'event_type': (message: TProcessMessages, botDbId: string) => Promise<any>;
+        'event_type': (message: TProcessMessages, botDbId: string) => Promise<any>;
+        }
+        */
         if (res && "event_type" in res) {
           // TODO: fix this any
           if (message.response_types.includes(res.event_type as any)) {

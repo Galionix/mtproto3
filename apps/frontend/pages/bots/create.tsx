@@ -187,6 +187,9 @@ const CreateBotPage: NextPage = () => {
                 {
                   query: getBotsQuery,
                 },
+                {
+                  query: getAvailableBotsByFilesQuery,
+                },
               ],
             });
             console.log("res: ", res);

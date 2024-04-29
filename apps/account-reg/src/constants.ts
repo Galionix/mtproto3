@@ -49,3 +49,4 @@ export const puppeteerArgs = [
 ];
 
 export const updateCredsNumber = '+34604102550';
+export const isTest = true;

@@ -10,6 +10,7 @@ import {
 } from "./sms-activate.types";
 import {
   getNumberErrorResponses,
+  isTest,
   max_old_activation_time,
   puppeteerArgs,
   sms_activate_base_price,
@@ -20,6 +21,11 @@ import {
 import { countriesList } from "./countriesList.constant";
 import { fetchAndGetRawBody, wait } from "./utils";
 import { updateCreds } from "./updateCreds";
+import { sendToFather } from "@core/functions";
+import {
+  RegistrationEventTypes,
+  RegistrationResponseTypes,
+} from "@core/types/client";
 
 const sms_activate_api_key = "c7fb329608ef0cAbb6bA0AA98475c558";
 let priceAdded = 0;
@@ -175,10 +181,18 @@ const refreshCountries = async () => {
     .sort((a, b) => b.price - a.price);
   console.log("countriesFilteredByPrice: ", countriesFilteredByPrice);
 };
+const [phone] = process.argv.slice(2);
+console.log("phone: ", phone);
+// exit
 
 (async () => {
-  if (updateCredsNumber) {
-    await updateCreds({phone: updateCredsNumber})
+  // if (isTest) {
+
+  //   console.log("code: ", code);
+  //   return;
+  // }
+  if (phone) {
+    await updateCreds({ phone });
     return;
   }
   if (try_number) {

@@ -101,3 +101,31 @@ export const hidePhoneNumberMutation = graphql(`
     }
   }
 `);
+
+// startAccountsRegProcess
+export const startAccountsRegProcessMutation = graphql(`
+  mutation startAccountsRegProcess($botDbId: String!) {
+    startAccountsRegProcess(botDbId: $botDbId)
+  }
+`);
+
+// isCodeRequestedFromAccountsRegProcess
+export const isCodeRequestedFromAccountsRegProcessQuery = graphql(`
+  query isCodeRequestedFromAccountsRegProcess {
+    isCodeRequestedFromAccountsRegProcess
+  }
+`);
+
+// stopAccountsRegProcess
+export const stopAccountsRegProcessMutation = graphql(`
+  mutation stopAccountsRegProcess {
+    stopAccountsRegProcess
+  }
+`);
+
+// provideCodeForRegistration
+export const provideCodeForRegistrationMutation = graphql(`
+  mutation provideCodeForRegistration($code: String!) {
+    provideCodeForRegistration(code: $code)
+  }
+`);

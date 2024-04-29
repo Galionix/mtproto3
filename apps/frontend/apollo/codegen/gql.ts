@@ -19,6 +19,10 @@ const documents = {
     "\n  mutation removePhotos($botDbId: String!) {\n    removePhotos(botDbId: $botDbId) {\n      bot {\n        botDbId\n      }\n    }\n  }\n": types.RemovePhotosDocument,
     "\n  mutation setBio(\n    $botDbId: String!\n    $firstName: String!\n    $lastName: String!\n    $about: String!\n  ) {\n    setBio(\n      botDbId: $botDbId\n      firstName: $firstName\n      lastName: $lastName\n      about: $about\n    ) {\n      bot {\n        botDbId\n      }\n    }\n  }\n": types.SetBioDocument,
     "\n  mutation hidePhoneNumber($botDbId: String!) {\n    hidePhoneNumber(botDbId: $botDbId) {\n      bot {\n        botDbId\n      }\n    }\n  }\n": types.HidePhoneNumberDocument,
+    "\n  mutation startAccountsRegProcess($botDbId: String!) {\n    startAccountsRegProcess(botDbId: $botDbId)\n  }\n": types.StartAccountsRegProcessDocument,
+    "\n  query isCodeRequestedFromAccountsRegProcess {\n    isCodeRequestedFromAccountsRegProcess\n  }\n": types.IsCodeRequestedFromAccountsRegProcessDocument,
+    "\n  mutation stopAccountsRegProcess {\n    stopAccountsRegProcess\n  }\n": types.StopAccountsRegProcessDocument,
+    "\n  mutation provideCodeForRegistration($code: String!) {\n    provideCodeForRegistration(code: $code)\n  }\n": types.ProvideCodeForRegistrationDocument,
     "\n  query Bots {\n    bots {\n      afterTaskDelay\n      afterTaskIdleTime\n      answersDb\n      api_hash\n      botDbId\n      behaviorModel\n      botName\n      clientState\n      clientStateUpdateTime\n      copyFrom\n      readDelay\n      replacements\n      dmScenarioNames\n      sessionString\n      spamDBname\n      taskOrder\n      typeDelayMultiplier\n      voice\n    }\n  }\n": types.BotsDocument,
     "\n  mutation CreateBot($createBotInput: CreateBotInput!) {\n    createBot(createBotInput: $createBotInput) {\n      afterTaskDelay\n      afterTaskIdleTime\n      answersDb\n      api_hash\n      api_id\n      behaviorModel\n      botName\n      clientState\n      clientStateUpdateTime\n      copyFrom\n      readDelay\n      replacements\n      dmScenarioNames\n      sessionString\n      spamDBname\n      taskOrder\n      typeDelayMultiplier\n      voice\n    }\n  }\n": types.CreateBotDocument,
     "\n  mutation removeBot($botDbId: String!) {\n    removeBot(botDbId: $botDbId) {\n      botDbId\n    }\n  }\n": types.RemoveBotDocument,
@@ -86,6 +90,22 @@ export function graphql(source: "\n  mutation setBio(\n    $botDbId: String!\n  
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(source: "\n  mutation hidePhoneNumber($botDbId: String!) {\n    hidePhoneNumber(botDbId: $botDbId) {\n      bot {\n        botDbId\n      }\n    }\n  }\n"): (typeof documents)["\n  mutation hidePhoneNumber($botDbId: String!) {\n    hidePhoneNumber(botDbId: $botDbId) {\n      bot {\n        botDbId\n      }\n    }\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  mutation startAccountsRegProcess($botDbId: String!) {\n    startAccountsRegProcess(botDbId: $botDbId)\n  }\n"): (typeof documents)["\n  mutation startAccountsRegProcess($botDbId: String!) {\n    startAccountsRegProcess(botDbId: $botDbId)\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  query isCodeRequestedFromAccountsRegProcess {\n    isCodeRequestedFromAccountsRegProcess\n  }\n"): (typeof documents)["\n  query isCodeRequestedFromAccountsRegProcess {\n    isCodeRequestedFromAccountsRegProcess\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  mutation stopAccountsRegProcess {\n    stopAccountsRegProcess\n  }\n"): (typeof documents)["\n  mutation stopAccountsRegProcess {\n    stopAccountsRegProcess\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  mutation provideCodeForRegistration($code: String!) {\n    provideCodeForRegistration(code: $code)\n  }\n"): (typeof documents)["\n  mutation provideCodeForRegistration($code: String!) {\n    provideCodeForRegistration(code: $code)\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

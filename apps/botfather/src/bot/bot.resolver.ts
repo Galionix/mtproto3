@@ -227,4 +227,31 @@ export class BotResolver {
   ) {
     return await this.messagingSettingsService.hidePhoneNumber(botDbId);
   }
+
+  // start accounts reg process
+  // wee need to mark some bot as registrator
+  @Mutation(() => String, { name: "startAccountsRegProcess" })
+  async startAccountsRegProcess(
+    @Args("botDbId", { type: () => String }) botDbId: string
+  ) {
+    // get bot
+    return await this.botProcessService.startAccountsRegProcess(botDbId);
+  }
+  // query isCodeRequested from botProcessService
+  @Query(() => String, { name: "isCodeRequestedFromAccountsRegProcess" })
+  async isCodeRequested() {
+    // @Args("botDbId", { type: () => String }) botDbId: string
+    return await this.botProcessService.isCodeRequestedFromAccountsRegProcess();
+  }
+  // stopAccountsRegProcess
+  @Mutation(() => String, { name: "stopAccountsRegProcess" })
+  async stopAccountsRegProcess() {
+    return await this.botProcessService.stopAccountsRegProcess();
+  }
+
+  // provideCode
+  @Mutation(() => Boolean, { name: "provideCodeForRegistration" })
+  async provideCode(@Args("code") code: string) {
+    return await this.botProcessService.provideCode(code);
+  }
 }

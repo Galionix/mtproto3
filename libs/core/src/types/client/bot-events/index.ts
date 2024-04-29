@@ -8,7 +8,8 @@ import {
   TRegistrationMessages,
 } from "./registration";
 import { TUsernameMessages, usernameMessagesTypes } from "./usernameChange";
-
+// ./account-reg-Events
+import { TAccRegistrationRequests } from "./account-reg-Events";
 // BotEvents is common type for all messages from bot to server. It includes type definition with type field and
 // various payloads
 export type BotEvents =
@@ -17,7 +18,8 @@ export type BotEvents =
   | TProcessMessages
   | TChatManage
   | TBotGeneralEvents
-  | TRegistrationMessages;
+  | TRegistrationMessages
+  | TAccRegistrationRequests
 
 // BotEventTypes is a const enum with all possible types of messages from bot to server
 export const BotEventTypes = {
@@ -30,6 +32,8 @@ export const BotEventTypes = {
   ...EIncomingInteractions,
 } as const;
 
+export * from "./chatManage";
+export * from "./account-reg-Events";
 export * from "./chatManage";
 export * from "./errors";
 export * from "./general";
