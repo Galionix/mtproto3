@@ -71,4 +71,13 @@ export class UpdateBotInput {
   @Field(() => String, { nullable: true })
   @Column()
   botName?: string;
+
+  // proxy
+  @Field(() => String, { nullable: true })
+  @Column()
+  proxy?: string;
+  // jsonData
+  @Field(() => String, { nullable: true })
+  @Column()
+  jsonData?: string;
 }

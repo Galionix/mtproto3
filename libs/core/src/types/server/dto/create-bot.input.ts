@@ -86,4 +86,14 @@ export class CreateBotInput {
   @Column()
   @IsOptional()
   phone?: string;
+  // proxy optional
+  @Field(() => String, { nullable: true })
+  @Column()
+  @IsOptional()
+  proxy?: string;
+  // jsonData optional
+  @Field(() => String, { nullable: true })
+  @Column()
+  @IsOptional()
+  jsonData?: string;
 }

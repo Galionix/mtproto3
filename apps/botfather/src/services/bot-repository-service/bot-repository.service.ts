@@ -77,13 +77,17 @@ async function getBotDataFromFile(number: string) {
   const jsonFile = existingFiles.find((file) =>
     file.includes(`${number}.json`)
   );
-  const sessionFile = existingFiles.find((file) =>
-    file.includes(`${number}.session`)
-  );
 
   // const jsonFilePath = resolve("accounts" + sep + number + ".json");
   const jsonData = readFileSync(jsonFile, "utf8");
-  const { phone, app_id, app_hash } = JSON.parse(jsonData) as TJsonFile;
+  const { phone, app_id, app_hash, session_file } = JSON.parse(
+    jsonData
+  ) as TJsonFile;
+  // the same path as json file but with `${session_file}.session`;
+  const sessionFile =
+    existingFiles.find((file) => file.includes(`${session_file}.session`)) ||
+    existingFiles.find((file) => file.includes(`${phone}.session`));
+
   // read json file
 
   console.log("filePath: ", sessionFile);
@@ -123,9 +127,10 @@ async function getBotDataFromFile(number: string) {
   return {
     stringSession: sessionString,
     ...entities[1],
-    phone,
+    phone: phone.replace("+", ""),
     app_id,
     app_hash,
+    jsonData,
   };
 
   // return stringSession;
@@ -208,13 +213,22 @@ export class BotRepositoryService {
   async create(createBotInput: CreateBotInput) {
     console.log("createBotInput: ", createBotInput);
     if (createBotInput.fromFile) {
-      const { stringSession, app_id, app_hash, username, phone, name, date } =
-        await getBotDataFromFile(createBotInput.api_hash.toString());
+      const {
+        stringSession,
+        app_id,
+        app_hash,
+        username,
+        phone,
+        name,
+        date,
+        jsonData,
+      } = await getBotDataFromFile(createBotInput.api_hash.toString());
 
       createBotInput.api_id = app_id;
       createBotInput.api_hash = app_hash;
       // createBotInput = username;
       createBotInput.phone = phone;
+      createBotInput.jsonData = jsonData;
       createBotInput.sessionString = stringSession;
       // // here we use api_id as a number showing us what the file we should open.
       // const sessionString = await getSession(

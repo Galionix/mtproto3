@@ -22,6 +22,8 @@ export const getBotQuery = graphql(`
       taskOrder
       typeDelayMultiplier
       voice
+      proxy
+      jsonData
     }
   }
 `);

@@ -92,4 +92,13 @@ export class BotEntity {
   @Field(() => Boolean, { nullable: true })
   @Column()
   fromFile: boolean;
+  // proxy
+  @Field(() => String, { nullable: true })
+  @Column({ nullable: true })
+  proxy: string;
+
+  // json data
+  @Field(() => String, { nullable: true })
+  @Column()
+  jsonData: string;
 }

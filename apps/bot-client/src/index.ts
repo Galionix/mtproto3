@@ -44,6 +44,9 @@ import { messageOrchestrator } from "./lib/messagesOrchestrator";
 import { sendToFather } from "@core/functions";
 import path from "path";
 import { readFileSync } from "fs";
+import { TelegramClientParams } from "telegram/client/telegramBaseClient";
+import { parseProxyString } from "./lib/utils/parseProxyString";
+import { getTelegramClientParams } from "./lib/utils/getTelegramClientParams";
 
 const showBreathe = false;
 
@@ -63,6 +66,8 @@ const [
   replacements,
   spamDBname,
   botDbId,
+  jsonData,
+  proxy,
   isTest,
 ] = process.argv.slice(2);
 const isTestMode = Boolean(isTest);
@@ -82,6 +87,8 @@ const initState = () => {
   state.answers_db = answers_db;
   state.read_delay = parseInt(read_delay);
   state.type_delay_multiplier = parseInt(type_delay_multiplier);
+  state.proxy = proxy;
+  state.jsonData = JSON.parse(jsonData);
   // console.log("scenario: ", scenarios);
   // state.dmScenario = dmScenarioNames;
   state.spamDbName = spamDBname;
@@ -155,15 +162,20 @@ console.log("launching main thread");
     isRunning = false;
   }
 
+  const clientParams = getTelegramClientParams(
+    proxy,
+    JSON.parse(jsonData),
+    botDbId
+  );
+  console.log("clientParams: ", clientParams);
+
   try {
     logGlobal("STARTING", "Starting");
     const client = new TelegramClient(
       new StringSession(stringSession),
       parseInt(apiId),
       apiHash,
-      {
-        connectionRetries: 3,
-      }
+      clientParams
     );
     console.log("before start");
     await client.start({

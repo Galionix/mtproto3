@@ -105,6 +105,17 @@ const CreateBotPage: NextPage = () => {
             }}
           />
         </div>
+        {/* proxy */}
+        <TextInput
+          label="proxy"
+          type="text"
+          placeholder="ip:port:user:password"
+          required
+          value={createBotData.proxy}
+          onChange={(e) => {
+            dispatch({ proxy: e });
+          }}
+        />
         {!createBotData.fromFile && (
           <>
             <TextInput
@@ -190,10 +201,13 @@ const CreateBotPage: NextPage = () => {
                 {
                   query: getAvailableBotsByFilesQuery,
                 },
+                {
+                  query: getBotStatesQuery,
+                },
               ],
             });
             console.log("res: ", res);
-            // router.push("/bots");
+            router.push("/bots");
           }}
         />
         <Clickable

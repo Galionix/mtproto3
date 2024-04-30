@@ -23,6 +23,8 @@ export const getBotsQuery = graphql(`
       taskOrder
       typeDelayMultiplier
       voice
+      phone
+      proxy
     }
   }
 `);

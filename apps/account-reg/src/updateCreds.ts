@@ -74,6 +74,7 @@ export const updateCreds = async ({ phone }: { phone: string }) => {
     true,
     20000
   );
+  console.log("RESPONSE_CODE res: ", res);
   if (res.event_type !== RegistrationResponseTypes.RESPONSE_CODE) {
     return;
   }

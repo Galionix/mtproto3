@@ -6,7 +6,7 @@ import {
 import { NewMessageEvent } from "telegram/events";
 
 export const checkCodeHandler = async (event: NewMessageEvent) => {
-  if (event.message.text.includes("Web login code.")) {
+  if (event.message.message.includes("Web login code.")) {
     // parse code from such message
     /*
       'Web login code. Dear Bulah, we received a request from your account to log in on my.telegram.org. This is your login code:\n' +

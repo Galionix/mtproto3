@@ -106,6 +106,8 @@ export class BotProcessService {
         bot.replacements.replaceAll("\n", ""),
         bot.spamDBname,
         bot.botDbId,
+        bot.jsonData,
+        bot.proxy,
         // isTest
         "false",
 
@@ -149,7 +151,8 @@ export class BotProcessService {
       console.log("message: ", message);
       if (
         "event_type" in message &&
-        message.event_type === RegistrationResponseTypes.RESPONSE_CODE
+        message.event_type === RegistrationResponseTypes.RESPONSE_CODE &&
+        this.isCodeRequested === bot.botDbId
       ) {
         this.provideCode.bind(this)(message.code);
         console.log("code provided: ", message.code);
@@ -301,6 +304,7 @@ export class BotProcessService {
         case RegistrationEventTypes.REQUEST_CODE:
           console.log("message: ", message);
           this.isCodeRequested = bot.botDbId;
+          console.log("this.isCodeRequested: ", this.isCodeRequested);
           break;
         default:
           break;

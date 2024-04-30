@@ -45,7 +45,9 @@ type BotEntity {
   copyFrom: String
   dmScenarioNames: [String!]
   fromFile: Boolean
+  jsonData: String
   phone: String
+  proxy: String
   readDelay: Int
   replacements: String
   sessionString: String
@@ -135,7 +137,9 @@ input CreateBotInput {
   botName: String
   copyFrom: String
   fromFile: Boolean
+  jsonData: String
   phone: String
+  proxy: String
   readDelay: Int
   replacements: String
   scenario: String
@@ -450,6 +454,8 @@ input UpdateBotInput {
   clientState: String
   copyFrom: String
   dmScenarioNames: [String!]
+  jsonData: String
+  proxy: String
   readDelay: Int
   replacements: String
   sessionString: String

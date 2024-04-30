@@ -1,4 +1,5 @@
 import { ScenarioEntity } from "../../server";
+import { JsonFileData } from "../JsonFileData.types";
 import { TTask, TTaskOrder } from "../bot-tasks";
 import { TAnswer } from "./botAnswer";
 import { TClientMessage } from "./message.entity";
@@ -44,6 +45,8 @@ export type TState = {
   type_delay_multiplier: number;
   dmScenario: ScenarioEntity;
   spamScenarios: ScenarioEntity[];
+  proxy: string;
+  jsonData: JsonFileData;
 
   // message_probability: this is a number between 0 and 1
   // that represents the probability of a message being sent

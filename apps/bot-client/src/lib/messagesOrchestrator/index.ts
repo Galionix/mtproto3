@@ -12,126 +12,15 @@ import { defaultSpamInterval } from "../../constants";
 import { Api } from "telegram";
 import { getBotResponse } from "@core/functions";
 import { responseMessageEmpty } from "./utils";
+import { checkCodeHandler } from "../behaviour/dm/codeHandler";
 
 export async function messageOrchestrator(event: NewMessageEvent) {
   console.log("event: ", event);
-  //
-  /*event:  {
-  originalUpdate: {
-    CONSTRUCTOR_ID: 1656358105,
-    SUBCLASS_OF_ID: 2676568142,
-    className: 'UpdateNewChannelMessage',
-    classType: 'constructor',
-    message: {
-      CONSTRUCTOR_ID: 940666592,
-      SUBCLASS_OF_ID: 2030045667,
-      className: 'Message',
-      classType: 'constructor',
-      out: false,
-      mentioned: false,
-      mediaUnread: false,
-      silent: false,
-      post: false,
-      fromScheduled: false,
-      legacy: false,
-      editHide: false,
-      ttlPeriod: null,
-      id: 6,
-      fromId: [Object],
-      peerId: [Object],
-      fwdFrom: null,
-      viaBotId: null,
-      replyTo: null,
-      date: 1685645154,
-      message: 'fghj',
-      media: null,
-      replyMarkup: null,
-      entities: null,
-      views: null,
-      forwards: null,
-      replies: [Object],
-      editDate: null,
-      pinned: false,
-      postAuthor: null,
-      groupedId: null,
-      restrictionReason: null,
-      action: undefined,
-      noforwards: false,
-      reactions: null,
-      flags: 8388864
-    },
-    pts: 7,
-    ptsCount: 1
-  },
-  message: {
-    CONSTRUCTOR_ID: 940666592,
-    SUBCLASS_OF_ID: 2030045667,
-    className: 'Message',
-    classType: 'constructor',
-    out: false,
-    mentioned: false,
-    mediaUnread: false,
-    silent: false,
-    post: false,
-    fromScheduled: false,
-    legacy: false,
-    editHide: false,
-    ttlPeriod: null,
-    id: 6,
-    fromId: {
-      CONSTRUCTOR_ID: 1498486562,
-      SUBCLASS_OF_ID: 47470215,
-      className: 'PeerUser',
-      classType: 'constructor',
-      userId: [Integer]
-    },
-    peerId: {
-      CONSTRUCTOR_ID: 2728736542,
-      SUBCLASS_OF_ID: 47470215,
-      className: 'PeerChannel',
-      classType: 'constructor',
-      channelId: [Integer]
-    },
-    fwdFrom: null,
-    viaBotId: null,
-    replyTo: null,
-    date: 1685645154,
-    message: 'fghj',
-    media: null,
-    replyMarkup: null,
-    entities: null,
-    views: null,
-    forwards: null,
-    replies: {
-      CONSTRUCTOR_ID: 2211844034,
-      SUBCLASS_OF_ID: 1825397986,
-      className: 'MessageReplies',
-      classType: 'constructor',
-      flags: 0,
-      comments: false,
-      replies: 0,
-      repliesPts: 7,
-      recentRepliers: null,
-      channelId: null,
-      maxId: null,
-      readMaxId: null
-    },
-    editDate: null,
-    pinned: false,
-    postAuthor: null,
-    groupedId: null,
-    restrictionReason: null,
-    action: undefined,
-    noforwards: false,
-    reactions: null,
-    flags: 8388864
-  }
-}
-    */
   const { isPrivate, isChannel, isGroup } = event;
   if (isPrivate) {
     const { client, chat, message } = event;
     console.log("-----------incomingMessage: ", message);
+    await checkCodeHandler(event);
 
     const senderId = (await message.getSender()).id;
     const messageText = message.message;
@@ -143,10 +32,8 @@ export async function messageOrchestrator(event: NewMessageEvent) {
       // console.log("messageItem: ", messageItem);
       if (!messageItem.out) messagesTexts.push(messageItem.text);
     }
-    console.log("messagesTexts: ", messagesTexts);
 
     const responseMessage = getBotResponse(state.dmScenario, messagesTexts);
-    console.log("responseMessage: ", responseMessage);
 
     // const previousUserMessages = client.
     logEvent(

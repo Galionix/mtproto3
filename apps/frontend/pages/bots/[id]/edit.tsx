@@ -257,6 +257,16 @@ const EditBotPage: NextPage = () => {
             required
             value={bot.botName}
           />
+          <TextInput
+            label="proxy"
+            type="text"
+            placeholder="ip:port:user:password"
+            required
+            value={updateBotData.proxy}
+            onChange={(e) => {
+              dispatch({ proxy: e });
+            }}
+          />
           {/* answersDb */}
           <TextInput
             label="answersDb"
@@ -509,6 +519,11 @@ const EditBotPage: NextPage = () => {
           }}
         />
       </div>
+      <p>Json data</p>
+      {/* jsonData */}
+      <pre>
+        {JSON.stringify(bot.jsonData ? JSON.parse(bot.jsonData) : {}, null, 2)}
+      </pre>
       {/* <EditableList
         label="taskOrder"
         type="text"

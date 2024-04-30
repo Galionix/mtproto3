@@ -8,6 +8,8 @@ import { syncableStateKeys } from "../constants";
 const twoHours = 1000 * 60 * 60 * 2;
 
 export const state: TState = {
+  proxy: "",
+  jsonData: {},
   botDbId: "",
   bio: {
     firstName: "",
